@@ -1,0 +1,337 @@
+name: CI, Security, and Release
+
+on:
+  push:
+    branches: [main, develop]
+  pull_request:
+    branches: [main, develop]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: city-cleanup-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: ${{ github.ref != 'refs/heads/main' }}
+
+env:
+  REGISTRY: citycleanup.azurecr.io
+  BACKEND_IMAGE: citycleanup.azurecr.io/backend
+  FRONTEND_IMAGE: citycleanup.azurecr.io/frontend
+  AKS_CLUSTER_NAME: city-cleanup-aks
+  AKS_RESOURCE_GROUP: city-cleanup-rg
+  NAMESPACE: city-cleanup
+  RELEASE_TAG: sha-${{ github.sha }}
+
+jobs:
+  quality:
+    name: Tests, coverage, lint, and builds
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    steps:
+      - uses: actions/checkout@v6
+        with:
+          persist-credentials: false
+
+      - uses: actions/setup-node@v6
+        with:
+          node-version: '22'
+          cache: npm
+          cache-dependency-path: |
+            backend/package-lock.json
+            city-cleanup-challenge/package-lock.json
+
+      - name: Install backend dependencies
+        working-directory: backend
+        run: npm ci
+
+      - name: Verify backend
+        working-directory: backend
+        run: |
+          npm run lint
+          npm run audit:prod
+          npm run test:coverage -- --runInBand
+
+      - name: Validate release manifest structure
+        run: node scripts/validate-release-config.js
+
+      - name: Install frontend dependencies
+        working-directory: city-cleanup-challenge
+        run: npm ci
+
+      - name: Verify frontend
+        working-directory: city-cleanup-challenge
+        env:
+          EXPO_PUBLIC_API_URL: https://api.staging.city-cleanup.invalid/api/v1
+        run: |
+          npm run lint
+          npm run test:coverage
+          npm run build:web
+
+      - name: Upload coverage reports
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: coverage-${{ github.run_id }}
+          path: |
+            backend/coverage
+            city-cleanup-challenge/coverage
+          if-no-files-found: error
+          retention-days: 14
+
+  postgres:
+    name: PostgreSQL migration and API suite
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    services:
+      postgres:
+        image: postgres:17.10-alpine3.23
+        env:
+          POSTGRES_DB: city_cleanup_test
+          POSTGRES_USER: cleanup_test
+          POSTGRES_PASSWORD: test-only-password
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd "pg_isready -U cleanup_test -d city_cleanup_test"
+          --health-interval 5s
+          --health-timeout 5s
+          --health-retries 10
+    steps:
+      - uses: actions/checkout@v6
+        with:
+          persist-credentials: false
+
+      - uses: actions/setup-node@v6
+        with:
+          node-version: '22'
+          cache: npm
+          cache-dependency-path: backend/package-lock.json
+
+      - working-directory: backend
+        run: npm ci
+
+      - name: Run migrations and all API tests on PostgreSQL
+        working-directory: backend
+        env:
+          NODE_ENV: test
+          DATABASE_CLIENT: postgres
+          DATABASE_URL: postgresql://cleanup_test:test-only-password@localhost:5432/city_cleanup_test
+        run: |
+          npm run db:verify
+          npm test -- --runInBand
+
+  images:
+    name: Build immutable images
+    runs-on: ubuntu-latest
+    needs: [quality, postgres]
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+    timeout-minutes: 35
+    outputs:
+      backend: ${{ steps.release.outputs.backend }}
+      frontend: ${{ steps.release.outputs.frontend }}
+    steps:
+      - uses: actions/checkout@v6
+        with:
+          persist-credentials: false
+
+      - uses: docker/setup-buildx-action@v3
+
+      - uses: docker/login-action@v3
+        with:
+          registry: ${{ env.REGISTRY }}
+          username: ${{ secrets.ACR_USERNAME }}
+          password: ${{ secrets.ACR_PASSWORD }}
+
+      - name: Record immutable release references
+        id: release
+        shell: bash
+        run: |
+          echo "backend=${BACKEND_IMAGE}:${RELEASE_TAG}" >> "$GITHUB_OUTPUT"
+          echo "frontend=${FRONTEND_IMAGE}:${RELEASE_TAG}" >> "$GITHUB_OUTPUT"
+
+      - name: Build and push backend
+        uses: docker/build-push-action@v7
+        with:
+          context: backend
+          push: true
+          tags: ${{ env.BACKEND_IMAGE }}:${{ env.RELEASE_TAG }}
+          provenance: mode=max
+          sbom: true
+          cache-from: type=registry,ref=${{ env.BACKEND_IMAGE }}:buildcache
+          cache-to: type=registry,ref=${{ env.BACKEND_IMAGE }}:buildcache,mode=max
+
+      - name: Build and push frontend
+        uses: docker/build-push-action@v7
+        with:
+          context: city-cleanup-challenge
+          push: true
+          tags: ${{ env.FRONTEND_IMAGE }}:${{ env.RELEASE_TAG }}
+          build-args: EXPO_PUBLIC_API_URL=/api/v1
+          provenance: mode=max
+          sbom: true
+          cache-from: type=registry,ref=${{ env.FRONTEND_IMAGE }}:buildcache
+          cache-to: type=registry,ref=${{ env.FRONTEND_IMAGE }}:buildcache,mode=max
+
+  security:
+    name: Block vulnerable release images
+    runs-on: ubuntu-latest
+    needs: images
+    permissions:
+      contents: read
+      security-events: write
+    timeout-minutes: 20
+    strategy:
+      fail-fast: false
+      matrix:
+        image: [backend, frontend]
+    steps:
+      - uses: docker/login-action@v3
+        with:
+          registry: ${{ env.REGISTRY }}
+          username: ${{ secrets.ACR_USERNAME }}
+          password: ${{ secrets.ACR_PASSWORD }}
+
+      - name: Scan ${{ matrix.image }} image
+        uses: aquasecurity/trivy-action@0.35.0
+        with:
+          image-ref: ${{ env.REGISTRY }}/${{ matrix.image }}:${{ env.RELEASE_TAG }}
+          version: v0.69.3
+          format: sarif
+          output: trivy-${{ matrix.image }}.sarif
+          severity: HIGH,CRITICAL
+          ignore-unfixed: true
+          exit-code: '1'
+          limit-severities-for-sarif: true
+
+      - name: Upload scan result
+        if: always()
+        uses: github/codeql-action/upload-sarif@v3
+        with:
+          sarif_file: trivy-${{ matrix.image }}.sarif
+          category: trivy-${{ matrix.image }}
+
+  staging:
+    name: Staging deployment and smoke test
+    runs-on: ubuntu-latest
+    needs: [images, security]
+    timeout-minutes: 20
+    environment:
+      name: staging
+      url: ${{ vars.PUBLIC_APP_URL }}
+    concurrency:
+      group: city-cleanup-staging
+      cancel-in-progress: true
+    steps:
+      - uses: actions/checkout@v6
+        with:
+          persist-credentials: false
+
+      - uses: azure/login@v2
+        with:
+          creds: ${{ secrets.AZURE_CREDENTIALS }}
+
+      - uses: azure/aks-set-context@v4
+        with:
+          cluster-name: ${{ env.AKS_CLUSTER_NAME }}
+          resource-group: ${{ env.AKS_RESOURCE_GROUP }}
+
+      - name: Render staging release
+        env:
+          DEPLOY_NAMESPACE: city-cleanup-staging
+          PUBLIC_APP_HOST: ${{ vars.PUBLIC_APP_HOST }}
+          PUBLIC_API_HOST: ${{ vars.PUBLIC_API_HOST }}
+          TLS_CONTACT_EMAIL: ${{ vars.TLS_CONTACT_EMAIL }}
+          AZURE_WORKLOAD_IDENTITY_CLIENT_ID: ${{ vars.AZURE_WORKLOAD_IDENTITY_CLIENT_ID }}
+          AZURE_KEY_VAULT_NAME: ${{ vars.AZURE_KEY_VAULT_NAME }}
+          AZURE_TENANT_ID: ${{ vars.AZURE_TENANT_ID }}
+          EVIDENCE_S3_BUCKET: ${{ vars.EVIDENCE_S3_BUCKET }}
+          AWS_REGION: ${{ vars.AWS_REGION }}
+          BACKEND_RELEASE_IMAGE: ${{ needs.images.outputs.backend }}
+          FRONTEND_RELEASE_IMAGE: ${{ needs.images.outputs.frontend }}
+          SENTRY_RELEASE: ${{ github.sha }}
+        run: |
+          node scripts/render-release-config.js
+          node scripts/validate-release-config.js --rendered --directory=rendered-k8s
+
+      - name: Apply staging manifests
+        run: |
+          kubectl apply -k rendered-k8s
+          kubectl rollout status deployment/backend -n city-cleanup-staging --timeout=5m
+          kubectl rollout status deployment/frontend -n city-cleanup-staging --timeout=5m
+
+      - name: Run staging smoke test
+        env:
+          SMOKE_BASE_URL: ${{ vars.PUBLIC_APP_URL }}
+          SMOKE_API_URL: ${{ vars.PUBLIC_API_URL }}
+        run: node scripts/staging-smoke.js
+
+      - name: Roll back failed staging rollout
+        if: failure()
+        run: |
+          kubectl rollout undo deployment/backend -n city-cleanup-staging
+          kubectl rollout undo deployment/frontend -n city-cleanup-staging
+
+  deploy:
+    name: Approved production deployment
+    runs-on: ubuntu-latest
+    needs: [images, security, staging]
+    timeout-minutes: 20
+    environment:
+      name: production
+      url: ${{ vars.PUBLIC_APP_URL }}
+    concurrency:
+      group: city-cleanup-production
+      cancel-in-progress: false
+    steps:
+      - uses: actions/checkout@v6
+        with:
+          persist-credentials: false
+
+      - uses: azure/login@v2
+        with:
+          creds: ${{ secrets.AZURE_CREDENTIALS }}
+
+      - uses: azure/aks-set-context@v4
+        with:
+          cluster-name: ${{ env.AKS_CLUSTER_NAME }}
+          resource-group: ${{ env.AKS_RESOURCE_GROUP }}
+
+      - name: Render production release
+        env:
+          DEPLOY_NAMESPACE: city-cleanup
+          PUBLIC_APP_HOST: ${{ vars.PUBLIC_APP_HOST }}
+          PUBLIC_API_HOST: ${{ vars.PUBLIC_API_HOST }}
+          TLS_CONTACT_EMAIL: ${{ vars.TLS_CONTACT_EMAIL }}
+          AZURE_WORKLOAD_IDENTITY_CLIENT_ID: ${{ vars.AZURE_WORKLOAD_IDENTITY_CLIENT_ID }}
+          AZURE_KEY_VAULT_NAME: ${{ vars.AZURE_KEY_VAULT_NAME }}
+          AZURE_TENANT_ID: ${{ vars.AZURE_TENANT_ID }}
+          EVIDENCE_S3_BUCKET: ${{ vars.EVIDENCE_S3_BUCKET }}
+          AWS_REGION: ${{ vars.AWS_REGION }}
+          BACKEND_RELEASE_IMAGE: ${{ needs.images.outputs.backend }}
+          FRONTEND_RELEASE_IMAGE: ${{ needs.images.outputs.frontend }}
+          SENTRY_RELEASE: ${{ github.sha }}
+        run: |
+          node scripts/render-release-config.js
+          node scripts/validate-release-config.js --rendered --directory=rendered-k8s
+          kubectl kustomize rendered-k8s >/dev/null
+
+      - name: Apply manifests and wait for safe rollout
+        run: |
+          kubectl apply -k rendered-k8s
+          kubectl rollout status deployment/backend -n "$NAMESPACE" --timeout=5m
+          kubectl rollout status deployment/frontend -n "$NAMESPACE" --timeout=5m
+
+      - name: Run production smoke test
+        env:
+          SMOKE_BASE_URL: ${{ vars.PUBLIC_APP_URL }}
+          SMOKE_API_URL: ${{ vars.PUBLIC_API_URL }}
+        run: node scripts/staging-smoke.js
+
+      - name: Roll back failed rollout
+        if: failure()
+        run: |
+          kubectl rollout undo deployment/backend -n "$NAMESPACE"
+          kubectl rollout undo deployment/frontend -n "$NAMESPACE"
+          kubectl rollout status deployment/backend -n "$NAMESPACE" --timeout=5m
+          kubectl rollout status deployment/frontend -n "$NAMESPACE" --timeout=5m
