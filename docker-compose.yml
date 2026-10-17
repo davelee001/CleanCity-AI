@@ -51,7 +51,7 @@ services:
   # Frontend Web Service
   frontend:
     build:
-      context: ./city-cleanup-challenge
+      context: ./cleancity-ai
       dockerfile: Dockerfile
     container_name: city-cleanup-frontend
     ports:
@@ -75,7 +75,7 @@ services:
   # Development Frontend (Expo)
   frontend-dev:
     build:
-      context: ./city-cleanup-challenge
+      context: ./cleancity-ai
       dockerfile: Dockerfile.dev
     container_name: city-cleanup-frontend-dev
     ports:
@@ -87,7 +87,7 @@ services:
       - REACT_NATIVE_PACKAGER_HOSTNAME=localhost
       - EXPO_DEVTOOLS_LISTEN_ADDRESS=0.0.0.0
     volumes:
-      - ./city-cleanup-challenge:/app
+      - ./cleancity-ai:/app
       - /app/node_modules
     networks:
       - city-cleanup-network

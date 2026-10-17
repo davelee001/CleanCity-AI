@@ -82,7 +82,7 @@ services:
 
   frontend:
     build:
-      context: ./city-cleanup-challenge
+      context: ./cleancity-ai
       dockerfile: Dockerfile
       args:
         EXPO_PUBLIC_API_URL: /api/v1
