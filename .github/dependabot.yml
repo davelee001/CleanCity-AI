@@ -12,7 +12,7 @@ updates:
     open-pull-requests-limit: 5
 
   - package-ecosystem: npm
-    directory: /city-cleanup-challenge
+    directory: /cleancity-ai
     schedule:
       interval: weekly
     groups:
@@ -34,6 +34,6 @@ updates:
       interval: weekly
 
   - package-ecosystem: docker
-    directory: /city-cleanup-challenge
+    directory: /cleancity-ai
     schedule:
       interval: weekly

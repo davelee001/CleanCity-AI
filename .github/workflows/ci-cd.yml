@@ -39,7 +39,7 @@ jobs:
           cache: npm
           cache-dependency-path: |
             backend/package-lock.json
-            city-cleanup-challenge/package-lock.json
+            cleancity-ai/package-lock.json
 
       - name: Install backend dependencies
         working-directory: backend
@@ -56,11 +56,11 @@ jobs:
         run: node scripts/validate-release-config.js
 
       - name: Install frontend dependencies
-        working-directory: city-cleanup-challenge
+        working-directory: cleancity-ai
         run: npm ci
 
       - name: Verify frontend
-        working-directory: city-cleanup-challenge
+        working-directory: cleancity-ai
         env:
           EXPO_PUBLIC_API_URL: https://api.staging.city-cleanup.invalid/api/v1
         run: |
@@ -75,7 +75,7 @@ jobs:
           name: coverage-${{ github.run_id }}
           path: |
             backend/coverage
-            city-cleanup-challenge/coverage
+            cleancity-ai/coverage
           if-no-files-found: error
           retention-days: 14
 
@@ -164,7 +164,7 @@ jobs:
       - name: Build and push frontend
         uses: docker/build-push-action@v7
         with:
-          context: city-cleanup-challenge
+          context: cleancity-ai
           push: true
           tags: ${{ env.FRONTEND_IMAGE }}:${{ env.RELEASE_TAG }}
           build-args: EXPO_PUBLIC_API_URL=/api/v1
