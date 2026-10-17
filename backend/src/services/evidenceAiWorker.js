@@ -20,7 +20,12 @@ function createEvidenceAiWorker(db) {
       const row = await get(db, 'SELECT verification_summary, status, risk_level FROM cleanup_submissions WHERE id = ?', [id]);
       if (!row) return;
       const previous = JSON.parse(row.verification_summary);
-      if (previous.smartVerification?.status !== 'pending') return;
+      const current = previous.smartVerification;
+      // A disconnected competing stream must not discard validated findings.
+      // Completed results remain final, and failures cannot replace them.
+      if (current?.status !== 'pending'
+        && !(current?.status === 'unavailable' && current.reason === 'cancelled'
+          && analysis.status === 'completed')) return;
       const summary = row.status === 'manual_review' ? applySmartVerification(previous, analysis)
         : { ...previous, smartVerification: analysis };
       const changed = await run(db, `UPDATE cleanup_submissions

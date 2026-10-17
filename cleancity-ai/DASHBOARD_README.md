@@ -1,7 +1,7 @@
 # Frontend Dashboard Features
 
 ## Overview
-This comprehensive dashboard implementation includes all requested features for the City Cleanup Challenge frontend.
+This comprehensive dashboard implementation includes all requested features for the CleanCity AI frontend.
 
 ## Features Implemented
 
@@ -91,7 +91,7 @@ This comprehensive dashboard implementation includes all requested features for 
 
 ## Project Structure
 ```
-city-cleanup-challenge/
+cleancity-ai/
 ├── Dashboard.js              # Main dashboard component
 ├── App.js                    # Updated app with dashboard
 ├── components/

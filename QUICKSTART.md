@@ -136,7 +136,7 @@ npx playwright test --project=chromium
 
 1. **Copy example env:**
    ```bash
-   cd city-cleanup-challenge
+   cd cleancity-ai
    cp .env.example .env
    ```
 

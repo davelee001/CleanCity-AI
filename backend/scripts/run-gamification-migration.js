@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 /**
  * Run Gamification System Migration
- * This script applied the gamification database schema to the City Cleanup Challenge database
+ * This script applied the gamification database schema to the CleanCity AI database
  */
 
 const sqlite3 = require('sqlite3').verbose();

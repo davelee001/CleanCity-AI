@@ -2,6 +2,7 @@ require('dotenv').config({ path: require('path').join(__dirname, '../.env') });
 const { createApp } = require('./app');
 const db = require('./db');
 const sentryService = require('./services/sentry');
+const { warmGemma } = require('./services/gemmaVerification');
 
 const { port: PORT } = require('./config');
 const app = createApp();
@@ -13,6 +14,8 @@ async function startServer() {
     await db.ready;
     server = app.listen(PORT, () => {
       console.log(`Backend listening on http://localhost:${PORT}`);
+      // Warm asynchronously so login and upload responses remain responsive.
+      warmGemma().then((ready) => { if (ready) console.log('Gemma fast-mode model is warm.'); });
     });
   } catch (error) {
     console.error('Database initialization failed:', error);

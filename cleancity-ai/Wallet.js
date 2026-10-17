@@ -242,7 +242,7 @@ export default function Wallet() {
               {wallet?.verified ? 'Your payout wallet is ready' : 'Link your Celo wallet'}
             </Text>
             <Text style={styles.panelText}>
-              Signing is free and proves ownership. City Cleanup never requests your seed phrase
+              Signing is free and proves ownership. CleanCity AI never requests your seed phrase
               or private key.
             </Text>
 

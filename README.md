@@ -1,4 +1,4 @@
-# City Cleanup Challenge
+# CleanCity AI
 
 Gemma 3 Vision setup, architecture audit, tests, and hackathon walkthrough:
 [Gemma Smart Verification](docs/GEMMA_SMART_VERIFICATION.md). AI verification is disabled by default.
@@ -9,42 +9,71 @@ workflow validation are in the [Gemma benchmark report](docs/GEMMA_BENCHMARK.md)
 
 A comprehensive location-based cleanup event platform with React Native (Expo) frontend and Node.js Express backend. Join cleanup events, track your environmental impact, and help make your city cleaner!
 
-## Gemma Smart Verification — current workflow (October 16, 2026)
+## Cleanup evidence and Gemma analysis (October 17, 2026)
 
-The existing Expo application now uses real Gemma 3 Vision inference through
-local Ollama, with an optional compatible hosted endpoint. AI is advisory and
-disabled by default. It cannot approve submissions or authorize payouts.
+CleanCity AI uses local Gemma 3 Vision through Ollama, with an optional
+compatible hosted endpoint. AI is disabled by default and provides advisory
+findings; it does not authorize payouts.
 
-1. A user signs in and submits permitted before-and-after photographs with GPS
-   consent, waste details, and optional notes.
-2. The application confirms **Images received** and saves the evidence privately.
-   The submission page shows only that user's latest submission.
-3. **Gemma live analysis** opens an authenticated foreground connection. It shows
-   actual preparation and generation progress, then presents validated findings
-   line by line: visible waste, image differences, concerns, limitations, and
-   safe cleanup recommendations. Findings are withheld until the complete
-   structured output passes validation. Leaving the page cancels inference.
-4. An authorized admin opens **Pending**, **Rejected**, or **Approved** from the
-   admin home screen. Admins review evidence instead of seeing a submission
-   action. Approve/Reject controls become available after the AI attempt finishes;
-   a review reason is required and self-review is prohibited.
-5. The uploader sees the human decision. Previous submissions remain stored;
-   exact duplicates are rejected and the existing one-time appeal remains available.
+1. Sign in and upload permitted before/after photographs with GPS consent,
+   waste details, and optional notes.
+2. The API validates and privately stores the images, rejects exact duplicates,
+   and immediately approves valid non-duplicate uploads. The uploader sees
+   **Work uploaded and approved successfully**.
+3. Supported pending AI analyses open an authenticated foreground connection.
+   Progress appears while Gemma runs; findings appear only after schema and
+   quality validation. Keep the live page open to avoid cancelling that stream.
+4. Admins can inspect **Pending**, **Rejected**, and **Approved** records.
+   Legacy and appealed records can require human review, with a review reason
+   and no self-review. AI remains advisory throughout.
+5. Reward claims follow approval when payout requirements are met. Existing
+   duplicate checks, appeals, and Celo reward controls still apply.
 
-Timeouts, invalid output, and cancellation preserve evidence for human review.
-Celo reward controls remain in place; local testing has broadcasting disabled
-and dry-run enabled. Private images, local databases, secrets, and downloaded
-model files are excluded from Git.
+A completed, validated AI result takes precedence over a competing stream's
+cancellation, so closing another tab cannot discard successful findings.
+Service errors, timeouts, unreadable images, and rejected output now have
+specific explanations. Evidence remains saved when analysis cannot finish.
+
+The sign-in, registration, and home screens include three subtle, locally
+served cleaning illustrations totaling about **2.5 KB**. They have no animation
+or third-party image requests and do not intercept form interactions.
+
+Private evidence, local databases, secrets, and downloaded model files are
+excluded from Git. Resetting local evidence does not change repository files
+or other installations. Existing accounts and login sessions can be retained.
+
+### Project layout
+
+- `cleancity-ai/`: Expo frontend, browser screens, and PWA assets.
+- `backend/`: Express API, authentication, evidence storage, and database access.
+- `blockchain/`: Celo reward contracts.
+- `docs/`: setup guides, verification workflows, and release operations.
+
+The frontend folder and package identifier are `cleancity-ai`; the application
+name shown to users is **CleanCity AI**.
 
 ### Run locally in the browser
 
 Use Node.js 22 and install dependencies with `npm ci` in both `backend/` and
-`city-cleanup-challenge/`. Configuration belongs in **backend/.env** and
-**city-cleanup-challenge/.env**, rather than the root `.env`. On first setup,
+`cleancity-ai/`. Configuration belongs in **backend/.env** and
+**cleancity-ai/.env**, rather than the root `.env`. On first setup,
 copy each folder's `.env.example` and configure distinct strong JWT secrets;
 preserve existing environment files and database paths on an existing install.
 
-For local Gemma testing, set these values in `backend/.env`:
+For local login and database access, preserve the existing `backend/.env`
+settings and SQLite database. SQLite runs inside the backend process and does
+not need a separate database server. A new local setup can use:
+
+```dotenv
+DATABASE_CLIENT=sqlite
+DATABASE_PATH=./city-cleanup.db
+```
+
+The relative database path is resolved from `backend/` when starting with the
+commands below. PostgreSQL is also supported; see [backend setup](backend/README.md).
+
+Gemma is optional for login. To test AI evidence analysis, start Ollama and set
+these values in `backend/.env`:
 
 ```dotenv
 PORT=3000
@@ -53,12 +82,34 @@ GEMMA_PROVIDER=ollama
 GEMMA_ENDPOINT=http://127.0.0.1:11434/api/chat
 GEMMA_MODEL=gemma3:4b
 GEMMA_TIMEOUT_MS=600000
+GEMMA_FAST_MODE=true
+GEMMA_NUM_THREADS=8
+GEMMA_MAX_OUTPUT_TOKENS=384
+GEMMA_CONTEXT_LENGTH=2048
 CORS_ORIGIN=http://localhost:19006,http://127.0.0.1:19006
 API_RATE_LIMIT=1000
 AUTH_RATE_LIMIT=100
 CELO_REWARDS_ENABLED=false
 CELO_REWARD_DRY_RUN=true
 ```
+
+Fast mode combines before (top) and after (bottom) into one letterboxed
+preview, retaining the full original images for review. It reduces small-object
+detail, which is disclosed with the findings. Output validation remains enabled.
+The backend preloads Gemma asynchronously and keeps it warm for 30 minutes;
+login remains available if the AI service is offline. Set `GEMMA_FAST_MODE=false`
+to use separate image inputs.
+
+On Windows, an existing portable runtime and downloaded model can be started
+from the repository root without relying on a fixed project folder name:
+
+```powershell
+powershell -ExecutionPolicy Bypass -File scripts/start-local-inference.ps1
+```
+
+The launcher checks an existing service before starting another and reports
+available models. It reuses files under `.local-inference/`; it does not install
+Ollama or download models. For a standard Ollama installation, use Terminal 1 below.
 
 Set `EXPO_PUBLIC_API_URL=http://localhost:3000/api/v1` in the frontend `.env`.
 Use three terminals; skip starting Ollama if its service is already running:
@@ -77,7 +128,7 @@ npm start
 
 ```powershell
 # Terminal 3, from the repository root
-cd city-cleanup-challenge
+cd cleancity-ai
 $env:EXPO_PUBLIC_API_URL='http://localhost:3000/api/v1'
 npm start -- --web --port 19006 --clear
 ```
@@ -94,18 +145,22 @@ the shared localhost request budget. Docker uses its separately configured ports
 
 ### Measured results and limitations
 
-- Real foreground `gemma3:4b` inference completed in **184.839 seconds** on the
-  tested CPU; the browser displayed live generation and validated findings.
-  This is a measured example, not a latency guarantee.
-- A lower-cost experiment took **144.304 seconds**, but produced truncated,
-  invalid JSON. It was **not enabled**. Seconds-long valid local verification
-  has not been demonstrated on this machine.
-- All recorded image comparisons use **clearly labeled illustrations**.
-  Consented real-photo validation remains pending. These results do not establish
-  real-world cleanup impact, material quantities, or real-photo accuracy.
-- Latest executed checks: **139 backend tests**, **28 frontend tests**, and both
-  lint checks passed. These checks ran on Node 24.19.0; the repository requires
-  Node 22. Browser tests also verified real inference and the admin review cards.
+- A real local comparison on the same submitted image pair took **255.1 seconds**
+  with separate images and **124.3 seconds** in fast mode, about **51% less time**.
+  Both outputs passed schema and quality checks; neither hit the 384-token cap.
+- Fast mode used eight threads and one preview; the separate-image run used
+  four threads. Background load was not controlled. This is one measured
+  configuration comparison, not a latency guarantee or an accuracy benchmark.
+- Fresh images still take time on this CPU. Preloading avoids model-loading
+  delays but does not make new-image inference instantaneous.
+- The earlier **144.3-second** layout experiment failed output validation and
+  remains documented as a failed experiment. The new fast mode keeps the full
+  validated response budget.
+- Focused verification tests, cancellation-race tests, and frontend display tests
+  passed alongside backend/frontend lint. Earlier broad test counts below are
+  historical; they are not claims about the latest GitHub CI run.
+- Broadcasting real Celo rewards remains separately controlled; local testing
+  uses broadcasting disabled and dry-run enabled.
 
 See [Browser testing](docs/BROWSER_TESTING.md) for detailed setup and testing,
 [Gemma integration](docs/GEMMA_SMART_VERIFICATION.md) for configuration and
@@ -133,7 +188,7 @@ approved Celo Sepolia pilot remain external release gates.
 - Defined the CELO reward lifecycle, idempotency requirements, payout controls, and testnet success criteria.
 - Documented the decisions that must be made before a mainnet launch.
 
-See [City Cleanup Reward Product Rules](docs/PRODUCT_RULES.md) for the complete MVP specification.
+See [CleanCity AI Reward Product Rules](docs/PRODUCT_RULES.md) for the complete MVP specification.
 
 ### Phase 2 - Application Foundation
 
@@ -364,7 +419,7 @@ See [Staging, Load, and Rollback Operations](docs/STAGING_LOAD_AND_ROLLBACK.md).
 
 - Simplified the sign-in experience by removing pre-authentication welcome copy
   and using concise `Sign in` labels.
-- Expanded the City Cleanup brand lockup above the sign-in impact message.
+- Expanded the CleanCity AI brand lockup above the sign-in impact message.
 - Redesigned the authenticated landing dashboard with a professional header,
   focused primary actions, account and verification status, categorized tools,
   and responsive dark-blue cards.
@@ -707,7 +762,7 @@ Our development follows a **granular commit strategy** for maximum maintainabili
 ## Project Structure
 
 - `backend/` — Express server with SQLite database, location APIs, and RESTful endpoints
-- `city-cleanup-challenge/` — Expo React Native app with maps, GPS, and event management
+- `cleancity-ai/` — Expo React Native app with maps, GPS, and event management
 
 ## Quick Start
 
@@ -779,7 +834,7 @@ VERBOSE=false
 #### Frontend Setup (Expo)
 
 ```bash
-cd city-cleanup-challenge
+cd cleancity-ai
 npm install
 npx expo start
 ```
@@ -1271,7 +1326,7 @@ The advanced dashboard provides comprehensive data visualization and analytics:
 - **Export Options**: Download data as PDF, Excel, or CSV
 - **PWA Capabilities**: Offline support with service worker caching
 
-For detailed dashboard documentation, see [DASHBOARD_README.md](city-cleanup-challenge/DASHBOARD_README.md)
+For detailed dashboard documentation, see [DASHBOARD_README.md](cleancity-ai/DASHBOARD_README.md)
 
 ## Admin Panel Features
 
@@ -1493,7 +1548,7 @@ The implementation roadmap continues in priority order:
   the public network.
 - Add durable audit events for authentication, administration, moderation, and
   destructive actions.
-- Enable and verify protected-branch rules and required production reviewers.
+- Main branch protections are enabled; configure and verify required production reviewers separately.
 
 ### Phase 16 - Product and Device Completion
 
@@ -1559,6 +1614,24 @@ The project uses GitHub Actions for automated deployment:
 📚 See [DEVOPS_INFRASTRUCTURE.md](docs/DEVOPS_INFRASTRUCTURE.md) for complete deployment guide.
 
 ## Contributing
+
+### Main branch protections
+
+The `main` branch on [davelee001/CleanCity-AI](https://github.com/davelee001/CleanCity-AI)
+has the following protections enabled (verified October 17, 2026):
+
+- Changes require a pull request with at least one approving review.
+- New commits dismiss previous approvals.
+- Both `Tests, coverage, lint, and builds` and
+  `PostgreSQL migration and API suite` must pass.
+- Pull-request branches must be up to date before merging.
+- Review conversations must be resolved.
+- Force pushes and branch deletion are blocked.
+- These requirements also apply to administrators.
+
+Push changes to a feature branch and open a pull request into `main`. A failing
+required check must be fixed before merging. Production deployment approvals
+are configured separately; see [release governance](docs/RELEASE_GOVERNANCE.md).
 
 ### Development Workflow
 - Use feature branches and PRs for all changes

@@ -1,5 +1,5 @@
 /**
- * Gamification API routes for City Cleanup Challenge
+ * Gamification API routes for CleanCity AI
  * Handles points, achievements, leaderboards, badges, and user statistics
  */
 

@@ -26,7 +26,7 @@ for (const element of headElements) {
 
 html = html.replace(
   /<title>[^<]*<\/title>/,
-  '<title>City Cleanup Challenge</title>',
+  '<title>CleanCity AI</title>',
 );
 fs.writeFileSync(indexPath, html);
-console.log('Prepared installable City Cleanup web metadata.');
+console.log('Prepared installable CleanCity AI web metadata.');

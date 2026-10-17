@@ -1,8 +1,8 @@
-# City Cleanup Challenge Terms of Service
+# CleanCity AI Terms of Service
 
 Effective date: July 26, 2026
 
-By using City Cleanup Challenge, you agree to provide accurate account
+By using CleanCity AI, you agree to provide accurate account
 information, submit only cleanup work you are authorized to document, and
 follow local safety and waste-disposal rules.
 

@@ -24,7 +24,7 @@ or privileged test account was added to the application.
 ## Environment files
 
 The root `.env` is not the backend or Expo configuration. Current machine-local
-configuration is in **backend/.env** and **city-cleanup-challenge/.env**; these
+configuration is in **backend/.env** and **cleancity-ai/.env**; these
 files are ignored by Git. Preserve the existing generated JWT secrets.
 
 Backend values for this machine:
@@ -73,7 +73,7 @@ servers. For subsequent restarts, stop the existing process first.
 1. Local Ollama on this machine, using the already-downloaded model cache:
 
 ```powershell
-cd E:\Projects\city-cleanup-challenge
+cd E:\Projects\CleanCity-AI
 & .\.local-inference\start-ollama.ps1
 Invoke-RestMethod http://127.0.0.1:11434/api/tags
 ```
@@ -85,7 +85,7 @@ gemma3:4b` once and `ollama serve` instead. Do not run both servers.
 2. Existing backend and database:
 
 ```powershell
-cd E:\Projects\city-cleanup-challenge\backend
+cd E:\Projects\CleanCity-AI\backend
 $env:PORT='3000'
 npm start
 ```
@@ -93,7 +93,7 @@ npm start
 3. Existing Expo application:
 
 ```powershell
-cd E:\Projects\city-cleanup-challenge\city-cleanup-challenge
+cd E:\Projects\CleanCity-AI\cleancity-ai
 $env:EXPO_PUBLIC_API_URL='http://localhost:3000/api/v1'
 $env:EXPO_NO_TELEMETRY='1'
 npm start -- --web --port 19006 --clear
@@ -211,10 +211,10 @@ Real before/after cleanup photograph validation remains pending permissioned
 photographs; illustrations cannot establish real-photo accuracy or impact.
 
 ```powershell
-cd E:\Projects\city-cleanup-challenge\backend
+cd E:\Projects\CleanCity-AI\backend
 npm test -- --runInBand
 npm run lint
-cd ..\city-cleanup-challenge
+cd ..\cleancity-ai
 npm test
 npm run lint
 ```

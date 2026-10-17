@@ -58,6 +58,28 @@ describe('durable private evidence AI worker', () => {
     expect(analyzeCleanup).not.toHaveBeenCalled();
     expect(row.verification_summary).not.toContain('sensitive');
   });
+  it('saves validated findings when a competing stream records cancellation', async () => {
+    analyzeCleanup.mockImplementation(async () => {
+      await execute('UPDATE cleanup_submissions SET verification_summary=?', [JSON.stringify({
+        overallRisk: 'high', reviewReasons: ['perceptual_duplicate_match'],
+        smartVerification: { status: 'unavailable', reason: 'cancelled' },
+      })]);
+      return { status: 'completed', findings: sample };
+    });
+    await worker.analyzeSubmission(1);
+    const row = await readRow();
+    expect(JSON.parse(row.verification_summary).smartVerification).toMatchObject({ status: 'completed', findings: sample });
+    expect(row.status).toBe('manual_review');
+    expect(row.risk_level).toBe('high');
+  });
+  it('does not overwrite completed analysis with a later cancellation', async () => {
+    await execute('UPDATE cleanup_submissions SET verification_summary=?', [JSON.stringify({
+      overallRisk: 'high', reviewReasons: [], smartVerification: { status: 'completed', findings: sample },
+    })]);
+    analyzeCleanup.mockResolvedValue({ status: 'unavailable', reason: 'cancelled' });
+    await worker.analyzeSubmission(1);
+    expect(JSON.parse((await readRow()).verification_summary).smartVerification.status).toBe('completed');
+  });
   it('keeps pending work for a later restart while disabled', async () => {
     process.env.GEMMA_VERIFICATION_ENABLED = 'false';
     await worker.kick();

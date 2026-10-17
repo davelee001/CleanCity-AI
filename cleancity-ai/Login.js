@@ -11,6 +11,7 @@ import {
   View,
 } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
+import CleaningBackground from './components/CleaningBackground';
 
 import { API_BASE_URL, apiFetch, setAuthSession } from './apiConfig';
 
@@ -50,6 +51,7 @@ export default function Login({ onLogin, onSwitchToSignup, onViewLegal }) {
 
   return (
     <LinearGradient colors={['#061426', '#0A2240', '#0D3155']} style={styles.container}>
+      <CleaningBackground />
       <KeyboardAvoidingView
         style={styles.keyboardView}
         behavior={Platform.OS === 'ios' ? 'padding' : undefined}
@@ -65,7 +67,7 @@ export default function Login({ onLogin, onSwitchToSignup, onViewLegal }) {
                 <Text style={styles.logoMarkIcon}>♻</Text>
               </View>
               <View>
-                <Text style={styles.logoName}>CITY CLEANUP</Text>
+                <Text style={styles.logoName}>CLEANCITY AI</Text>
                 <Text style={styles.logoTagline}>Cleaner cities. Shared rewards.</Text>
               </View>
             </View>
@@ -143,7 +145,7 @@ export default function Login({ onLogin, onSwitchToSignup, onViewLegal }) {
 
             <View style={styles.divider}>
               <View style={styles.dividerLine} />
-              <Text style={styles.dividerText}>NEW TO CITY CLEANUP?</Text>
+              <Text style={styles.dividerText}>NEW TO CLEANCITY AI?</Text>
               <View style={styles.dividerLine} />
             </View>
 

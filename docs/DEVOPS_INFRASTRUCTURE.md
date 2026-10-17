@@ -2,7 +2,7 @@
 
 ## Overview
 
-This document provides comprehensive documentation for the DevOps and infrastructure setup of the City Cleanup Challenge application.
+This document provides comprehensive documentation for the DevOps and infrastructure setup of the CleanCity AI application.
 
 ## Table of Contents
 
@@ -40,7 +40,7 @@ docker run -p 3001:3001 -v $(pwd)/data:/app/data city-cleanup-backend
 
 ### Frontend Dockerfile
 
-Located at: `city-cleanup-challenge/Dockerfile`
+Located at: `cleancity-ai/Dockerfile`
 
 **Features:**
 - Multi-stage build
@@ -51,7 +51,7 @@ Located at: `city-cleanup-challenge/Dockerfile`
 
 **Build:**
 ```bash
-docker build -t city-cleanup-frontend ./city-cleanup-challenge
+docker build -t city-cleanup-frontend ./cleancity-ai
 ```
 
 **Run:**
@@ -307,8 +307,8 @@ untracked environment file or inject values through the deployment platform)
 
 ### Frontend Environment Variables
 
-**Development:** `city-cleanup-challenge/.env.example`
-**Production template:** `city-cleanup-challenge/.env.production.example`
+**Development:** `cleancity-ai/.env.example`
+**Production template:** `cleancity-ai/.env.production.example`
 
 **Key variables:**
 - `REACT_APP_API_URL` - Backend API URL

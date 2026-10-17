@@ -3,7 +3,7 @@
 ## Audited architecture
 
 The repository has an Express 5 backend (`backend/src/app.js`), Expo/React
-Native frontend (`city-cleanup-challenge`), and separate Celo contracts. The
+Native frontend (`cleancity-ai`), and separate Celo contracts. The
 database adapter (`backend/src/db.js`) supports SQLite locally and PostgreSQL.
 Both schemas already store `cleanup_submissions.verification_summary` as JSON
 text, evidence fingerprints, reviewer decisions, and submission transitions.
@@ -44,7 +44,7 @@ See the [Google model card](https://ai.google.dev/gemma/docs/core/model_card_3)
 and [Ollama structured output documentation](https://docs.ollama.com/capabilities/structured-outputs).
 
 ```powershell
-cd E:\Projects\city-cleanup-challenge\backend
+cd E:\Projects\CleanCity-AI\backend
 npm ci
 Copy-Item .env.example .env # Only on first setup; preserve an existing .env
 ```
@@ -84,7 +84,7 @@ npm run dev
 In another terminal:
 
 ```powershell
-cd E:\Projects\city-cleanup-challenge\city-cleanup-challenge
+cd E:\Projects\CleanCity-AI\cleancity-ai
 npm ci
 $env:EXPO_PUBLIC_API_URL='http://localhost:3000/api/v1'
 npm start -- --web --port 19006
@@ -186,7 +186,7 @@ AI and legacy records also retain their manual review workflow.
 ## Verification
 
 ```powershell
-cd E:\Projects\city-cleanup-challenge\backend
+cd E:\Projects\CleanCity-AI\backend
 npm test -- --runInBand
 npm run lint
 npm run gemma:demo
@@ -217,7 +217,7 @@ ordinary application requests retain the 45000 ms default. A slower CPU may
 need this explicit configuration or a faster inference host for interactive use.
 
 ```powershell
-cd E:\Projects\city-cleanup-challenge\city-cleanup-challenge
+cd E:\Projects\CleanCity-AI\cleancity-ai
 npm test -- --watch=false
 npm run lint
 npm run build:web
@@ -270,11 +270,24 @@ accuracy benchmark or an approved cleanup. The raw model returned
 `needsHumanReview: false`; the application correctly enforced `true`. Schema
 validation does not detect every incorrect visual claim.
 
+On Windows, the downloaded portable runtime can also be started from the
+repository root:
+
+```powershell
+powershell -ExecutionPolicy Bypass -File scripts/start-local-inference.ps1
+```
+
+This script resolves the runtime and model paths relative to the repository, starts Ollama
+in the background, and verifies that its API responds. It reuses an existing
+service when one is already running. Login does not start Ollama automatically;
+start it before opening live analysis. If analysis failed while Ollama was
+offline, its stored failure is retained until the submission is retried.
+
 To reuse the downloaded portable runtime after stopping it, start a dedicated
 PowerShell terminal with:
 
 ```powershell
-cd E:\Projects\city-cleanup-challenge
+cd E:\Projects\CleanCity-AI
 $env:OLLAMA_MODELS="$PWD\.local-inference\models"
 $env:OLLAMA_HOST='127.0.0.1:11434'
 $env:OLLAMA_CONTEXT_LENGTH='4096'

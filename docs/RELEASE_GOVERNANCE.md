@@ -26,7 +26,7 @@ the repository alone.
 Inspect the current controls with a repository-administration token:
 
 ```powershell
-$env:GITHUB_REPOSITORY = "davelee001/city-cleanup-challenge"
+$env:GITHUB_REPOSITORY = "davelee001/CleanCity-AI"
 $env:GITHUB_ADMIN_TOKEN = "<fine-grained-administration-token>"
 npm run github:governance
 ```

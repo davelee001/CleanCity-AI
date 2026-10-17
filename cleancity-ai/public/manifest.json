@@ -1,7 +1,7 @@
 {
   "id": "/",
-  "name": "City Cleanup Challenge",
-  "short_name": "City Cleanup",
+  "name": "CleanCity AI",
+  "short_name": "CleanCity AI",
   "description": "Submit verified cleanup evidence and track community impact.",
   "start_url": "/",
   "scope": "/",

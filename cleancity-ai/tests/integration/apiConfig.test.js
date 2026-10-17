@@ -69,7 +69,7 @@ describe('authenticated API session', () => {
 
     expect(response.status).toBe(200);
     expect(global.fetch).toHaveBeenCalledTimes(3);
-    expect(global.fetch.mock.calls[2][1].headers.Authorization).toBe('Bearer renewed');
+    expect(global.fetch.mock.calls[2][1].headers.get('Authorization')).toBe('Bearer renewed');
     expect(await AsyncStorage.getItem('cityCleanup.refreshToken')).toBe('rotated');
   });
 

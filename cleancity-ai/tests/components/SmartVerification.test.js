@@ -35,3 +35,13 @@ it('explains rejected output quality without displaying untrusted findings', () 
   expect(screen.getByText(/repeated findings/)).toBeTruthy();
   expect(screen.queryByText('Unsupported content')).toBeNull();
 });
+
+it.each([
+  ['inference_failed', /AI service could not complete/],
+  ['timeout', /took too long/],
+  ['evidence_read_failed', /could not read the saved evidence/],
+])('explains %s without exposing server configuration or unvalidated findings', (reason, message) => {
+  render(<SmartVerification analysis={{ status: 'unavailable', reason, findings: { assessment: 'Unvalidated output' } }} />);
+  expect(screen.getByText(message)).toBeTruthy();
+  expect(screen.queryByText('Unvalidated output')).toBeNull();
+});

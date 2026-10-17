@@ -1,14 +1,14 @@
 const { test, expect } = require('@playwright/test');
 const apiBaseUrl = process.env.API_BASE_URL || 'http://localhost:3001';
 
-test.describe('City Cleanup E2E Tests', () => {
+test.describe('CleanCity AI E2E Tests', () => {
   test.beforeEach(async ({ page }) => {
     await page.goto('/');
   });
 
   test.describe('Homepage', () => {
     test('should load the homepage', async ({ page }) => {
-      await expect(page).toHaveTitle(/City Cleanup/i);
+      await expect(page).toHaveTitle(/CleanCity AI/i);
     });
 
     test('should display navigation', async ({ page }) => {

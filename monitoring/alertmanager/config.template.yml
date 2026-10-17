@@ -31,14 +31,14 @@ receivers:
       - to: '__TEAM_EMAIL__'
         send_resolved: true
         headers:
-          subject: '[City Cleanup] Alert: {{ .GroupLabels.alertname }}'
+          subject: '[CleanCity AI] Alert: {{ .GroupLabels.alertname }}'
 
   - name: oncall-email-and-slack
     email_configs:
       - to: '__ONCALL_EMAIL__'
         send_resolved: true
         headers:
-          subject: '[CRITICAL] City Cleanup Alert: {{ .GroupLabels.alertname }}'
+          subject: '[CRITICAL] CleanCity AI Alert: {{ .GroupLabels.alertname }}'
     slack_configs:
       - api_url: '__SLACK_WEBHOOK_URL__'
         channel: '__SLACK_CRITICAL_CHANNEL__'
@@ -51,7 +51,7 @@ receivers:
       - to: '__TEAM_EMAIL__'
         send_resolved: true
         headers:
-          subject: '[WARNING] City Cleanup Alert: {{ .GroupLabels.alertname }}'
+          subject: '[WARNING] CleanCity AI Alert: {{ .GroupLabels.alertname }}'
     slack_configs:
       - api_url: '__SLACK_WEBHOOK_URL__'
         channel: '__SLACK_WARNING_CHANNEL__'

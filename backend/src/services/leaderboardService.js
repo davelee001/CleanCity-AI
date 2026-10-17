@@ -1,5 +1,5 @@
 /**
- * Leaderboard Service for City Cleanup Challenge
+ * Leaderboard Service for CleanCity AI
  * Handles various types of leaderboards with caching and real-time updates
  */
 
