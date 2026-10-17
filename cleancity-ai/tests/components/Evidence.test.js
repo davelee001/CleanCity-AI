@@ -25,13 +25,22 @@ beforeEach(() => {
 afterEach(() => { global.FileReader = originalReader; });
 
 it('shows only the personal workflow even when the submitter is an admin', async () => {
+  apiFetch.mockImplementation(async (url) => url.includes('/evidence/submissions')
+    ? {
+      ok: true,
+      json: async () => ({
+        success: true,
+        submissions: [{ ...submission, status: 'approved', verification: { smartVerification } }],
+      }),
+    }
+    : { ok: false });
   render(<Evidence userRole="admin" />);
-  await waitFor(() => expect(screen.getByText('Gemma live analysis')).toBeTruthy());
+  await waitFor(() => expect(screen.getByText('Work uploaded and approved successfully.')).toBeTruthy());
   expect(apiFetch).toHaveBeenCalledWith('http://localhost:3000/api/v1/evidence/submissions?scope=mine&latest=true');
   expect(screen.getByText('New cleanup submission')).toBeTruthy();
   expect(screen.getByText('Your latest submission')).toBeTruthy();
-  expect(screen.getByText('Images received. Please wait for Gemma verification and human approval.')).toBeTruthy();
-  expect(screen.getByText('Human review starts after Gemma analysis finishes.')).toBeTruthy();
+  expect(screen.getByText('Approved automatically after upload')).toBeTruthy();
+  expect(screen.queryByText('Gemma live analysis')).toBeNull();
   expect(screen.queryByText('Approve')).toBeNull();
   expect(screen.queryByText('Submitted by member')).toBeNull();
 });

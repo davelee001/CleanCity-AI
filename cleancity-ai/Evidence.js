@@ -214,7 +214,7 @@ export default function Evidence({ userRole = 'user', storedData = false, initia
       setMessage(
         data.submission.status === 'rejected'
           ? 'Submission received but rejected as an exact duplicate.'
-          : 'Images received successfully. Please wait for Gemma verification and human approval. Follow the live analysis below.'
+          : 'Work uploaded and approved successfully. Your cleanup is now recorded.'
       );
       setBeforePhoto(null);
       setAfterPhoto(null);
@@ -297,7 +297,7 @@ export default function Evidence({ userRole = 'user', storedData = false, initia
         <Text style={styles.eyebrow}>PHASE 3</Text>
         <Text style={styles.title}>{isReviewer ? 'Stored evidence' : 'Verified cleanup evidence'}</Text>
         <Text style={styles.subtitle}>
-          {isReviewer ? 'Stored submissions and authorized human review.' : 'Submit your cleanup, see Gemma findings, and follow human approval.'}
+          {isReviewer ? 'Stored submissions and authorized human review.' : 'Upload your cleanup and receive an immediate approval confirmation.'}
         </Text>
       </View>
 
@@ -405,7 +405,7 @@ export default function Evidence({ userRole = 'user', storedData = false, initia
           {loading ? (
             <ActivityIndicator color="#FFFFFF" />
           ) : (
-            <Text style={styles.submitText}>Submit for verification</Text>
+            <Text style={styles.submitText}>Upload and approve cleanup</Text>
           )}
         </TouchableOpacity>
       </View>}
@@ -454,6 +454,11 @@ export default function Evidence({ userRole = 'user', storedData = false, initia
         ) : (
           visibleSubmissions.map((submission) => (
             <View key={submission.id} style={styles.submission}>
+              {!isReviewer && submission.status === 'approved' ? (
+                <Text style={styles.success} accessibilityLiveRegion="polite">
+                  Work uploaded and approved successfully.
+                </Text>
+              ) : null}
               {!isReviewer && submission.status === 'manual_review' ? (
                 <Text style={styles.success} accessibilityLiveRegion="polite">
                   {submission.verification?.smartVerification?.status === 'completed'
@@ -498,11 +503,14 @@ export default function Evidence({ userRole = 'user', storedData = false, initia
                 </View>
               </View>
               {isReviewer ? <SmartVerification analysis={submission.verification?.smartVerification} />
-                : <GemmaConversation submission={submission} onComplete={loadSubmissions} />}
-              <Text style={styles.label}>Human review</Text>
+                : submission.status === 'manual_review'
+                  ? <GemmaConversation submission={submission} onComplete={loadSubmissions} />
+                  : null}
+              <Text style={styles.label}>Approval status</Text>
               <Text style={styles.meta}>
                 {submission.status === 'manual_review' && submission.verification?.smartVerification?.status === 'pending'
                   ? 'Human review starts after Gemma analysis finishes.'
+                  : submission.status === 'approved' ? 'Approved automatically after upload'
                   : submission.status === 'manual_review' ? 'Awaiting human approval'
                   : STATUS_LABELS[submission.status] || submission.status}
               </Text>

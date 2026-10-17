@@ -257,7 +257,7 @@ function createEvidenceRouter(db) {
 
       const isInternalDuplicate = beforeImage.hash === afterImage.hash;
       const isDuplicate = Boolean(existingMatch || isInternalDuplicate);
-      const finalStatus = isDuplicate ? 'rejected' : 'manual_review';
+      const finalStatus = isDuplicate ? 'rejected' : 'approved';
       const duplicateOf = existingMatch?.submission_id || null;
       const rejectionReason = isDuplicate
         ? 'This evidence exactly matches an image that was already submitted.'
@@ -371,17 +371,29 @@ function createEvidenceRouter(db) {
               finalStatus,
               isDuplicate
                 ? rejectionReason
-                : `Awaiting human verification (${verification.overallRisk} risk: ${
-                  verification.reviewReasons.join(', ') || 'no elevated signals'
-                })`,
+                : 'Evidence uploaded and approved automatically after validation.',
             ]
           );
         });
 
         const submission = await getSubmission(db, submissionId);
+        let reward = null;
+        let rewardError = null;
+        if (finalStatus === 'approved') {
+          try {
+            reward = await ensureRewardClaim(db, submissionId);
+          } catch (error) {
+            rewardError = {
+              code: error.code || 'REWARD_CLAIM_FAILED',
+              message: error.message || 'Unable to create reward claim',
+            };
+          }
+        }
         const response = res.status(201).json({
           success: true,
           submission: serializeSubmission(submission),
+          reward,
+          rewardError,
         });
         return response;
       } catch (error) {

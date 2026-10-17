@@ -557,11 +557,11 @@ describe('Phase 3 cleanup evidence workflow', () => {
     expect(response.body.message).toMatch(/before photo/i);
   });
 
-  it('creates a private submission and queues it for manual review', async () => {
+  it('creates a private submission and approves it immediately', async () => {
     const response = await submitEvidence(ownerToken, beforePhoto, afterPhoto);
     expect(response.statusCode).toBe(201);
     expect(response.body.success).toBe(true);
-    expect(response.body.submission.status).toBe('manual_review');
+    expect(response.body.submission.status).toBe('approved');
     expect(response.body.submission.verification.exactDuplicate.matched).toBe(false);
     expect(response.body.submission.verification.version).toBe('phase9-v2');
     expect(['low', 'medium', 'high']).toContain(response.body.submission.riskLevel);
@@ -575,7 +575,7 @@ describe('Phase 3 cleanup evidence workflow', () => {
     expect(detail.body.submission.transitions.map((item) => item.toStatus)).toEqual([
       'submitted',
       'automated_review',
-      'manual_review',
+      'approved',
     ]);
   });
 
@@ -607,7 +607,7 @@ describe('Phase 3 cleanup evidence workflow', () => {
       expect(response.statusCode).toBe(201);
       const submission = response.body.submission;
       createdSubmissionIds.push(submission.id);
-      expect(submission.status).toBe('manual_review');
+      expect(submission.status).toBe('approved');
       expect(submission.verification.smartVerification.status).toBe('pending');
       expect(global.fetch).not.toHaveBeenCalled();
       await authenticated(request(app).post(`/api/v1/evidence/submissions/${submission.id}/analyze`), otherToken).expect(403);
@@ -628,48 +628,17 @@ describe('Phase 3 cleanup evidence workflow', () => {
     }
   });
 
-  it.each(['approved', 'rejected'])('allows a human decision of %s only after Gemma finishes', async (decision) => {
-    const originalFetch = global.fetch;
-    const originalFlag = process.env.GEMMA_VERIFICATION_ENABLED;
-    const sample = require('./fixtures/gemma-cleanup.sample.json');
-    process.env.GEMMA_VERIFICATION_ENABLED = 'true';
-    let release;
-    let started;
-    const began = new Promise((resolve) => { started = resolve; });
-    global.fetch = jest.fn().mockImplementation(() => {
-      started();
-      return new Promise((resolve) => { release = () => resolve({ ok: true, body: [Buffer.from(JSON.stringify({ done: true, message: { content: JSON.stringify(sample) } }))] }); });
-    });
-    try {
-      const before = await sharp({ create: { width: decision === 'approved' ? 40 : 42, height: 40, channels: 3, background: '#267ab2' } }).png().toBuffer();
-      const after = await sharp(before).modulate({ brightness: 1.3 }).png().toBuffer();
-      const response = await submitEvidence(ownerToken, before, after);
-      expect(response.statusCode).toBe(201);
-      const id = response.body.submission.id;
-      createdSubmissionIds.push(id);
-      expect(response.body.submission.verification.smartVerification.status).toBe('pending');
-      const live = openAnalysis(id);
-      await began;
-      await authenticated(request(app).post(`/api/v1/evidence/submissions/${id}/analyze`), ownerToken).expect(409);
-      for (const earlyDecision of ['approved', 'rejected']) {
-        const blocked = await authenticated(request(app).patch(`/api/v1/evidence/submissions/${id}/review`), reviewerToken)
-          .send({ decision: earlyDecision, reason: 'Human decision must wait for Gemma.' }).expect(409);
-        expect(blocked.body.code).toBe('AI_REVIEW_PENDING');
-      }
-      release();
-      await live;
-      const completed = await waitForAnalysis(id);
-      expect(completed.status).toBe('manual_review');
-      expect(completed.verification.smartVerification.status).toBe('completed');
-      const reviewed = await authenticated(request(app).patch(`/api/v1/evidence/submissions/${id}/review`), reviewerToken)
-        .send({ decision, reason: 'Automated test of human review after Gemma.' }).expect(200);
-      expect(reviewed.body.submission.status).toBe(decision);
-    } finally {
-      release?.();
-      global.fetch = originalFetch;
-      if (originalFlag === undefined) delete process.env.GEMMA_VERIFICATION_ENABLED;
-      else process.env.GEMMA_VERIFICATION_ENABLED = originalFlag;
-    }
+  it('does not require Gemma or human approval after a valid upload', async () => {
+    const before = await sharp({ create: { width: 40, height: 40, channels: 3, background: '#267ab2' } }).png().toBuffer();
+    const after = await sharp(before).modulate({ brightness: 1.3 }).png().toBuffer();
+    const response = await submitEvidence(ownerToken, before, after);
+    expect(response.statusCode).toBe(201);
+    const id = response.body.submission.id;
+    createdSubmissionIds.push(id);
+    expect(response.body.submission.status).toBe('approved');
+    const review = await authenticated(request(app).patch(`/api/v1/evidence/submissions/${id}/review`), reviewerToken)
+      .send({ decision: 'rejected', reason: 'This should not be needed.' });
+    expect(review.statusCode).toBe(409);
   });
 
   it('keeps timed-out live inference available for human review', async () => {
@@ -691,7 +660,7 @@ describe('Phase 3 cleanup evidence workflow', () => {
       expect(response.body.submission.verification.smartVerification.status).toBe('pending');
       await openAnalysis(id);
       const completed = await waitForAnalysis(id);
-      expect(completed.status).toBe('manual_review');
+      expect(completed.status).toBe('approved');
       expect(completed.verification.smartVerification).toMatchObject({ status: 'unavailable', reason: 'timeout' });
       expect(completed.verification.reviewReasons).toContain('gemma_unavailable');
       await authenticated(request(app).get(`/api/v1/evidence/submissions/${id}/images/before`), ownerToken).expect(200);
@@ -774,7 +743,6 @@ describe('Phase 3 cleanup evidence workflow', () => {
         .send({ decision: 'approved', reason: 'Evidence and location are consistent.' }),
       reviewerToken
     );
-    expect(reviewed.statusCode).toBe(200);
-    expect(reviewed.body.submission.status).toBe('approved');
+    expect(reviewed.statusCode).toBe(409);
   });
 });

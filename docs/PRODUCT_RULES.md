@@ -56,14 +56,19 @@ AI-generated-image detection is a risk signal, not proof. The system must combin
 multiple signals and send uncertain cases to a human reviewer.
 
 Exact duplicates and previously paid evidence are automatically rejected.
-High-confidence valid submissions may be automatically approved only after the
-verification thresholds have been tested with real pilot data.
+Valid, non-duplicate evidence is automatically approved after the upload and
+validation checks complete; risk analysis remains available for monitoring and
+legacy or appealed records can still be sent to human review.
 
 ## 5. Submission Lifecycle
 
 The allowed state progression is:
 
-`draft -> submitted -> automated_review -> manual_review -> approved -> payment_pending -> paid`
+`draft -> submitted -> automated_review -> approved -> payment_pending -> paid`
+
+Valid, non-duplicate evidence is approved immediately after upload and validation.
+Exact duplicates remain rejected, and legacy or appealed records may still enter
+manual review.
 
 A submission may move from either review state to `rejected`. A rejected
 submission may move to `appealed`, then return to `manual_review`.
