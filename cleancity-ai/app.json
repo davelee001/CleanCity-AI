@@ -1,7 +1,7 @@
 {
   "expo": {
-    "name": "city-cleanup-challenge",
-    "slug": "city-cleanup-challenge",
+    "name": "CleanCity AI",
+    "slug": "cleancity-ai",
     "version": "1.0.0",
     "orientation": "portrait",
     "userInterfaceStyle": "light",
@@ -15,15 +15,15 @@
       [
         "expo-image-picker",
         {
-          "photosPermission": "Allow City Cleanup to select cleanup evidence from your photo library.",
-          "cameraPermission": "Allow City Cleanup to take before and after cleanup evidence photos."
+          "photosPermission": "Allow CleanCity AI to select cleanup evidence from your photo library.",
+          "cameraPermission": "Allow CleanCity AI to take before and after cleanup evidence photos."
         }
       ]
     ],
     "web": {
       "bundler": "metro",
-      "name": "City Cleanup Challenge",
-      "shortName": "City Cleanup",
+      "name": "CleanCity AI",
+      "shortName": "CleanCity AI",
       "themeColor": "#07182D",
       "backgroundColor": "#07182D"
     }
