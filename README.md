@@ -9,29 +9,33 @@ workflow validation are in the [Gemma benchmark report](docs/GEMMA_BENCHMARK.md)
 
 A comprehensive location-based cleanup event platform with React Native (Expo) frontend and Node.js Express backend. Join cleanup events, track your environmental impact, and help make your city cleaner!
 
-## Gemma Smart Verification — current workflow (October 16, 2026)
+## Cleanup evidence — current workflow (October 17, 2026)
 
 The existing Expo application now uses real Gemma 3 Vision inference through
 local Ollama, with an optional compatible hosted endpoint. AI is advisory and
-disabled by default. It cannot approve submissions or authorize payouts.
+disabled by default. It does not block upload approval or authorize payouts.
 
 1. A user signs in and submits permitted before-and-after photographs with GPS
    consent, waste details, and optional notes.
-2. The application confirms **Images received** and saves the evidence privately.
-   The submission page shows only that user's latest submission.
-3. **Gemma live analysis** opens an authenticated foreground connection. It shows
+2. The application validates the upload, checks for exact duplicates, saves the
+   evidence privately, and immediately marks valid non-duplicate work as
+   **Approved**. The user receives **Work uploaded and approved successfully**
+   in the same response, and the submission page shows that user's latest
+   status.
+3. **Gemma live analysis** remains available as an advisory tool for supported
+   legacy or manual-review records. It shows
    actual preparation and generation progress, then presents validated findings
    line by line: visible waste, image differences, concerns, limitations, and
    safe cleanup recommendations. Findings are withheld until the complete
    structured output passes validation. Leaving the page cancels inference.
-4. An authorized admin opens **Pending**, **Rejected**, or **Approved** from the
-   admin home screen. Admins review evidence instead of seeing a submission
-   action. Approve/Reject controls become available after the AI attempt finishes;
-   a review reason is required and self-review is prohibited.
-5. The uploader sees the human decision. Previous submissions remain stored;
-   exact duplicates are rejected and the existing one-time appeal remains available.
+4. An authorized admin can still open **Pending**, **Rejected**, or **Approved**
+   from the admin home screen. Legacy and appealed records can enter manual
+   review; a review reason is required and self-review is prohibited.
+5. Exact duplicates are rejected and the existing one-time appeal remains
+   available. Reward claims are created after approval when the account and
+   wallet satisfy payout requirements.
 
-Timeouts, invalid output, and cancellation preserve evidence for human review.
+Timeouts, invalid output, and cancellation preserve evidence for later review.
 Celo reward controls remain in place; local testing has broadcasting disabled
 and dry-run enabled. Private images, local databases, secrets, and downloaded
 model files are excluded from Git.
@@ -83,8 +87,8 @@ npm start -- --web --port 19006 --clear
 ```
 
 Open [the app](http://localhost:19006), register or sign in, and choose
-**Submit evidence**. Allow browser location access and keep the live analysis
-page open. Backend checks: [health](http://localhost:3000/health) and
+**Submit evidence**. Allow browser location access; valid evidence will show
+the approval confirmation immediately after upload. Backend checks: [health](http://localhost:3000/health) and
 [readiness](http://localhost:3000/ready). Admin review pages:
 [Pending](http://localhost:19006/#/evidence-pending),
 [Rejected](http://localhost:19006/#/evidence-rejected), and
@@ -1590,4 +1594,3 @@ npx playwright test --ui   # Interactive mode
 ## License
 
 This project is for demo and educational purposes. Add appropriate license if publishing commercially.
-
