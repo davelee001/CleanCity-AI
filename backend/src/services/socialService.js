@@ -1,0 +1,559 @@
+/**
+ * Enhanced Social Features Service (v3.0) - Foundation
+ * Basic social platform setup for environmental cleanup collaboration
+ * Date: March 3, 2026
+ */
+
+const Database = require("better-sqlite3");
+const path = require("path");
+
+class SocialService {
+    constructor(dbPath = null) {
+        this.dbPath = dbPath || path.join(__dirname, "../../../database.db");
+        this.db = null;
+        this.setupDatabase();
+    }
+
+    setupDatabase() {
+        try {
+            this.db = new Database(this.dbPath);
+            this.db.pragma("journal_mode = WAL");
+            this.db.pragma("foreign_keys = ON");
+        } catch (error) {
+            console.error("❌ Social Service database setup failed:", error.message);
+            throw error;
+        }
+    }
+
+    /**
+     * Create a new team/group
+     */
+    async createTeam(teamData) {
+        const {
+            name, description, creator_id, team_type = "public",
+            max_members = 50, team_avatar, team_color = "#4CAF50"
+        } = teamData;
+
+        try {
+            const stmt = this.db.prepare(`
+                INSERT INTO teams (
+                    name, description, creator_id, team_type, max_members,
+                    team_avatar, team_color
+                ) VALUES (?, ?, ?, ?, ?, ?, ?)
+            `);
+
+            const result = stmt.run(
+                name, description, creator_id, team_type,
+                max_members, team_avatar, team_color
+            );
+
+            return {
+                success: true,
+                team_id: result.lastInsertRowid,
+                message: "Team created successfully"
+            };
+        } catch (error) {
+            console.error("❌ Team creation error:", error.message);
+            return { success: false, error: error.message };
+        }
+    }
+
+    /**
+     * Join a team
+     */
+    async joinTeam(teamId, userId, role = "member") {
+        try {
+            const stmt = this.db.prepare(`
+                INSERT INTO team_members (team_id, user_id, role)
+                VALUES (?, ?, ?)
+            `);
+
+            stmt.run(teamId, userId, role);
+            return {
+                success: true,
+                message: "Successfully joined team"
+            };
+        } catch (error) {
+            console.error("❌ Join team error:", error.message);
+            return { success: false, error: error.message };
+        }
+    }
+
+    /**
+     * Get users teams
+     */
+    async getUserTeams(userId) {
+        try {
+            const stmt = this.db.prepare(`
+                SELECT t.*, tm.role, tm.joined_at
+                FROM teams t
+                JOIN team_members tm ON t.id = tm.team_id
+                WHERE tm.user_id = ?
+                ORDER BY tm.joined_at DESC
+            `);
+
+            const teams = stmt.all(userId);
+            return { success: true, teams };
+        } catch (error) {
+            console.error("❌ Get user teams error:", error.message);
+            return { success: false, error: error.message, teams: [] };
+        }
+    }
+    /**
+     * Get team leaderboard
+     */
+    async getTeamLeaderboard(limit = 20) {
+        try {
+            const stmt = this.db.prepare(`
+                SELECT
+                    t.id, t.name, t.team_avatar, t.team_color,
+                    COUNT(tm.user_id) as member_count,
+                    COALESCE(ts.total_waste_collected, 0) as total_waste_collected,
+                    COALESCE(ts.total_hours_contributed, 0) as total_hours_contributed,
+                    COALESCE(ts.cleanups_organized, 0) as cleanups_organized,
+                    COALESCE(ts.environmental_impact_score, 0) as environmental_impact_score
+                FROM teams t
+                LEFT JOIN team_members tm ON t.id = tm.team_id
+                LEFT JOIN team_statistics ts ON t.id = ts.team_id
+                WHERE t.team_type = 'public'
+                GROUP BY t.id
+                ORDER BY ts.environmental_impact_score DESC, ts.total_waste_collected DESC
+                LIMIT ?
+            `);
+
+            const leaderboard = stmt.all(limit);
+            return { success: true, leaderboard };
+        } catch (error) {
+            console.error('❌ Team leaderboard error:', error.message);
+            return { success: false, error: error.message, leaderboard: [] };
+        }
+    }
+
+    // =================== SOCIAL POSTS METHODS ===================
+
+    /**
+     * Create a social post/update
+     */
+    async createSocialPost(postData) {
+        const {
+            user_id, content, media_urls = [], post_type = 'cleanup_update',
+            location, privacy_level = 'public', tags = [], cleanup_data = {},
+            environmental_impact = {}
+        } = postData;
+
+        try {
+            const stmt = this.db.prepare(`
+                INSERT INTO social_posts (
+                    user_id, content, media_urls, post_type, location,
+                    privacy_level, tags, cleanup_data, environmental_impact
+                ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
+            `);
+
+            const result = stmt.run(
+                user_id, content, JSON.stringify(media_urls), post_type,
+                location, privacy_level, JSON.stringify(tags),
+                JSON.stringify(cleanup_data), JSON.stringify(environmental_impact)
+            );
+
+            return {
+                success: true,
+                post_id: result.lastInsertRowid,
+                message: 'Social post created successfully'
+            };
+        } catch (error) {
+            console.error('❌ Social post creation error:', error.message);
+            return { success: false, error: error.message };
+        }
+    }
+
+    /**
+     * Like a social post
+     */
+    async likePost(postId, userId, reactionType = 'like') {
+        try {
+            const stmt = this.db.prepare(`
+                INSERT OR REPLACE INTO social_post_likes (
+                    post_id, user_id, reaction_type
+                ) VALUES (?, ?, ?)
+            `);
+
+            stmt.run(postId, userId, reactionType);
+            return {
+                success: true,
+                message: 'Post liked successfully'
+            };
+        } catch (error) {
+            console.error('❌ Like post error:', error.message);
+            return { success: false, error: error.message };
+        }
+    }
+
+    /**
+     * Comment on a social post
+     */
+    async commentOnPost(postId, userId, commentData) {
+        const { content, media_url = null } = commentData;
+
+        try {
+            const stmt = this.db.prepare(`
+                INSERT INTO social_post_comments (
+                    post_id, user_id, content, media_url
+                ) VALUES (?, ?, ?, ?)
+            `);
+
+            const result = stmt.run(postId, userId, content, media_url);
+            return {
+                success: true,
+                comment_id: result.lastInsertRowid,
+                message: 'Comment added successfully'
+            };
+        } catch (error) {
+            console.error('❌ Comment creation error:', error.message);
+            return { success: false, error: error.message };
+        }
+    }
+
+    /**
+     * Get social feed for user
+     */
+    async getSocialFeed(userId, feedOptions = {}) {
+        const {
+            limit = 20, offset = 0, feed_type = 'public',
+            include_team_posts = true, include_friend_posts = true
+        } = feedOptions;
+
+        try {
+            let whereClause = '';
+            let params = [];
+
+            if (feed_type === 'team' && include_team_posts) {
+                whereClause = `WHERE sp.user_id IN (
+                    SELECT tm.user_id FROM team_members tm
+                    WHERE tm.team_id IN (
+                        SELECT team_id FROM team_members WHERE user_id = ?
+                    )
+                )`;
+                params.push(userId);
+            } else if (feed_type === 'friends' && include_friend_posts) {
+                whereClause = `WHERE sp.user_id IN (
+                    SELECT friend_id FROM friendships
+                    WHERE user_id = ? AND status = 'accepted'
+                )`;
+                params.push(userId);
+            } else {
+                whereClause = `WHERE sp.privacy_level = 'public'`;
+            }
+
+            const stmt = this.db.prepare(`
+                SELECT
+                    sp.*,
+                    u.username, u.profile_picture,
+                    COUNT(spl.id) as like_count,
+                    COUNT(spc.id) as comment_count
+                FROM social_posts sp
+                LEFT JOIN users u ON sp.user_id = u.id
+                LEFT JOIN social_post_likes spl ON sp.id = spl.post_id
+                LEFT JOIN social_post_comments spc ON sp.id = spc.post_id
+                ${whereClause}
+                GROUP BY sp.id
+                ORDER BY sp.created_at DESC
+                LIMIT ? OFFSET ?
+            `);
+
+            params.push(limit, offset);
+            const posts = stmt.all(...params);
+
+            // Parse JSON fields
+            const enrichedPosts = posts.map(post => ({
+                ...post,
+                media_urls: JSON.parse(post.media_urls || '[]'),
+                tags: JSON.parse(post.tags || '[]'),
+                cleanup_data: JSON.parse(post.cleanup_data || '{}'),
+                environmental_impact: JSON.parse(post.environmental_impact || '{}')
+            }));
+
+            return { success: true, posts: enrichedPosts };
+        } catch (error) {
+            console.error('❌ Get social feed error:', error.message);
+            return { success: false, error: error.message, posts: [] };
+        }
+    }
+
+    // =================== FRIEND CHALLENGE METHODS ===================
+
+    /**
+     * Create a friend challenge
+     */
+    async createFriendChallenge(creatorId, friendIds, challengeData) {
+        const {
+            title, description, challenge_type = 'competitive',
+            challenge_metric = 'waste_collected', duration_days = 7,
+            target_value, prize_description = '', start_date = new Date()
+        } = challengeData;
+
+        try {
+            const stmt = this.db.prepare(`
+                INSERT INTO friend_challenges (
+                    creator_id, title, description, challenge_type,
+                    challenge_metric, duration_days, target_value,
+                    prize_description, start_date, status
+                ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, 'pending')
+            `);
+
+            const result = stmt.run(
+                creatorId, title, description, challenge_type,
+                challenge_metric, duration_days, target_value,
+                prize_description, start_date.toISOString()
+            );
+
+            const challengeId = result.lastInsertRowid;
+
+            // Add participants
+            const participantStmt = this.db.prepare(`
+                INSERT INTO friend_challenge_participants (
+                    challenge_id, user_id, invitation_status
+                ) VALUES (?, ?, ?)
+            `);
+
+            // Add creator as participant
+            participantStmt.run(challengeId, creatorId, 'accepted');
+
+            // Add invited friends
+            friendIds.forEach(friendId => {
+                participantStmt.run(challengeId, friendId, 'pending');
+            });
+
+            return {
+                success: true,
+                challenge_id: challengeId,
+                message: 'Friend challenge created successfully'
+            };
+        } catch (error) {
+            console.error('❌ Friend challenge creation error:', error.message);
+            return { success: false, error: error.message };
+        }
+    }
+
+    /**
+     * Accept/decline friend challenge invitation
+     */
+    async respondToFriendChallenge(challengeId, userId, response) {
+        try {
+            const stmt = this.db.prepare(`
+                UPDATE friend_challenge_participants
+                SET invitation_status = ?, responded_at = CURRENT_TIMESTAMP
+                WHERE challenge_id = ? AND user_id = ?
+            `);
+
+            stmt.run(response, challengeId, userId);
+
+            // Check if all participants have responded
+            const participantsStmt = this.db.prepare(`
+                SELECT COUNT(*) as total,
+                       SUM(CASE WHEN invitation_status = 'accepted' THEN 1 ELSE 0 END) as accepted
+                FROM friend_challenge_participants
+                WHERE challenge_id = ?
+            `);
+
+            const participantCounts = participantsStmt.get(challengeId);
+
+            // If all accepted participants are ready, activate challenge
+            if (participantCounts.accepted >= 2) {
+                const updateChallengeStmt = this.db.prepare(`
+                    UPDATE friend_challenges
+                    SET status = 'active', actual_start_date = CURRENT_TIMESTAMP
+                    WHERE id = ?
+                `);
+                updateChallengeStmt.run(challengeId);
+            }
+
+            return {
+                success: true,
+                message: `Challenge invitation ${response}`
+            };
+        } catch (error) {
+            console.error('❌ Friend challenge response error:', error.message);
+            return { success: false, error: error.message };
+        }
+    }
+
+    // =================== COMMUNITY RECOGNITION METHODS ===================
+
+    /**
+     * Give kudos to another user
+     */
+    async giveKudos(giverId, recipientId, kudosData) {
+        const {
+            kudos_type = 'helpful', message = '', points_awarded = 10,
+            visibility = 'public', related_activity_id = null
+        } = kudosData;
+
+        try {
+            const stmt = this.db.prepare(`
+                INSERT INTO community_kudos (
+                    giver_id, recipient_id, kudos_type, message,
+                    points_awarded, visibility, related_activity_id
+                ) VALUES (?, ?, ?, ?, ?, ?, ?)
+            `);
+
+            const result = stmt.run(
+                giverId, recipientId, kudos_type, message,
+                points_awarded, visibility, related_activity_id
+            );
+
+            // Update recipient's total kudos points
+            const updatePointsStmt = this.db.prepare(`
+                UPDATE user_profiles
+                SET total_kudos_received = total_kudos_received + ?
+                WHERE user_id = ?
+            `);
+            updatePointsStmt.run(points_awarded, recipientId);
+
+            return {
+                success: true,
+                kudos_id: result.lastInsertRowid,
+                message: 'Kudos given successfully'
+            };
+        } catch (error) {
+            console.error('❌ Give kudos error:', error.message);
+            return { success: false, error: error.message };
+        }
+    }
+
+    /**
+     * Get recent kudos for display
+     */
+    async getRecentKudos(userId, limit = 10) {
+        try {
+            const stmt = this.db.prepare(`
+                SELECT
+                    ck.*,
+                    giver.username as giver_username,
+                    giver.profile_picture as giver_avatar,
+                    recipient.username as recipient_username,
+                    recipient.profile_picture as recipient_avatar
+                FROM community_kudos ck
+                LEFT JOIN users giver ON ck.giver_id = giver.id
+                LEFT JOIN users recipient ON ck.recipient_id = recipient.id
+                WHERE (ck.giver_id = ? OR ck.recipient_id = ?)
+                      AND ck.visibility = 'public'
+                ORDER BY ck.created_at DESC
+                LIMIT ?
+            `);
+
+            const kudos = stmt.all(userId, userId, limit);
+            return { success: true, kudos };
+        } catch (error) {
+            console.error('❌ Get recent kudos error:', error.message);
+            return { success: false, error: error.message, kudos: [] };
+        }
+    }
+
+    /**
+     * Award community badge
+     */
+    async awardCommunityBadge(userId, badgeType, awardedBy, awardData = {}) {
+        const {
+            badge_title, badge_description, badge_icon = '🏆',
+            points_earned = 50, achievement_data = {}
+        } = awardData;
+
+        try {
+            const stmt = this.db.prepare(`
+                INSERT INTO community_badges (
+                    user_id, badge_type, badge_title, badge_description,
+                    badge_icon, points_earned, awarded_by, achievement_data
+                ) VALUES (?, ?, ?, ?, ?, ?, ?, ?)
+            `);
+
+            const result = stmt.run(
+                userId, badgeType, badge_title, badge_description,
+                badge_icon, points_earned, awardedBy, JSON.stringify(achievement_data)
+            );
+
+            // Update user's total badge points
+            const updatePointsStmt = this.db.prepare(`
+                UPDATE user_profiles
+                SET total_badge_points = total_badge_points + ?
+                WHERE user_id = ?
+            `);
+            updatePointsStmt.run(points_earned, userId);
+
+            return {
+                success: true,
+                badge_id: result.lastInsertRowid,
+                message: 'Community badge awarded successfully'
+            };
+        } catch (error) {
+            console.error('❌ Award badge error:', error.message);
+            return { success: false, error: error.message };
+        }
+    }
+
+    /**
+     * Get user's community badges
+     */
+    async getUserCommunityBadges(userId) {
+        try {
+            const stmt = this.db.prepare(`
+                SELECT * FROM community_badges
+                WHERE user_id = ?
+                ORDER BY created_at DESC
+            `);
+
+            const badges = stmt.all(userId).map(badge => ({
+                ...badge,
+                achievement_data: JSON.parse(badge.achievement_data || '{}')
+            }));
+
+            return { success: true, badges };
+        } catch (error) {
+            console.error('❌ Get user badges error:', error.message);
+            return { success: false, error: error.message, badges: [] };
+        }
+    }
+
+    /**
+     * Create community member spotlight
+     */
+    async createSpotlight(adminId, spotlightData) {
+        const {
+            featured_user_id, spotlight_title, spotlight_description,
+            achievements_highlighted = [], spotlight_duration_days = 7,
+            spotlight_image = null
+        } = spotlightData;
+
+        try {
+            const stmt = this.db.prepare(`
+                INSERT INTO community_spotlights (
+                    featured_user_id, created_by, spotlight_title, spotlight_description,
+                    achievements_highlighted, spotlight_duration_days, spotlight_image
+                ) VALUES (?, ?, ?, ?, ?, ?, ?)
+            `);
+
+            const result = stmt.run(
+                featured_user_id, adminId, spotlight_title, spotlight_description,
+                JSON.stringify(achievements_highlighted), spotlight_duration_days, spotlight_image
+            );
+
+            // Award community spotlight badge
+            await this.awardCommunityBadge(featured_user_id, 'community_spotlight', adminId, {
+                badge_title: 'Community Spotlight',
+                badge_description: spotlight_title,
+                badge_icon: '⭐',
+                points_earned: 100,
+                achievement_data: { spotlight_id: result.lastInsertRowid }
+            });
+
+            return {
+                success: true,
+                spotlight_id: result.lastInsertRowid,
+                message: 'Community spotlight created successfully'
+            };
+        } catch (error) {
+            console.error('❌ Create spotlight error:', error.message);
+            return { success: false, error: error.message };
+        }
+    }}
+
+module.exports = SocialService;
