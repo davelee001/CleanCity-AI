@@ -1,0 +1,113 @@
+services:
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    ports:
+      - "3001:3001"
+    environment:
+      - NODE_ENV=production
+      - PORT=3001
+      - DATABASE_CLIENT=postgres
+      - DATABASE_URL=postgresql://${POSTGRES_USER:-cleanup_user}:${POSTGRES_PASSWORD}@postgres:5432/${POSTGRES_DB:-city_cleanup}
+      - DATABASE_POOL_MAX=${DATABASE_POOL_MAX:-20}
+      - DATABASE_SSL=false
+      - EVIDENCE_PERCEPTUAL_DISTANCE_THRESHOLD=${EVIDENCE_PERCEPTUAL_DISTANCE_THRESHOLD:-12}
+      - EVIDENCE_SCENE_HIGH_RISK_BELOW=${EVIDENCE_SCENE_HIGH_RISK_BELOW:-0.30}
+      - EVIDENCE_SCENE_MEDIUM_RISK_BELOW=${EVIDENCE_SCENE_MEDIUM_RISK_BELOW:-0.48}
+      - EVIDENCE_SYNTHETIC_HIGH_RISK_AT=${EVIDENCE_SYNTHETIC_HIGH_RISK_AT:-0.60}
+      - EVIDENCE_SYNTHETIC_MEDIUM_RISK_AT=${EVIDENCE_SYNTHETIC_MEDIUM_RISK_AT:-0.25}
+      - CORS_ORIGIN=${CORS_ORIGIN}
+      - JWT_ACCESS_SECRET=${JWT_ACCESS_SECRET}
+      - JWT_REFRESH_SECRET=${JWT_REFRESH_SECRET}
+      - JWT_ACCESS_EXPIRES_IN=15m
+      - JWT_REFRESH_EXPIRES_IN=7d
+      - CELO_REWARDS_ENABLED=${CELO_REWARDS_ENABLED:-false}
+      - CELO_REWARD_DRY_RUN=${CELO_REWARD_DRY_RUN:-true}
+      - CELO_RPC_URL=${CELO_RPC_URL:-https://forno.celo-sepolia.celo-testnet.org}
+      - CELO_CHAIN_ID=11142220
+      - CELO_REWARD_CONTRACT_ADDRESS=${CELO_REWARD_CONTRACT_ADDRESS:-}
+      - CELO_TREASURY_PRIVATE_KEY=${CELO_TREASURY_PRIVATE_KEY:-}
+      - CELO_REQUIRED_CONFIRMATIONS=${CELO_REQUIRED_CONFIRMATIONS:-2}
+      - CELO_TREASURY_MIN_BALANCE=${CELO_TREASURY_MIN_BALANCE:-0.10}
+      - WALLET_VERIFICATION_DOMAIN=${WALLET_VERIFICATION_DOMAIN}
+      - WALLET_VERIFICATION_URI=${WALLET_VERIFICATION_URI}
+      - WALLET_CHALLENGE_TTL_MS=${WALLET_CHALLENGE_TTL_MS:-600000}
+      - API_RATE_LIMIT=${API_RATE_LIMIT:-1000}
+      - AUTH_RATE_LIMIT=${AUTH_RATE_LIMIT:-20}
+      - RATE_LIMIT_WINDOW_MS=${RATE_LIMIT_WINDOW_MS:-900000}
+      - JSON_BODY_LIMIT_BYTES=${JSON_BODY_LIMIT_BYTES:-1048576}
+      - TRUST_PROXY_HOPS=${TRUST_PROXY_HOPS:-1}
+      - USE_CLOUD_STORAGE=true
+      - AWS_S3_BUCKET=${AWS_S3_BUCKET}
+      - AWS_REGION=${AWS_REGION}
+      - AWS_ACCESS_KEY_ID=${AWS_ACCESS_KEY_ID:-}
+      - AWS_SECRET_ACCESS_KEY=${AWS_SECRET_ACCESS_KEY:-}
+      - AWS_S3_KMS_KEY_ID=${AWS_S3_KMS_KEY_ID:-}
+      - EVIDENCE_S3_PREFIX=${EVIDENCE_S3_PREFIX:-evidence}
+      - METRICS_ENABLED=${METRICS_ENABLED:-true}
+      - METRICS_TOKEN=${METRICS_TOKEN:-}
+    depends_on:
+      postgres:
+        condition: service_healthy
+    networks:
+      - city-cleanup-network
+    restart: always
+    deploy:
+      replicas: 2
+      resources:
+        limits:
+          cpus: '0.5'
+          memory: 512M
+        reservations:
+          cpus: '0.25'
+          memory: 256M
+
+  postgres:
+    image: postgres:17.10-alpine3.23
+    environment:
+      - POSTGRES_DB=${POSTGRES_DB:-city_cleanup}
+      - POSTGRES_USER=${POSTGRES_USER:-cleanup_user}
+      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
+    volumes:
+      - postgres-data:/var/lib/postgresql/data
+    networks:
+      - city-cleanup-network
+    restart: always
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-cleanup_user} -d ${POSTGRES_DB:-city_cleanup}"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+
+  frontend:
+    build:
+      context: ./city-cleanup-challenge
+      dockerfile: Dockerfile
+      args:
+        EXPO_PUBLIC_API_URL: /api/v1
+    ports:
+      - "80:8080"
+    environment:
+      - NODE_ENV=production
+    depends_on:
+      - backend
+    networks:
+      - city-cleanup-network
+    restart: always
+    deploy:
+      replicas: 2
+      resources:
+        limits:
+          cpus: '0.5'
+          memory: 512M
+        reservations:
+          cpus: '0.25'
+          memory: 256M
+
+networks:
+  city-cleanup-network:
+    driver: overlay
+
+volumes:
+  postgres-data:
