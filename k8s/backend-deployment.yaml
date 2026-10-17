@@ -1,0 +1,363 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: backend
+  namespace: city-cleanup
+  labels:
+    app: backend
+    version: v1
+spec:
+  replicas: 2
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxSurge: 1
+      maxUnavailable: 0
+  selector:
+    matchLabels:
+      app: backend
+  template:
+    metadata:
+      annotations:
+        prometheus.io/scrape: "true"
+        prometheus.io/path: "/api/metrics"
+        prometheus.io/port: "3001"
+      labels:
+        app: backend
+        version: v1
+        azure.workload.identity/use: "true"
+    spec:
+      serviceAccountName: city-cleanup-backend
+      securityContext:
+        runAsNonRoot: true
+        runAsUser: 1000
+        runAsGroup: 1000
+        fsGroup: 1000
+        seccompProfile:
+          type: RuntimeDefault
+      containers:
+      - name: backend
+        image: citycleanup.azurecr.io/backend:sha-replaced-by-release-pipeline
+        imagePullPolicy: Always
+        ports:
+        - containerPort: 3001
+          name: http
+          protocol: TCP
+        env:
+        - name: NODE_ENV
+          valueFrom:
+            configMapKeyRef:
+              name: backend-config
+              key: NODE_ENV
+        - name: PORT
+          valueFrom:
+            configMapKeyRef:
+              name: backend-config
+              key: PORT
+        - name: DATABASE_CLIENT
+          valueFrom:
+            configMapKeyRef:
+              name: backend-config
+              key: DATABASE_CLIENT
+        - name: DATABASE_POOL_MAX
+          valueFrom:
+            configMapKeyRef:
+              name: backend-config
+              key: DATABASE_POOL_MAX
+        - name: DATABASE_SSL
+          valueFrom:
+            configMapKeyRef:
+              name: backend-config
+              key: DATABASE_SSL
+        - name: DATABASE_SSL_REJECT_UNAUTHORIZED
+          valueFrom:
+            configMapKeyRef:
+              name: backend-config
+              key: DATABASE_SSL_REJECT_UNAUTHORIZED
+        - name: EVIDENCE_PERCEPTUAL_DISTANCE_THRESHOLD
+          valueFrom:
+            configMapKeyRef:
+              name: backend-config
+              key: EVIDENCE_PERCEPTUAL_DISTANCE_THRESHOLD
+        - name: EVIDENCE_SCENE_HIGH_RISK_BELOW
+          valueFrom:
+            configMapKeyRef:
+              name: backend-config
+              key: EVIDENCE_SCENE_HIGH_RISK_BELOW
+        - name: EVIDENCE_SCENE_MEDIUM_RISK_BELOW
+          valueFrom:
+            configMapKeyRef:
+              name: backend-config
+              key: EVIDENCE_SCENE_MEDIUM_RISK_BELOW
+        - name: EVIDENCE_SYNTHETIC_HIGH_RISK_AT
+          valueFrom:
+            configMapKeyRef:
+              name: backend-config
+              key: EVIDENCE_SYNTHETIC_HIGH_RISK_AT
+        - name: EVIDENCE_SYNTHETIC_MEDIUM_RISK_AT
+          valueFrom:
+            configMapKeyRef:
+              name: backend-config
+              key: EVIDENCE_SYNTHETIC_MEDIUM_RISK_AT
+        - name: CORS_ORIGIN
+          valueFrom:
+            configMapKeyRef:
+              name: backend-config
+              key: CORS_ORIGIN
+        - name: CELO_REWARDS_ENABLED
+          valueFrom:
+            configMapKeyRef:
+              name: backend-config
+              key: CELO_REWARDS_ENABLED
+        - name: CELO_REWARD_DRY_RUN
+          valueFrom:
+            configMapKeyRef:
+              name: backend-config
+              key: CELO_REWARD_DRY_RUN
+        - name: CELO_RPC_URL
+          valueFrom:
+            configMapKeyRef:
+              name: backend-config
+              key: CELO_RPC_URL
+        - name: CELO_CHAIN_ID
+          valueFrom:
+            configMapKeyRef:
+              name: backend-config
+              key: CELO_CHAIN_ID
+        - name: CELO_REWARD_CONTRACT_ADDRESS
+          valueFrom:
+            configMapKeyRef:
+              name: backend-config
+              key: CELO_REWARD_CONTRACT_ADDRESS
+        - name: CELO_REQUIRED_CONFIRMATIONS
+          valueFrom:
+            configMapKeyRef:
+              name: backend-config
+              key: CELO_REQUIRED_CONFIRMATIONS
+        - name: CELO_TREASURY_MIN_BALANCE
+          valueFrom:
+            configMapKeyRef:
+              name: backend-config
+              key: CELO_TREASURY_MIN_BALANCE
+        - name: WALLET_VERIFICATION_DOMAIN
+          valueFrom:
+            configMapKeyRef:
+              name: backend-config
+              key: WALLET_VERIFICATION_DOMAIN
+        - name: WALLET_VERIFICATION_URI
+          valueFrom:
+            configMapKeyRef:
+              name: backend-config
+              key: WALLET_VERIFICATION_URI
+        - name: WALLET_CHALLENGE_TTL_MS
+          valueFrom:
+            configMapKeyRef:
+              name: backend-config
+              key: WALLET_CHALLENGE_TTL_MS
+        - name: API_RATE_LIMIT
+          valueFrom:
+            configMapKeyRef:
+              name: backend-config
+              key: API_RATE_LIMIT
+        - name: AUTH_RATE_LIMIT
+          valueFrom:
+            configMapKeyRef:
+              name: backend-config
+              key: AUTH_RATE_LIMIT
+        - name: RATE_LIMIT_WINDOW_MS
+          valueFrom:
+            configMapKeyRef:
+              name: backend-config
+              key: RATE_LIMIT_WINDOW_MS
+        - name: JSON_BODY_LIMIT_BYTES
+          valueFrom:
+            configMapKeyRef:
+              name: backend-config
+              key: JSON_BODY_LIMIT_BYTES
+        - name: TRUST_PROXY_HOPS
+          valueFrom:
+            configMapKeyRef:
+              name: backend-config
+              key: TRUST_PROXY_HOPS
+        - name: USE_CLOUD_STORAGE
+          valueFrom:
+            configMapKeyRef:
+              name: backend-config
+              key: USE_CLOUD_STORAGE
+        - name: AWS_S3_BUCKET
+          valueFrom:
+            configMapKeyRef:
+              name: backend-config
+              key: AWS_S3_BUCKET
+        - name: AWS_REGION
+          valueFrom:
+            configMapKeyRef:
+              name: backend-config
+              key: AWS_REGION
+        - name: EVIDENCE_S3_PREFIX
+          valueFrom:
+            configMapKeyRef:
+              name: backend-config
+              key: EVIDENCE_S3_PREFIX
+        - name: METRICS_ENABLED
+          valueFrom:
+            configMapKeyRef:
+              name: backend-config
+              key: METRICS_ENABLED
+        - name: SENTRY_ENABLED
+          valueFrom:
+            configMapKeyRef:
+              name: backend-config
+              key: SENTRY_ENABLED
+        - name: SENTRY_ENVIRONMENT
+          valueFrom:
+            configMapKeyRef:
+              name: backend-config
+              key: SENTRY_ENVIRONMENT
+        - name: SENTRY_RELEASE
+          valueFrom:
+            configMapKeyRef:
+              name: backend-config
+              key: SENTRY_RELEASE
+        - name: SENTRY_TRACES_SAMPLE_RATE
+          valueFrom:
+            configMapKeyRef:
+              name: backend-config
+              key: SENTRY_TRACES_SAMPLE_RATE
+        - name: SENTRY_PROFILES_SAMPLE_RATE
+          valueFrom:
+            configMapKeyRef:
+              name: backend-config
+              key: SENTRY_PROFILES_SAMPLE_RATE
+        - name: CELO_TREASURY_PRIVATE_KEY
+          valueFrom:
+            secretKeyRef:
+              name: city-cleanup-secrets
+              key: CELO_TREASURY_PRIVATE_KEY
+              optional: true
+        - name: JWT_ACCESS_SECRET
+          valueFrom:
+            secretKeyRef:
+              name: city-cleanup-secrets
+              key: JWT_ACCESS_SECRET
+        - name: JWT_REFRESH_SECRET
+          valueFrom:
+            secretKeyRef:
+              name: city-cleanup-secrets
+              key: JWT_REFRESH_SECRET
+        - name: DATABASE_URL
+          valueFrom:
+            secretKeyRef:
+              name: city-cleanup-secrets
+              key: DATABASE_URL
+        - name: METRICS_TOKEN
+          valueFrom:
+            secretKeyRef:
+              name: city-cleanup-secrets
+              key: METRICS_TOKEN
+        - name: SENTRY_DSN
+          valueFrom:
+            secretKeyRef:
+              name: city-cleanup-secrets
+              key: SENTRY_DSN
+        - name: AUDIT_IP_HASH_SECRET
+          valueFrom:
+            secretKeyRef:
+              name: city-cleanup-secrets
+              key: AUDIT_IP_HASH_SECRET
+        - name: AWS_ACCESS_KEY_ID
+          valueFrom:
+            secretKeyRef:
+              name: city-cleanup-secrets
+              key: AWS_ACCESS_KEY_ID
+              optional: true
+        - name: AWS_SECRET_ACCESS_KEY
+          valueFrom:
+            secretKeyRef:
+              name: city-cleanup-secrets
+              key: AWS_SECRET_ACCESS_KEY
+              optional: true
+        resources:
+          requests:
+            memory: "256Mi"
+            cpu: "250m"
+          limits:
+            memory: "512Mi"
+            cpu: "500m"
+        securityContext:
+          allowPrivilegeEscalation: false
+          capabilities:
+            drop:
+            - ALL
+        livenessProbe:
+          httpGet:
+            path: /health
+            port: 3001
+          initialDelaySeconds: 30
+          periodSeconds: 10
+          timeoutSeconds: 5
+          failureThreshold: 3
+        readinessProbe:
+          httpGet:
+            path: /ready
+            port: 3001
+          initialDelaySeconds: 10
+          periodSeconds: 5
+          timeoutSeconds: 3
+          failureThreshold: 3
+        volumeMounts:
+        - name: key-vault-secrets
+          mountPath: /mnt/secrets-store
+          readOnly: true
+      volumes:
+      - name: key-vault-secrets
+        csi:
+          driver: secrets-store.csi.k8s.io
+          readOnly: true
+          volumeAttributes:
+            secretProviderClass: city-cleanup-key-vault
+      imagePullSecrets:
+      - name: acr-secret
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: backend
+  namespace: city-cleanup
+  labels:
+    app: backend
+spec:
+  type: ClusterIP
+  ports:
+  - port: 3001
+    targetPort: 3001
+    protocol: TCP
+    name: http
+  selector:
+    app: backend
+---
+apiVersion: autoscaling/v2
+kind: HorizontalPodAutoscaler
+metadata:
+  name: backend-hpa
+  namespace: city-cleanup
+spec:
+  scaleTargetRef:
+    apiVersion: apps/v1
+    kind: Deployment
+    name: backend
+  minReplicas: 2
+  maxReplicas: 6
+  metrics:
+  - type: Resource
+    resource:
+      name: cpu
+      target:
+        type: Utilization
+        averageUtilization: 70
+  - type: Resource
+    resource:
+      name: memory
+      target:
+        type: Utilization
+        averageUtilization: 80
