@@ -1,5 +1,41 @@
 # Gemma hackathon benchmark
 
+## Enabled local fast mode (October 17, 2026)
+
+`GEMMA_FAST_MODE=true` combines the before (top) and after (bottom) images into
+one 896 by 896 letterboxed preview, uses a shorter comparison prompt, and keeps
+the model loaded for 30 minutes. Original evidence photos remain unchanged.
+The API preloads the model asynchronously at startup without blocking login.
+The regular separate-image mode remains the default for new installations.
+
+A real run on the existing locally submitted image pair passed the unchanged
+schema and output quality checks. The measured comparison is:
+
+| Run | Total | Model load | Image/prompt processing | Generation | Prompt tokens |
+| --- | ---: | ---: | ---: | ---: | ---: |
+| Separate images, 4 threads | 255.1 s | 25.8 s | 202.6 s | 26.5 s | 765 |
+| Fast preview, 8 threads | 124.3 s | 29.9 s | 68.8 s | 25.3 s | 397 |
+
+This single before/after comparison is about 51% faster in total, with fresh
+preview processing rather than a cached image replay. It changes both image
+layout and thread count; background load was not controlled. It does not
+establish visual accuracy or guarantee latency for other photos. Both runs
+used the same local model and a 384-token cap; the cap was not reached.
+
+The fast preview reduces small-object detail, so findings explicitly advise
+reviewing the original images. It never replaces the full photos or bypasses
+validation and human-review controls. Keeping the model warm avoids subsequent
+loading cost, but fresh image analysis still takes time on this CPU.
+
+Local configuration:
+
+```dotenv
+GEMMA_FAST_MODE=true
+GEMMA_NUM_THREADS=8
+GEMMA_MAX_OUTPUT_TOKENS=384
+GEMMA_CONTEXT_LENGTH=2048
+```
+
 ## Additional local CPU speed experiment (2026-10-16)
 
 The user requested that images stay local. Hardware inspection found an Intel
