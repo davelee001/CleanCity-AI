@@ -1,4 +1,4 @@
-# City Cleanup Challenge
+# CleanCity AI
 
 Gemma 3 Vision setup, architecture audit, tests, and hackathon walkthrough:
 [Gemma Smart Verification](docs/GEMMA_SMART_VERIFICATION.md). AI verification is disabled by default.
@@ -39,8 +39,8 @@ model files are excluded from Git.
 ### Run locally in the browser
 
 Use Node.js 22 and install dependencies with `npm ci` in both `backend/` and
-`city-cleanup-challenge/`. Configuration belongs in **backend/.env** and
-**city-cleanup-challenge/.env**, rather than the root `.env`. On first setup,
+`cleancity-ai/`. Configuration belongs in **backend/.env** and
+**cleancity-ai/.env**, rather than the root `.env`. On first setup,
 copy each folder's `.env.example` and configure distinct strong JWT secrets;
 preserve existing environment files and database paths on an existing install.
 
@@ -77,7 +77,7 @@ npm start
 
 ```powershell
 # Terminal 3, from the repository root
-cd city-cleanup-challenge
+cd cleancity-ai
 $env:EXPO_PUBLIC_API_URL='http://localhost:3000/api/v1'
 npm start -- --web --port 19006 --clear
 ```
@@ -133,7 +133,7 @@ approved Celo Sepolia pilot remain external release gates.
 - Defined the CELO reward lifecycle, idempotency requirements, payout controls, and testnet success criteria.
 - Documented the decisions that must be made before a mainnet launch.
 
-See [City Cleanup Reward Product Rules](docs/PRODUCT_RULES.md) for the complete MVP specification.
+See [CleanCity AI Reward Product Rules](docs/PRODUCT_RULES.md) for the complete MVP specification.
 
 ### Phase 2 - Application Foundation
 
@@ -364,7 +364,7 @@ See [Staging, Load, and Rollback Operations](docs/STAGING_LOAD_AND_ROLLBACK.md).
 
 - Simplified the sign-in experience by removing pre-authentication welcome copy
   and using concise `Sign in` labels.
-- Expanded the City Cleanup brand lockup above the sign-in impact message.
+- Expanded the CleanCity AI brand lockup above the sign-in impact message.
 - Redesigned the authenticated landing dashboard with a professional header,
   focused primary actions, account and verification status, categorized tools,
   and responsive dark-blue cards.
@@ -707,7 +707,7 @@ Our development follows a **granular commit strategy** for maximum maintainabili
 ## Project Structure
 
 - `backend/` — Express server with SQLite database, location APIs, and RESTful endpoints
-- `city-cleanup-challenge/` — Expo React Native app with maps, GPS, and event management
+- `cleancity-ai/` — Expo React Native app with maps, GPS, and event management
 
 ## Quick Start
 
@@ -779,7 +779,7 @@ VERBOSE=false
 #### Frontend Setup (Expo)
 
 ```bash
-cd city-cleanup-challenge
+cd cleancity-ai
 npm install
 npx expo start
 ```
@@ -1271,7 +1271,7 @@ The advanced dashboard provides comprehensive data visualization and analytics:
 - **Export Options**: Download data as PDF, Excel, or CSV
 - **PWA Capabilities**: Offline support with service worker caching
 
-For detailed dashboard documentation, see [DASHBOARD_README.md](city-cleanup-challenge/DASHBOARD_README.md)
+For detailed dashboard documentation, see [DASHBOARD_README.md](cleancity-ai/DASHBOARD_README.md)
 
 ## Admin Panel Features
 
