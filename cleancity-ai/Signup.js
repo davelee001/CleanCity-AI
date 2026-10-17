@@ -11,6 +11,7 @@ import {
   View,
 } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
+import CleaningBackground from './components/CleaningBackground';
 
 import { API_BASE_URL } from './apiConfig';
 
@@ -137,6 +138,7 @@ export default function Signup({ onSignup, onSwitchToLogin, onViewLegal }) {
 
   return (
     <LinearGradient colors={['#061426', '#0A2240', '#0D3155']} style={styles.container}>
+      <CleaningBackground />
       <KeyboardAvoidingView
         style={styles.keyboardView}
         behavior={Platform.OS === 'ios' ? 'padding' : undefined}
