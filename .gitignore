@@ -1,0 +1,37 @@
+# Dependencies
+node_modules/
+.local-inference/
+
+# Expo
+.expo/
+dist/
+rendered-k8s/
+rendered-monitoring/
+coverage/
+.npm-cache-*/
+.expo-*/
+
+# Database
+*.db
+*.sqlite
+/backend/data/
+
+# Logs
+*.log
+
+# Environment files
+.env
+.env.*
+!.env.example
+!.env.*.example
+
+# IDE files
+.vscode/
+.idea/
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Temporary files
+ToDo.txt
