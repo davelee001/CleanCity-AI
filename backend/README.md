@@ -1,9 +1,9 @@
-# City Cleanup Backend
+# CleanCity AI Backend
 
 Optional Gemma 3 Vision: [setup, security, tests and demo](../docs/GEMMA_SMART_VERIFICATION.md).
 Disabled by default; human review and existing rewards remain authoritative.
 
-A clean Express.js backend for the City Cleanup project.
+A clean Express.js backend for the CleanCity AI project.
 
 ## Setup
 

@@ -5,7 +5,7 @@ process.env.NODE_ENV = 'test';
 process.env.DATABASE_PATH = ':memory:';
 process.env.EVIDENCE_STORAGE_PATH = path.join(
   os.tmpdir(),
-  'city-cleanup-challenge-tests',
+  'cleancity-ai-tests',
   String(process.pid)
 );
 process.env.METRICS_ENABLED = 'true';
