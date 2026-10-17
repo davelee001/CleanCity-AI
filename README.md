@@ -36,6 +36,16 @@ Celo reward controls remain in place; local testing has broadcasting disabled
 and dry-run enabled. Private images, local databases, secrets, and downloaded
 model files are excluded from Git.
 
+### Project layout
+
+- `cleancity-ai/`: Expo frontend, browser screens, and PWA assets.
+- `backend/`: Express API, authentication, evidence storage, and database access.
+- `blockchain/`: Celo reward contracts.
+- `docs/`: setup guides, verification workflows, and release operations.
+
+The frontend folder and package identifier are `cleancity-ai`; the application
+name shown to users is **CleanCity AI**.
+
 ### Run locally in the browser
 
 Use Node.js 22 and install dependencies with `npm ci` in both `backend/` and
@@ -44,7 +54,20 @@ Use Node.js 22 and install dependencies with `npm ci` in both `backend/` and
 copy each folder's `.env.example` and configure distinct strong JWT secrets;
 preserve existing environment files and database paths on an existing install.
 
-For local Gemma testing, set these values in `backend/.env`:
+For local login and database access, preserve the existing `backend/.env`
+settings and SQLite database. SQLite runs inside the backend process and does
+not need a separate database server. A new local setup can use:
+
+```dotenv
+DATABASE_CLIENT=sqlite
+DATABASE_PATH=./city-cleanup.db
+```
+
+The relative database path is resolved from `backend/` when starting with the
+commands below. PostgreSQL is also supported; see [backend setup](backend/README.md).
+
+Gemma is optional for login. To test AI evidence analysis, start Ollama and set
+these values in `backend/.env`:
 
 ```dotenv
 PORT=3000
@@ -1493,7 +1516,7 @@ The implementation roadmap continues in priority order:
   the public network.
 - Add durable audit events for authentication, administration, moderation, and
   destructive actions.
-- Enable and verify protected-branch rules and required production reviewers.
+- Main branch protections are enabled; configure and verify required production reviewers separately.
 
 ### Phase 16 - Product and Device Completion
 
@@ -1559,6 +1582,24 @@ The project uses GitHub Actions for automated deployment:
 📚 See [DEVOPS_INFRASTRUCTURE.md](docs/DEVOPS_INFRASTRUCTURE.md) for complete deployment guide.
 
 ## Contributing
+
+### Main branch protections
+
+The `main` branch on [davelee001/CleanCity-AI](https://github.com/davelee001/CleanCity-AI)
+has the following protections enabled (verified October 17, 2026):
+
+- Changes require a pull request with at least one approving review.
+- New commits dismiss previous approvals.
+- Both `Tests, coverage, lint, and builds` and
+  `PostgreSQL migration and API suite` must pass.
+- Pull-request branches must be up to date before merging.
+- Review conversations must be resolved.
+- Force pushes and branch deletion are blocked.
+- These requirements also apply to administrators.
+
+Push changes to a feature branch and open a pull request into `main`. A failing
+required check must be fixed before merging. Production deployment approvals
+are configured separately; see [release governance](docs/RELEASE_GOVERNANCE.md).
 
 ### Development Workflow
 - Use feature branches and PRs for all changes
