@@ -23,6 +23,7 @@ import SubscriptionDashboard from './SubscriptionDashboard';
 import Wallet from './Wallet';
 import RewardAdmin from './RewardAdmin';
 import Legal from './Legal';
+import CleaningBackground from './components/CleaningBackground';
 import GamificationDashboard from './components/GamificationDashboard';
 import { getStoredUser, logoutAuthSession } from './apiConfig';
 
@@ -162,6 +163,7 @@ export default function App() {
           </View>
 
           <View style={styles.heroPanel}>
+            <CleaningBackground compact />
             <View style={styles.heroCopy}>
               <Text style={styles.eyebrow}>YOUR CLEANUP DASHBOARD</Text>
               <Text style={styles.welcome}>Welcome back, {user}</Text>
