@@ -1,6 +1,6 @@
-# City Cleanup Reward Product Rules
+# CleanCity AI Reward Product Rules
 
-This document defines the first buildable version of the City Cleanup reward
+This document defines the first buildable version of the CleanCity AI reward
 workflow. It is intentionally conservative: cleanup evidence and verification
 remain off-chain, while Celo is used only for wallet ownership and approved
 reward payments.

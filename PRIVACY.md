@@ -1,8 +1,8 @@
-# City Cleanup Challenge Privacy Notice
+# CleanCity AI Privacy Notice
 
 Effective date: July 26, 2026
 
-City Cleanup Challenge processes account details, cleanup photos, approximate
+CleanCity AI processes account details, cleanup photos, approximate
 or precise location, device-provided capture metadata, verification results,
 moderation history, and Celo wallet and transaction information to operate the
 cleanup evidence and reward service.
