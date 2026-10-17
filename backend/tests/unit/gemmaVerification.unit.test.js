@@ -48,6 +48,53 @@ describe('Gemma smart verification', () => {
     expect(body.options.repeat_penalty).toBe(1.1);
     expect(body.messages[0].content).not.toContain('"properties"');
   });
+  it('preloads fast-mode weights without sending evidence or generating findings', async () => {
+    process.env.GEMMA_FAST_MODE = 'true';
+    global.fetch = jest.fn().mockResolvedValue({ ok: true, json: async () => ({ done: true }) });
+    const { warmGemma } = require('../../src/services/gemmaVerification');
+    expect(await warmGemma()).toBe(true);
+    const body = JSON.parse(global.fetch.mock.calls[0][1].body);
+    expect(body.messages).toEqual([]);
+    expect(body.keep_alive).toBe('30m');
+    expect(body).not.toHaveProperty('images');
+  });
+  it('does not preload when fast mode is off and tolerates an offline model service', async () => {
+    const { warmGemma } = require('../../src/services/gemmaVerification');
+    delete process.env.GEMMA_FAST_MODE;
+    expect(await warmGemma()).toBe(false);
+    expect(global.fetch).not.toHaveBeenCalled();
+    process.env.GEMMA_FAST_MODE = 'true';
+    global.fetch.mockRejectedValue(new Error('offline'));
+    expect(await warmGemma()).toBe(false);
+  });
+  it('fast mode sends one ordered comparison preview and retains output validation', async () => {
+    process.env.GEMMA_FAST_MODE = 'true';
+    process.env.GEMMA_NUM_THREADS = '8';
+    const result = await run();
+    expect(result).toMatchObject({ status: 'completed', settings: { imageLayout: 'top_before_bottom_after', numThreads: 8 } });
+    const body = JSON.parse(global.fetch.mock.calls[0][1].body);
+    expect(body.messages[0].images).toHaveLength(1);
+    expect(body.messages[0].content).toContain('TOP is BEFORE, BOTTOM is AFTER');
+    expect(body.keep_alive).toBe('30m');
+    expect(body.options.num_predict).toBe(384);
+    expect(result.findings.limitations.join(' ')).toContain('reduced-detail previews');
+  });
+  it('places before above after without carrying photo metadata into the preview', async () => {
+    const { prepareComparison } = require('../../src/services/gemmaVerification');
+    const before = await sharp({ create: { width: 64, height: 32, channels: 3, background: '#ff0000' } }).png().toBuffer();
+    const after = await sharp({ create: { width: 64, height: 32, channels: 3, background: '#0000ff' } }).png().toBuffer();
+    const buffer = Buffer.from(await prepareComparison(before, after), 'base64');
+    const metadata = await sharp(buffer).metadata();
+    expect(metadata).toMatchObject({ width: 896, height: 896 });
+    expect(metadata.exif).toBeUndefined();
+    const pixel = async (top) => [...await sharp(buffer).extract({ left: 448, top, width: 1, height: 1 }).raw().toBuffer()];
+    const upper = await pixel(224);
+    const lower = await pixel(672);
+    expect(upper[0]).toBeGreaterThan(240);
+    expect(upper[2]).toBeLessThan(15);
+    expect(lower[2]).toBeGreaterThan(240);
+    expect(lower[0]).toBeLessThan(15);
+  });
   it('supports compatible hosted chat completions with server-only credentials', async () => {
     process.env.GEMMA_PROVIDER = 'openai';
     process.env.GEMMA_ENDPOINT = 'https://inference.example/v1/chat/completions';
