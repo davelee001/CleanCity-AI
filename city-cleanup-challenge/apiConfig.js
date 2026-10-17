@@ -80,11 +80,11 @@ async function refreshAuthSession() {
 
 export async function apiFetch(resource, options = {}, allowRefresh = true) {
   const accessToken = await AsyncStorage.getItem(ACCESS_TOKEN_KEY);
-  const headers = { ...(options.headers || {}) };
+  const headers = new Headers(options.headers || undefined);
   if (accessToken) {
-    headers.Authorization = `Bearer ${accessToken}`;
+    headers.set('Authorization', `Bearer ${accessToken}`);
   } else {
-    delete headers.Authorization;
+    headers.delete('Authorization');
   }
 
   const response = await fetch(resource, { ...options, headers });
@@ -99,9 +99,10 @@ export async function apiFetch(resource, options = {}, allowRefresh = true) {
   const refreshedAccessToken = await refreshAuthSession();
   if (!refreshedAccessToken) return response;
 
+  headers.set('Authorization', `Bearer ${refreshedAccessToken}`);
   return fetch(resource, {
     ...options,
-    headers: { ...headers, Authorization: `Bearer ${refreshedAccessToken}` },
+    headers,
   });
 }
 

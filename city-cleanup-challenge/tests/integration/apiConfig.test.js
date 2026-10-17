@@ -32,6 +32,22 @@ describe('authenticated API session', () => {
     expect(await getStoredUser()).toBeNull();
   });
 
+  it('preserves standard Headers and replaces stale authorization', async () => {
+    await setAuthSession({
+      user: { username: 'member', role: 'user' },
+      tokens: { accessToken: 'current-token', refreshToken: 'refresh-token' },
+    });
+    global.fetch.mockResolvedValueOnce({ status: 200 });
+
+    await apiFetch(apiUrl('posts'), {
+      headers: new Headers({ 'X-Client-Version': '1', Authorization: 'Bearer stale-token' }),
+    });
+
+    const sentHeaders = global.fetch.mock.calls[0][1].headers;
+    expect(sentHeaders.get('X-Client-Version')).toBe('1');
+    expect(sentHeaders.get('Authorization')).toBe('Bearer current-token');
+  });
+
   it('refreshes an expired access token and retries once', async () => {
     await setAuthSession({
       user: { username: 'member', role: 'user' },
