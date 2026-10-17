@@ -1,6 +1,17 @@
 import React from 'react';
 import { StyleSheet, Text, View } from 'react-native';
 
+const FAILURE_MESSAGES = {
+  inference_failed: 'The AI service could not complete the analysis. Evidence remains available for human review.',
+  timeout: 'AI analysis took too long to finish. Evidence remains available for human review.',
+  cancelled: 'AI analysis stopped when the live connection closed. Evidence remains available for human review.',
+  evidence_read_failed: 'AI could not read the saved evidence images. Evidence remains available for human review.',
+  configuration_failed: 'The AI service needs configuration before analysis can run. Evidence remains available for human review.',
+  validation_failed: 'AI output could not be validated. Evidence remains available for human review.',
+  quality_check_failed: 'AI findings did not pass quality checks. Evidence remains available for human review.',
+  busy: 'The AI service is busy with other submissions. Evidence remains available for human review.',
+};
+
 export default function SmartVerification({ analysis }) {
   if (!analysis) return null;
   const findings = analysis.findings;
@@ -33,7 +44,7 @@ export default function SmartVerification({ analysis }) {
           {analysis.status === 'disabled' ? 'AI verification is disabled. Evidence follows standard human review.'
             : analysis.status === 'pending' ? 'Waiting for the uploader’s live Gemma analysis to finish. Human review will follow.'
             : analysis.status === 'skipped' ? 'AI analysis skipped for exact duplicate evidence.'
-              : 'AI analysis unavailable. Evidence remains available for human review.'}
+              : FAILURE_MESSAGES[analysis.reason] || 'AI analysis unavailable. Evidence remains available for human review.'}
         </Text>
       )}
       {analysis.qualityFlags?.length ? <Text style={styles.meta}>Output quality concerns: {analysis.qualityFlags.map((flag) => flag.replace(/_/g, ' ')).join(', ')}</Text> : null}
