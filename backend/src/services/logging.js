@@ -76,7 +76,7 @@ class LoggingService {
       level: process.env.LOG_LEVEL || 'info',
       format: logFormat,
       defaultMeta: {
-        service: 'city-cleanup-backend',
+        service: 'cleancity-ai-backend',
         environment: process.env.NODE_ENV || 'development',
       },
       transports,

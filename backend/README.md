@@ -37,5 +37,5 @@ npm run health
 
 ## API
 
-- GET /health → `{ status: "ok", service: "city-cleanup-backend" }`
+- GET /health → `{ status: "ok", service: "cleancity-ai-backend" }`
 - GET /api/info → basic app info
