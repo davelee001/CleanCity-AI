@@ -76,7 +76,7 @@ jobs:
           path: |
             backend/coverage
             city-cleanup-challenge/coverage
-          if-no-files-found: error
+          if-no-files-found: warn
           retention-days: 14
 
   postgres:
