@@ -1,7 +1,7 @@
 apiVersion: 1
 
 providers:
-  - name: 'City Cleanup Dashboards'
+  - name: 'CleanCity AI Dashboards'
     orgId: 1
     folder: ''
     type: file

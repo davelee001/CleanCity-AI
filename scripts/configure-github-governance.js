@@ -2,7 +2,7 @@
 
 const API_VERSION = '2026-03-10';
 const APPLY_CONFIRMATION = 'APPLY_CITY_CLEANUP_GITHUB_GOVERNANCE';
-const repository = process.env.GITHUB_REPOSITORY || 'davelee001/city-cleanup-challenge';
+const repository = process.env.GITHUB_REPOSITORY || 'davelee001/CleanCity-AI';
 const [owner, repo] = repository.split('/');
 const token = process.env.GITHUB_ADMIN_TOKEN;
 const apply = process.argv.includes('--apply');
