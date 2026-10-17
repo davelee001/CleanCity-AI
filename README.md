@@ -1,0 +1,1593 @@
+# City Cleanup Challenge
+
+Gemma 3 Vision setup, architecture audit, tests, and hackathon walkthrough:
+[Gemma Smart Verification](docs/GEMMA_SMART_VERIFICATION.md). AI verification is disabled by default.
+For local startup, login troubleshooting, and the complete Chrome workflow, see
+[Browser testing](docs/BROWSER_TESTING.md).
+Measured inference profiles, configuration comparisons, quality limitations, and
+workflow validation are in the [Gemma benchmark report](docs/GEMMA_BENCHMARK.md).
+
+A comprehensive location-based cleanup event platform with React Native (Expo) frontend and Node.js Express backend. Join cleanup events, track your environmental impact, and help make your city cleaner!
+
+## Gemma Smart Verification — current workflow (October 16, 2026)
+
+The existing Expo application now uses real Gemma 3 Vision inference through
+local Ollama, with an optional compatible hosted endpoint. AI is advisory and
+disabled by default. It cannot approve submissions or authorize payouts.
+
+1. A user signs in and submits permitted before-and-after photographs with GPS
+   consent, waste details, and optional notes.
+2. The application confirms **Images received** and saves the evidence privately.
+   The submission page shows only that user's latest submission.
+3. **Gemma live analysis** opens an authenticated foreground connection. It shows
+   actual preparation and generation progress, then presents validated findings
+   line by line: visible waste, image differences, concerns, limitations, and
+   safe cleanup recommendations. Findings are withheld until the complete
+   structured output passes validation. Leaving the page cancels inference.
+4. An authorized admin opens **Pending**, **Rejected**, or **Approved** from the
+   admin home screen. Admins review evidence instead of seeing a submission
+   action. Approve/Reject controls become available after the AI attempt finishes;
+   a review reason is required and self-review is prohibited.
+5. The uploader sees the human decision. Previous submissions remain stored;
+   exact duplicates are rejected and the existing one-time appeal remains available.
+
+Timeouts, invalid output, and cancellation preserve evidence for human review.
+Celo reward controls remain in place; local testing has broadcasting disabled
+and dry-run enabled. Private images, local databases, secrets, and downloaded
+model files are excluded from Git.
+
+### Run locally in the browser
+
+Use Node.js 22 and install dependencies with `npm ci` in both `backend/` and
+`city-cleanup-challenge/`. Configuration belongs in **backend/.env** and
+**city-cleanup-challenge/.env**, rather than the root `.env`. On first setup,
+copy each folder's `.env.example` and configure distinct strong JWT secrets;
+preserve existing environment files and database paths on an existing install.
+
+For local Gemma testing, set these values in `backend/.env`:
+
+```dotenv
+PORT=3000
+GEMMA_VERIFICATION_ENABLED=true
+GEMMA_PROVIDER=ollama
+GEMMA_ENDPOINT=http://127.0.0.1:11434/api/chat
+GEMMA_MODEL=gemma3:4b
+GEMMA_TIMEOUT_MS=600000
+CORS_ORIGIN=http://localhost:19006,http://127.0.0.1:19006
+API_RATE_LIMIT=1000
+AUTH_RATE_LIMIT=100
+CELO_REWARDS_ENABLED=false
+CELO_REWARD_DRY_RUN=true
+```
+
+Set `EXPO_PUBLIC_API_URL=http://localhost:3000/api/v1` in the frontend `.env`.
+Use three terminals; skip starting Ollama if its service is already running:
+
+```powershell
+# Terminal 1: standard Ollama installation; pull only on first setup
+ollama pull gemma3:4b
+ollama serve
+```
+
+```powershell
+# Terminal 2, from the repository root
+cd backend
+npm start
+```
+
+```powershell
+# Terminal 3, from the repository root
+cd city-cleanup-challenge
+$env:EXPO_PUBLIC_API_URL='http://localhost:3000/api/v1'
+npm start -- --web --port 19006 --clear
+```
+
+Open [the app](http://localhost:19006), register or sign in, and choose
+**Submit evidence**. Allow browser location access and keep the live analysis
+page open. Backend checks: [health](http://localhost:3000/health) and
+[readiness](http://localhost:3000/ready). Admin review pages:
+[Pending](http://localhost:19006/#/evidence-pending),
+[Rejected](http://localhost:19006/#/evidence-rejected), and
+[Approved](http://localhost:19006/#/evidence-approved).
+Local polling limits above prevent normal multi-tab testing from exhausting
+the shared localhost request budget. Docker uses its separately configured ports.
+
+### Measured results and limitations
+
+- Real foreground `gemma3:4b` inference completed in **184.839 seconds** on the
+  tested CPU; the browser displayed live generation and validated findings.
+  This is a measured example, not a latency guarantee.
+- A lower-cost experiment took **144.304 seconds**, but produced truncated,
+  invalid JSON. It was **not enabled**. Seconds-long valid local verification
+  has not been demonstrated on this machine.
+- All recorded image comparisons use **clearly labeled illustrations**.
+  Consented real-photo validation remains pending. These results do not establish
+  real-world cleanup impact, material quantities, or real-photo accuracy.
+- Latest executed checks: **139 backend tests**, **28 frontend tests**, and both
+  lint checks passed. These checks ran on Node 24.19.0; the repository requires
+  Node 22. Browser tests also verified real inference and the admin review cards.
+
+See [Browser testing](docs/BROWSER_TESTING.md) for detailed setup and testing,
+[Gemma integration](docs/GEMMA_SMART_VERIFICATION.md) for configuration and
+privacy controls, and [benchmarks](docs/GEMMA_BENCHMARK.md) for recorded runs
+and tradeoffs. The delivery-phase notes below describe earlier milestones;
+their test counts are historical.
+
+## Earlier Delivery Phase Status (July 26, 2026)
+
+Phase 1, Phase 2, Phase 3 evidence submission, the Phase 4 advanced
+verification foundation, the Phase 5 Celo Sepolia reward foundation, the Phase
+6 wallet ownership experience, the Phase 7 reward operations foundation, the
+Phase 8 Celo pilot-readiness foundation, and the Phase 9 production-security
+foundation are complete. Phase 10 production data, Phase 11 test quality, Phase
+12 secure release automation, and Phase 13 staging operations are now also
+implemented. The Phase 14 live-staging, Phase 15 monitoring/audit, Phase 16
+product/device, Phase 17 privacy/legal/support, and Phase 18 controlled-CELO
+foundations are implemented. Credentialed staging validation, physical-device
+acceptance, legal review, production support configuration, and the explicitly
+approved Celo Sepolia pilot remain external release gates.
+
+### Phase 1 - Product Foundation
+
+- Defined the cleanup evidence, duplicate-detection, AI-risk, manual-review, privacy, and appeal rules.
+- Defined the CELO reward lifecycle, idempotency requirements, payout controls, and testnet success criteria.
+- Documented the decisions that must be made before a mainnet launch.
+
+See [City Cleanup Reward Product Rules](docs/PRODUCT_RULES.md) for the complete MVP specification.
+
+### Phase 2 - Application Foundation
+
+- Standardized the backend and frontend on Node.js 22.
+- Centralized frontend API configuration and normalized application calls to `/api/v1`.
+- Added bcrypt password hashing and removed automatic creation of the insecure default administrator.
+- Added backend readiness checks and corrected Kubernetes health probes and secret references.
+- Added a web-safe event map and corrected the Expo web entry point so the landing page renders.
+- Added synchronized lockfiles, frontend build and lint scripts, and stricter CI checks.
+- Removed tracked dependency artifacts and removed committed Kubernetes secret placeholders.
+- Expanded signup to collect username, email, phone number, location, and password confirmation.
+- Ordered signup details for clearer onboarding: username, email, county/location, phone number, password, and password confirmation.
+- Added client and server validation, unique email protection, and automatic profile-column migration for existing SQLite databases.
+- Redesigned the sign-in, signup, and authenticated home experiences with responsive layouts and accessible feedback.
+- Standardized the frontend on a cohesive dark-blue palette with readable blue-gray text and preserved semantic status colors.
+- Applied a simple system sans-serif typography stack across web, iOS, and Android, with moderate heading and control weights.
+- Added signed JWT access tokens, rotating refresh tokens, revocation, role checks, and resource ownership enforcement.
+- Verified the authentication foundation and a clean production frontend build.
+
+### Phase 3 - Cleanup Evidence Foundation
+
+- Added authenticated before-and-after cleanup evidence submission from the app.
+- Added consented GPS coordinates, capture timestamps, waste categories, item
+  count or estimated weight, and cleanup notes.
+- Added server-side image validation and SHA-256 exact duplicate detection.
+- Automatically reject exact duplicates and route all remaining evidence to
+  manual review until advanced verification signals are ready.
+- Store evidence privately under persistent application storage and enforce
+  owner/admin access on records and images.
+- Record immutable submission-state transitions, review decisions, and reasons.
+- Added admin approval/rejection with self-review prevention and one-time user
+  appeals.
+- Added an authenticated frontend submission history and review queue with
+  private before/after previews.
+- Added tests covering authentication, privacy, duplicates, appeals, and review
+  permissions; all 41 backend tests pass.
+
+See [Phase 3 Evidence Foundation](docs/PHASE_3_EVIDENCE.md) for the API,
+lifecycle, security model, and remaining verification work.
+
+### Phase 4 - Advanced Evidence Verification
+
+- Added versioned perceptual fingerprints and Hamming-distance matching for
+  resized and recompressed duplicates.
+- Added explainable before/after scene-consistency, image-quality, and selected
+  capture-metadata signals.
+- Added cautious synthetic-image risk indicators that explicitly remain
+  heuristic reviewer aids rather than proof.
+- Persisted fingerprints, analysis metadata, risk levels, thresholds, and
+  verification versions with backward-compatible schema updates.
+- Added configurable verification thresholds to local, production, Docker, and
+  Kubernetes environments.
+- Added reviewer-facing risk details and expanded automated coverage to 43
+  passing backend tests.
+
+See [Phase 4 Advanced Verification](docs/PHASE_4_VERIFICATION.md) for algorithms,
+thresholds, decision policy, limitations, and pilot requirements.
+
+### Phase 5 - Celo Sepolia Reward Foundation
+
+- Defined the versioned pilot reward amounts, waste and impact multipliers,
+  manual-approval threshold, and rolling account/wallet payout limits.
+- Added a durable reward ledger that records the exact calculation, lifecycle,
+  transaction hash, confirmations, and failures for every approved submission.
+- Added authenticated owner/admin visibility and administrator-only claim and
+  payout endpoints.
+- Added an idempotent Celo Sepolia payment service with safe local simulation,
+  RPC chain validation, and confirmation tracking.
+- Added `RewardTreasury`, whose on-chain paid-claim registry permanently rejects
+  duplicate payouts.
+- Added automated tests for calculations, limits, repeated and concurrent
+  requests, on-chain duplicate detection, wallet verification, and contract
+  permissions.
+
+See [Phase 5 Celo Rewards](docs/PHASE_5_CELO_REWARDS.md) for the policy,
+idempotency model, API, configuration, and deployment safeguards.
+
+### Phase 6 - Wallet Ownership and Reward Experience
+
+- Added expiring, one-time signed challenges that prove control of a Celo wallet
+  without requesting private keys or sending transactions.
+- Enforced one wallet per account and prevented wallet changes while payouts are
+  active.
+- Automatically recalculated and reactivated claims blocked by missing wallet
+  verification.
+- Added authenticated wallet status, challenge, verification, removal, and
+  member reward-history APIs.
+- Added a professional logged-in wallet workspace with browser-wallet
+  connection, Celo Sepolia network switching, a manual signature fallback,
+  payout policy, reward states, and explorer links.
+
+See [Phase 6 Wallet Experience](docs/PHASE_6_WALLET_EXPERIENCE.md) for the
+security model, API, frontend flow, and remaining native-wallet deployment work.
+
+### Phase 7 - Reward Operations and Reconciliation
+
+- Added a persistent reward pause that defaults to paused and blocks new
+  broadcasts independently from environment configuration.
+- Added an administrator payout queue, operational totals, status filtering,
+  gateway-readiness checks, and emergency controls.
+- Added receipt reconciliation for broadcast transactions that survive a
+  restart or confirmation timeout.
+- Added an immutable reward audit trail for control changes, broadcasts,
+  confirmations, failures, and duplicate-prevention decisions.
+- Added a professional administrator reward-operations workspace with safe
+  processing and reconciliation actions.
+
+See [Phase 7 Reward Operations](docs/PHASE_7_REWARD_OPERATIONS.md) for the
+control model, reconciliation behavior, API, audit coverage, and pilot runbook.
+
+### Phase 8 - Celo Pilot Readiness
+
+- Added fail-fast production and live-reward configuration validation.
+- Added a read-only administrator preflight for the Celo Sepolia RPC, deployed
+  treasury contract, owner signer, balance, and application pause.
+- Exposed live HTTP, reward, treasury, and preflight Prometheus metrics.
+- Added alerts for stuck broadcasts, reward failures, failed preflight checks,
+  and low treasury balance.
+- Added local and deployed-environment pilot smoke commands and kept Kubernetes
+  at one replica while the backend uses SQLite.
+- Kept live payouts disabled: this phase deploys no contract and sends no CELO.
+
+See [Phase 8 Celo Pilot Readiness](docs/PHASE_8_CELO_PILOT_READINESS.md) for
+configuration rules, preflight usage, monitoring, and the controlled pilot
+sequence.
+
+### Phase 9 - Production Security Hardening
+
+- Upgraded actively used backend dependencies and removed all known production
+  dependency audit findings.
+- Migrated optional S3 storage from AWS SDK v2 to AWS SDK v3.
+- Added security headers, API and authentication rate limits, JSON body limits,
+  trusted-proxy controls, and stable abuse-limit errors.
+- Added fail-fast validation for security settings and enforced the production
+  dependency audit in CI.
+- Isolated automated tests from the developer database and evidence storage.
+- Recalibrated perceptual duplicate matching for Sharp 0.35 and recorded the
+  updated analysis as `phase9-v2`.
+
+See [Phase 9 Production Security](docs/PHASE_9_PRODUCTION_SECURITY.md) for the
+controls, configuration, audit boundary, and remaining deployment work.
+
+### Phase 10 - Production Data and Evidence
+
+- Added a PostgreSQL adapter and ordered, transactional production migrations
+  while preserving SQLite for local development.
+- Added database verification, SQLite-to-PostgreSQL import, PostgreSQL backup,
+  and guarded restore commands.
+- Added private S3 evidence storage with authenticated streaming and removed
+  replica-local production uploads.
+- Added PostgreSQL, S3, and production orchestration configuration plus database
+  and evidence recovery operations.
+
+See [Database and Evidence Operations](docs/DATABASE_AND_EVIDENCE_OPERATIONS.md).
+
+### Phase 11 - Test Quality and Supported Frontend
+
+- Upgraded the frontend to Expo SDK 56, React Native 0.85, and React 19.2.
+- Added sign-in and signup component tests, API-configuration integration tests,
+  and enforced frontend and backend coverage thresholds.
+- Enforced clean lint, test, coverage, and web-export gates in CI.
+- Removed unused vulnerable document-generation dependencies from the frontend.
+
+### Phase 12 - Secure Release Automation
+
+- Added current Node and Nginx runtime images, immutable commit-addressed image
+  releases, SBOMs, provenance, and authenticated final-image vulnerability
+  scanning.
+- Added PostgreSQL CI, dependency updates, code ownership, protected production
+  governance, external secret injection, and non-root Kubernetes workloads.
+- Added environment rendering that refuses missing values, placeholders,
+  mutable image tags, wildcard CORS, and missing baseline workload protections.
+
+See [Release Governance](docs/RELEASE_GOVERNANCE.md).
+
+### Phase 13 - Staging, Load, and Rollback Readiness
+
+- Added an automatic staging rollout before the protected production approval.
+- Added HTTPS smoke tests for health, readiness, authentication, metrics, and
+  CORS boundaries.
+- Added a bounded, read-only load runner with error-rate and p95 latency gates.
+- Added a read-only AKS dependency preflight and a repeatable rollback drill.
+
+See [Staging, Load, and Rollback Operations](docs/STAGING_LOAD_AND_ROLLBACK.md).
+
+### Phase 10 through Phase 13 Delivery Snapshot
+
+- Delivered production data, test quality, secure release automation, and
+  staging operations as 60 one-file commits on `main`.
+- Verified every delivery commit uses
+  `davelee001 <david.leekaleer@student.utamu.ac.ug>` and synchronized the local
+  branch with `origin/main` at `c053b31`.
+- Passed all 78 backend tests and all 9 frontend tests, including the enforced
+  backend and frontend coverage thresholds.
+- Passed backend and frontend lint, the production Expo web export, the backend
+  production dependency audit, Compose rendering, and Kubernetes manifest
+  validation.
+- Built and started both non-root release images and passed the local release
+  smoke test.
+- Completed a ten-second read-only readiness load test with 3,980 requests,
+  zero failures, and 32.88 ms p95 latency.
+- Kept CELO transfers disabled and left environment-specific domains, secrets,
+  cloud resources, and production approval as explicit deployment gates.
+
+### Phase 6 and Phase 7 Delivery Snapshot
+
+- Delivered wallet ownership, member payout visibility, reward administration,
+  reconciliation, and audit controls as 24 focused commits on `main`.
+- Kept every delivery commit limited to one file and verified the
+  `davelee001 <david.leekaleer@student.utamu.ac.ug>` author identity.
+- Verified all 63 backend tests and both backend and frontend lint checks.
+- Built the backend and production Expo web frontend successfully in the
+  project-standard Node.js 22 containers.
+- Validated development and production Compose configuration and confirmed a
+  clean synchronized working tree after the push.
+- Kept live CELO transfers disabled and the persistent operational reward switch
+  paused by default; no contract was deployed and no blockchain transaction was
+  sent during this delivery.
+
+### Phase 4 Delivery Snapshot
+
+- Delivered the verification foundation as 20 focused commits on `main`.
+- Kept each delivery commit limited to one file for straightforward review and rollback.
+- Verified all 20 commits use the `davelee001` Git author identity.
+- Confirmed the local branch and `origin/main` are synchronized after the push.
+
+### Interface and Local Development Update
+
+- Simplified the sign-in experience by removing pre-authentication welcome copy
+  and using concise `Sign in` labels.
+- Expanded the City Cleanup brand lockup above the sign-in impact message.
+- Redesigned the authenticated landing dashboard with a professional header,
+  focused primary actions, account and verification status, categorized tools,
+  and responsive dark-blue cards.
+- Allowed both the Docker web frontend at `http://localhost` and the Expo web
+  frontend at `http://localhost:19006` to call the local backend.
+- Verified backend and frontend linting, the production web build, and live
+  frontend and backend HTTP responses.
+- Delivered these interface and connectivity changes as 14 focused commits on
+  `main`.
+
+### Logged-in Analytics Workspace Update
+
+- Reworked the impact analytics screen around cleanup activity, verification
+  progress, measurable outcomes, and platform operations.
+- Removed the generic theme toggle, mock oil-field model, and unrelated
+  industrial terminology from the authenticated experience.
+- Added professional member and administrator controls, platform statistics,
+  recent activity, live analytics, reporting, and system-status panels.
+- Updated the interactive map with cleanup locations in Juba and clearer
+  activity states.
+- Refined search filters, live chart presentation, export controls, responsive
+  dark-blue styling, and accessibility labels.
+- Changed five frontend files and delivered the work as six focused commits on
+  `main`; `Dashboard.js` received separate redesign and accessibility commits.
+
+The application is still **pre-deployment**. Verification threshold calibration,
+production cloud storage, dependency security remediation, native wallet
+connector testing, contract deployment/funding, and a controlled Celo Sepolia
+pilot remain release blockers.
+
+## 🚀 Latest Updates (v2.9 - March 3, 2026)
+
+### Major Enhanced Social Platform Release
+🤝 **Enhanced Social Platform** — Complete friend challenges system with competitive and collaborative features
+💫 **Friend Challenges** — Create custom challenges between friends with progress tracking and leaderboards
+🏆 **Community Recognition** — Advanced kudos system, community badges, and member spotlight features
+👥 **Collaborative Coordination** — Team-based cleanup coordination with role assignments and progress tracking
+📱 **Enhanced Social Dashboard** — New 5-tab interface (Feed, Teams, Challenges, Friends, Recognition)
+🎯 **Challenge Management** — Accept/decline challenge invitations with real-time participant tracking
+⭐ **Spotlight Features** — Highlight exceptional community members and achievements
+💬 **Social Interactions** — Enhanced like/unlike functionality with advanced reaction types
+🎨 **Premium UI/UX** — 200+ new style definitions for beautiful social interaction interfaces
+🔔 **Smart Notifications** — Real-time updates for friend challenges, kudos, and community recognition
+
+### Development Workflow Improvements (March 3, 2026)
+🔧 **Granular Commit Structure** — Restructured git history into 12 focused, feature-specific commits
+📦 **Modular Development** — Each social feature implemented and committed individually for better maintainability
+🔍 **Enhanced Code Review** — Granular commits enable precise code review and selective feature rollbacks
+📈 **Better Project Management** — Clear progression tracking with isolated feature commits
+👥 **Team Collaboration** — Improved developer workflow with focused, single-responsibility commits
+🚀 **Production Ready** — Clean deployment pipeline with individual feature activation capabilities
+
+## Previous Updates (v2.8 - March 3, 2026)
+
+🔧 **Platform Optimization** — Performance enhancements and stability improvements across all systems
+📊 **Enhanced Analytics** — Improved data visualization and real-time monitoring capabilities
+🛡️ **Security Hardening** — Advanced authentication and data protection measures
+📱 **Mobile Experience** — Refined user interface and smoother navigation flows
+🌐 **API Performance** — Optimized database queries and response times
+🔄 **Real-time Features** — Enhanced live updates and notification system reliability
+📈 **Scalability Improvements** — Better handling of concurrent users and large datasets
+✨ **User Experience Polish** — Refined interactions and visual feedback across all features
+🧪 **Testing Coverage** — Expanded automated testing for better reliability
+📋 **Documentation Updates** — Comprehensive guides and improved developer resources
+
+### Platform Status (March 3, 2026)
+- ✅ **Enhanced Social Platform** — Complete friend challenges and community recognition system with collaborative features
+- ✅ **Advanced Interaction System** — Friend challenges, kudos, badges, and spotlight features fully integrated
+- ✅ **Social Dashboard Enhanced** — Beautiful 5-tab interface with premium styling and smooth navigation
+- ✅ **Real-time Social Features** — Live updates for challenges, recognition, and collaborative activities
+- ✅ **Community Recognition** — Comprehensive kudos and badge system with peer appreciation platform
+- ✅ **Collaborative Coordination** — Team cleanup coordination with role assignments and progress tracking
+- ✅ **Granular Architecture** — Modular commit structure with 12 focused feature implementations
+- ✅ **Development Workflow** — Optimized git history for better code review and selective deployments
+- ✅ **Production Ready** — All core systems have been tested and optimized for live deployment
+- ✅ **Performance Optimized** — Sub-200ms API response times with intelligent caching
+- ✅ **Scalability Tested** — Successfully handles 1000+ concurrent users and large event datasets
+- ✅ **Security Hardened** — Multi-layer authentication, data encryption, and input validation
+- ✅ **Mobile Optimized** — Smooth performance on iOS and Android devices with offline capabilities
+- ✅ **Analytics Enhanced** — Real-time dashboards with detailed user engagement insights
+- ✅ **Integration Mature** — Seamless connectivity between all platform components
+- ✅ **Database Optimized** — Efficient queries with <50ms average response times
+- ✅ **Monitoring Active** — 24/7 system health tracking with automated alerts
+- ✅ **Documentation Complete** — Comprehensive setup guides and API documentation
+
+## Enhanced Social Features (v2.9 - March 3, 2026)
+
+🤝 **Friend Challenges System** — Complete friend challenge platform with competitive, collaborative, and learning modes
+🏆 **Community Recognition Platform** — Advanced kudos system, community badges, and member spotlight features
+👥 **Collaborative Cleanup Coordination** — Team-based cleanup coordination with role assignments and real-time progress tracking
+📱 **Enhanced Social Dashboard** — Beautiful 5-tab interface (Feed, Teams, Challenges, Friends, Recognition) with premium styling
+🎯 **Dynamic Challenge Management** — Create custom challenges with duration, metrics, prizes, and participant invitations
+⭐ **Spotlight System** — Highlight exceptional community members and showcase outstanding achievements
+💬 **Advanced Social Interactions** — Enhanced like/unlike, comment, share functionality with multiple reaction types
+🔔 **Real-time Notifications** — Live updates for friend challenges, kudos awards, and community recognition
+🎨 **Premium UI/UX** — 200+ new style definitions for beautiful social interaction interfaces with smooth animations
+🤖 **Smart Integration** — Seamless connection between social features and environmental tracking systems
+
+### Friend Challenge Features (March 3, 2026)
+- ✅ **Challenge Creation** — Create custom challenges with title, description, and challenge types (competitive, collaborative, learning)
+- ✅ **Flexible Metrics** — Support for waste collection, participation days, photos uploaded, and events attended
+- ✅ **Duration Control** — Customizable challenge duration with automatic progress tracking
+- ✅ **Invitation System** — Send challenge invitations to friends with accept/decline functionality
+- ✅ **Real-time Progress** — Live participant progress tracking with leaderboards and completion status
+- ✅ **Prize System** — Optional prize descriptions and rewards for challenge completion
+- ✅ **Status Management** — Dynamic challenge states (pending, active, completed) with visual indicators
+- ✅ **Participant Lists** — View all challenge participants with individual progress metrics
+- ✅ **Premium UI** — Beautiful challenge cards with status-coded styling and interactive elements
+- ✅ **Integration Layer** — Automatic progress updates from cleanup activities and environmental actions
+
+### Community Recognition Features (March 3, 2026)
+- ✅ **Kudos System** — Give recognition to community members with categorized appreciation (helpful, inspiring, dedicated)
+- ✅ **Community Badges** — Award special badges for outstanding contributions and achievements
+- ✅ **Member Spotlights** — Feature exceptional community members with detailed recognition profiles
+- ✅ **Recognition Types** — Multiple kudos categories with visibility controls (public, team, private)
+- ✅ **Points Integration** — Automatic point awards for giving and receiving community recognition
+- ✅ **Recognition Feed** — Horizontal scrolling feeds for recent kudos and community badges
+- ✅ **Visual Recognition** — Beautiful badge cards and kudos displays with color-coded categories
+- ✅ **Appreciation Tracking** — Track recognition given and received with community contribution metrics
+- ✅ **Notification System** — Real-time notifications for kudos, badges, and spotlight features
+- ✅ **Social Impact** — Build community reputation and encourage positive environmental engagement
+
+### Technical Architecture Highlights (March 3, 2026)
+- 🏗️ **Modular Backend Design** — 8 focused backend service commits for individual social features
+- 🎨 **Progressive Frontend Development** — 4 incremental UI commits building complete social dashboard
+- 📱 **Component-Based Architecture** — Isolated feature components for maintainable React Native codebase
+- 🔄 **Incremental Integration** — Each social feature seamlessly integrates with existing environmental tracking
+- 🧪 **Feature-Specific Testing** — Granular test coverage aligned with individual feature commits
+- 📊 **Independent Deployment** — Each feature can be deployed and rolled back independently
+- 🔐 **Security by Design** — Security considerations embedded in each individual feature implementation
+- ⚡ **Performance Optimized** — Each feature optimized individually before integration
+- 🗄️ **Database Consistency** — Schema changes tracked per feature for better migration management
+- 📝 **Documentation Alignment** — Feature documentation matches granular commit structure
+
+## Previous Enhanced Social Features (v2.7-v2.8)
+
+👥 **Enhanced Social Features** — Complete social platform with team formation, community challenges, and social networking
+🏢 **Team Management System** — Create and manage teams with public/private types, role-based permissions, and custom branding
+📰 **Social Feed Platform** — Posts, comments, likes, shares with real-time interactions and engagement tracking
+🎯 **Challenge System** — Individual and team-based environmental challenges with progress tracking and rewards
+🏅 **Community Recognition** — Kudos system, badges, and peer appreciation with notification system
+👥 **Social Networking** — Follow relationships, user discovery, and social engagement analytics
+📊 **Advanced Leaderboards** — Enhanced rankings with intelligent caching and social team competitions
+🔄 **Social Integration** — Seamless integration with existing gamification and environmental tracking systems
+📱 **Social Dashboard** — Beautiful 4-tab interface (Feed, Teams, Challenges, Recognition) with real-time updates
+🔗 **Comprehensive APIs** — Full social REST endpoints with file uploads, authentication, and moderation
+
+## Git Commit Architecture (March 3, 2026)
+
+Our development follows a **granular commit strategy** for maximum maintainability and code review efficiency:
+
+### Backend Social Features (8 Commits)
+1. **feat: add basic social service foundation - team management** — Database setup and core team functionality
+2. **feat: add team leaderboard system** — Public team rankings with environmental impact scoring
+3. **feat: add social posts functionality** — Post creation, media attachments, and privacy controls
+4. **feat: add social feed system** — Multi-type feeds (public, team, friends) with pagination
+5. **feat: add friend challenge system** — Challenge creation, invitations, and participant management
+6. **feat: add community kudos system** — Peer recognition with points and visibility controls
+7. **feat: add community badges system** — Achievement badges with automatic point tracking
+8. **feat: add community spotlight system** — Member recognition with auto-badge awarding
+
+### Frontend Social Dashboard (4 Commits)
+9. **feat: add basic social dashboard foundation** — Core 5-tab interface structure
+10. **feat: add challenges tab to social dashboard** — Challenge management UI with forms
+11. **feat: complete enhanced social dashboard implementation** — Friends tab and recognition interface
+12. **docs: update README with enhanced social features v2.9** — Comprehensive documentation
+
+### Benefits of Granular Commits
+- 🔍 **Precise Code Review** — Each commit focuses on a single feature for targeted review
+- 🐛 **Easier Debugging** — Quickly identify which feature introduced specific issues  
+- ↩️ **Selective Rollbacks** — Revert individual features without affecting others
+- 📊 **Better Project Management** — Clear feature completion tracking and progress visibility
+- 👥 **Team Collaboration** — Developers can work on specific features independently
+- 🚀 **Independent Deployments** — Features can be deployed or disabled individually
+
+### Social Features (February 24, 2026)
+- ✅ **Team Formation** — Create and join teams with custom avatars, descriptions, and member management
+- ✅ **Social Feed** — Post updates, share achievements, comment, like, and share with privacy controls
+- ✅ **Challenge Platform** — Create environmental challenges with metrics, rewards, and team competitions
+- ✅ **Recognition System** — Give and receive kudos, earn community badges, and build reputation
+- ✅ **Notification Center** — Real-time notifications for all social interactions and team activities
+- ✅ **Follow Network** — Follow users and teams to stay connected with the cleanup community
+- ✅ **File Upload Support** — Team avatars, challenge attachments, and social media sharing
+- ✅ **Social Analytics** — Track engagement, team performance, and community contributions
+- ✅ **Integration Layer** — Connects events to social features with automatic point awarding
+- ✅ **Comprehensive Testing** — Full test suite for social platform reliability and performance
+
+## Previous Enhancements (v2.6 - February 24, 2026)
+
+🎮 **Gamification & Incentive System** — Comprehensive point-based engagement with achievements, leaderboards, and environmental impact tracking
+🏆 **Achievement System** — 21 unique achievements across 6 categories rewarding participation, impact, and leadership
+📊 **Multi-Type Leaderboards** — Compete in points, waste collection, streaks, events, and environmental impact rankings
+🔥 **Streak Tracking** — Daily activity streaks with bonus multipliers and achievement rewards
+🌱 **Level Progression** — 10-level system from "Eco Beginner" to "Planet Savior" with visual progression
+📈 **Environmental Impact Scoring** — Real-time CO₂, water, and energy savings calculations
+🎯 **Automated Point Awarding** — Event-driven points for signup, events, photos, progress with smart bonuses
+📱 **Interactive Dashboard** — Beautiful 3-tab interface with real-time stats and achievement galleries
+⚡ **Real-Time Integration** — Seamless gamification woven throughout existing features
+🔐 **Comprehensive APIs** — Full REST endpoints with authentication, caching, and admin controls
+
+### Gamification Features (February 24, 2026)
+- ✅ **Points System** — Event participation (50-150pts), photo uploads (25-40pts), event creation (100pts), environmental impact bonuses
+- ✅ **Achievement Categories** — Participation, Impact, Leadership, Documentation, Streak, and Special achievements
+- ✅ **Level System** — 10 progression levels with themed titles and XP requirements (100 to 10,000+ points)
+- ✅ **Leaderboards** — Points, Events, Waste, Environmental Impact, Streak, Achievements, and Level rankings
+- ✅ **Environmental Tracking** — Real impact calculations: 2.5kg CO₂, 50L water, 3.7kWh energy saved per kg waste
+- ✅ **Streak Bonuses** — Daily activity tracking with 7-day, 30-day, and 90-day milestone achievements
+- ✅ **Smart Integration** — Automatic point awards for all existing actions (signup, events, photos, progress)
+- ✅ **Interactive Dashboard** — Overview, Leaderboard, and Achievements tabs with live data and detailed modals
+- ✅ **Database Schema** — 11 comprehensive tables supporting all gamification features with caching
+- ✅ **Testing & Migration** — Automated setup scripts and comprehensive API testing suite
+
+## Previous Enhancements (v2.5 - February 21, 2026)
+
+🧠 **AI-Powered Impact Analysis** — Smart algorithms analyze cleanup effectiveness and provide impact scores
+🌍 **GPS Metadata Processing** — Automatic location embedding in photos with real-time validation
+☁️ **Cloud Storage Integration** — AWS S3 support with automatic local fallback for scalability
+📊 **Visual Progress Tracking** — Advanced before/after photo comparison with AI insights
+🎯 **Enhanced Upload Modes** — Toggle between basic and advanced upload with comprehensive features
+🔍 **Quality Assessment** — AI-driven image quality analysis (brightness, contrast, sharpness, waste detection)
+🗄️ **Advanced Database Schema** — Enhanced metadata tables for GPS, AI analysis, and detailed tracking
+⚙️ **Comprehensive Configuration** — Feature flags, security controls, and performance optimization
+
+## Previous Enhancements (v2.4 - February 2026)
+
+📷 **Complete Image Upload System** — Comprehensive photo documentation for cleanup events
+🖼️ **Before/After Photo Tracking** — Visual proof of environmental impact
+👤 **Profile Avatar Upload** — Personalized user profiles with custom avatars
+📊 **Visual Progress Documentation** — Photo-enhanced cleanup progress tracking
+🔧 **Multer Integration** — Professional-grade file upload handling with security
+🎨 **Enhanced UI Components** — New reusable image upload components
+
+### New Image Upload Features (February 20, 2026)
+- ✅ **Image Upload Service** — Complete backend service for handling file uploads with validation
+- ✅ **Avatar Upload System** — Users can upload and manage profile pictures  
+- ✅ **Progress Photo Documentation** — Before/after photo upload for cleanup events
+- ✅ **Reusable Upload Components** — Modular React components for various upload types
+- ✅ **Image Processing Pipeline** — Automatic image optimization and thumbnail generation
+- ✅ **Secure File Storage** — Organized directory structure with file validation
+- ✅ **REST API Endpoints** — Complete API coverage for image upload operations
+
+## Recent Enhancements (v2.3)
+
+🚀 **Complete DevOps Infrastructure** — Docker, Kubernetes, CI/CD with GitHub Actions
+📊 **Comprehensive Monitoring** — Prometheus, Grafana, and Sentry
+📝 **Log Aggregation** — Centralized logging with Loki and structured logging
+🔔 **Intelligent Alerting** — Multi-channel alerts with Prometheus and Alertmanager
+🏥 **Health Monitoring** — Advanced health checks and uptime monitoring
+🔐 **Azure Key Vault Integration** — Secure secrets management
+🧪 **Complete Testing Suite** — Unit, integration, and E2E tests with Playwright
+
+## Previous Enhancements (v2.2)
+
+🎯 **Event-Driven Architecture** — Implemented publish/subscribe pattern for decoupled, scalable services.
+🚀 **API Versioning** — All backend endpoints are now versioned under `/api/v1` for better scalability and future-proofing.
+🎨 **Modernized UI** — Enhanced user authentication screens with a fresh, modern look.
+👤 **Enhanced Profile Management** — Users can now upload a profile avatar for personalization.
+💳 **Subscription Management** — New dashboard for viewing and managing subscription tiers.
+🏠 **Redesigned Home Screen** — New grid-based layout for easier and more intuitive navigation.
+🚀 **Admin Panel & Management System** — Complete administrative interface with role-based access control
+📊 **Advanced Analytics Dashboard** — Real-time system metrics with comprehensive usage tracking  
+🎯 **Plan Management System** — Create and manage cleanup plans with unique identification codes
+👥 **User Role Management** — Admin and user roles with granular permission controls
+📈 **Usage Analytics** — Track all user actions and system activities with detailed reporting
+🔐 **Enhanced Security** — Role-based authentication with secure admin endpoints
+✅ **GitHub Integration** — Proper commit attribution and contribution tracking setup
+
+### Latest Updates (January 25, 2026)
+- ✅ **Event-Driven Architecture** — Implemented central event emitter for decoupled analytics tracking.
+- ✅ **Modular Analytics** — Refactored signup, posts, events, and plans to use event listeners.
+- ✅ **API Versioning** — Implemented `/api/v1` for all backend routes and updated frontend clients.
+- ✅ **Individual Commits** — Split recent work into separate, feature-specific commits.
+- ✅ **Modernized Auth UI** — Refreshed login and signup screens for a better user experience.
+- ✅ **Profile Avatars** — Users can now upload and display a profile picture.
+- ✅ **Subscription Dashboard** — New screen to display available subscription plans.
+- ✅ **Grid Navigation** — Home screen now uses a modern grid-based layout.
+- ✅ **Database Schema Updates** — Added support for user avatars and subscriptions.
+- ✅ **Admin System Complete** — Full admin panel implementation with database integration
+- ✅ **Role-Based Authentication** — Secure user/admin role system with middleware protection  
+- ✅ **Analytics Dashboard** — Real-time usage tracking and system monitoring capabilities
+- ✅ **Git Configuration Fixed** — Proper author attribution for GitHub contribution chart
+- ✅ **Documentation Enhanced** — Comprehensive README with v2.2 feature coverage
+
+## Features
+
+### Location-Based Events
+- **GPS-Enabled Events**: Create and find cleanup events with precise GPS coordinates
+- **Interactive Map**: View all events on an interactive map with color-coded markers
+- **Location Check-ins**: Verify attendance with GPS-based check-ins
+- **Real-time Updates**: Live event status and participant tracking
+
+### Impact Tracking
+- **Progress Logging**: Track waste collected (weight, type, notes)
+- **Photo Documentation**: Upload before/after photos for visual impact proof
+- **Personal Impact**: View your total environmental impact across all events
+- **Event Statistics**: See collective progress for each cleanup event
+- **Achievement History**: Historical view of all your cleanup contributions
+- **Visual Progress Gallery**: Browse photos from all your cleanup activities
+
+### Enhanced Social Platform
+- **Team Formation & Management**: Create public/private teams with custom avatars, descriptions, and role-based member management
+- **Social Feed System**: Share posts, photos, achievements with comments, likes, shares, and privacy controls
+- **Environmental Challenges**: Individual and team-based challenges with progress tracking, rewards, and leaderboards
+- **Community Recognition**: Give kudos, earn badges, build reputation through peer appreciation system
+- **Social Networking**: Follow users and teams, discover community members, build connections
+- **Real-time Notifications**: Stay updated on team activities, challenge progress, and social interactions
+- **File Upload Platform**: Team avatars, challenge attachments, social media with secure file handling
+- **Social Analytics**: Track team performance, engagement metrics, and community contributions
+- **Integration Layer**: Seamlessly connects cleanup events to social features with automatic rewards
+- **Comprehensive Privacy**: Granular privacy controls for posts, team visibility, and personal data
+- **Event Creation**: Create and manage your own cleanup events with social sharing
+- **Community Posts**: Share experiences and motivate others with enhanced media support
+- **User Profiles**: Manage your account with custom avatar uploads and social stats
+- **Photo Sharing**: Upload and view cleanup photos from the community with social engagement
+- **Chatbot Guide**: Get help with app features and cleanup tips
+- **Visual Impact Stories**: Before/after photo galleries for events with social sharing
+- **🏆 Achievements Dashboard**: View earned achievements and track progress toward new ones
+- **📊 Personal Statistics**: Comprehensive gamification stats with environmental impact metrics
+- **🔥 Streak Challenges**: Daily activity tracking with bonus point multipliers and milestone rewards
+
+### Admin Panel & Management
+- **Role-Based Access**: Admin and user roles with permission controls
+- **Plan Management**: Create and manage cleanup plans with unique codes
+- **User Administration**: Manage user accounts and assign roles
+- **System Analytics**: Comprehensive dashboard with real-time metrics
+- **Activity Monitoring**: Track all user actions and system usage
+- **Plan Code System**: Unique cleanup plan codes for organization
+
+### Advanced Dashboard
+- **Real-time Analytics**: Live charts with auto-updating data visualization
+- **Interactive Maps**: Oil field locations with status indicators
+- **Dark/Light Mode**: Customizable theme switching for better UX
+- **Data Export**: Download reports in PDF, Excel, or CSV formats
+- **Smart Filtering**: Advanced search and filter capabilities
+- **Toast Notifications**: Real-time feedback for user actions
+- **PWA Support**: Offline mode with service worker caching
+- **Loading States**: Skeleton loaders for smooth user experience
+- **Mobile Responsive**: Optimized for all screen sizes
+
+## Project Structure
+
+- `backend/` — Express server with SQLite database, location APIs, and RESTful endpoints
+- `city-cleanup-challenge/` — Expo React Native app with maps, GPS, and event management
+
+## Quick Start
+
+### Using Docker (Recommended)
+
+```bash
+# Start all services
+docker compose up -d
+
+# Start with monitoring
+docker compose --profile monitoring up -d
+
+# Access the application
+# Frontend: http://localhost
+# Backend API: http://localhost:3001
+# Grafana: http://localhost:3000 (admin/admin)
+# Prometheus: http://localhost:9090
+```
+
+### Manual Setup
+
+#### Backend Setup
+
+Prerequisites: Node.js 22
+
+```bash
+cd backend
+cp .env.example .env
+npm install
+npm run dev
+
+# In another terminal, check health
+npm run health
+```
+
+#### Enhanced Features Configuration (v2.5)
+
+For enhanced image processing with GPS, AI analysis, and cloud storage, configure the following environment variables in `backend/.env`:
+
+```env
+# Enhanced Image Processing Features
+GPS_ENABLED=true
+GPS_MAX_DISTANCE=1000
+GPS_VALIDATION_LEVEL=moderate
+GPS_ANONYMIZE=false
+
+# AI Analysis Configuration  
+AI_ANALYSIS_ENABLED=true
+NODE_FETCH_TIMEOUT=30000
+MOCK_AI=false
+
+# Cloud Storage (AWS S3)
+USE_CLOUD_STORAGE=false
+AWS_REGION=us-east-1
+AWS_S3_BUCKET=your-cleanup-images-bucket
+AWS_ACCESS_KEY_ID=your_aws_access_key
+AWS_SECRET_ACCESS_KEY=your_aws_secret_key
+AUTO_MIGRATE_TO_CLOUD=false
+
+# Performance & Security
+ENABLE_METRICS=false
+SAVE_INTERMEDIATE=false
+SKIP_GPS_VALIDATION=false
+VERBOSE=false
+```
+
+**Note**: Set `USE_CLOUD_STORAGE=true` and configure AWS credentials for cloud storage. The system automatically falls back to local storage if cloud services are unavailable.
+
+#### Frontend Setup (Expo)
+
+```bash
+cd city-cleanup-challenge
+npm install
+npx expo start
+```
+
+**Note**: Location permissions will be requested on first use for GPS functionality.
+
+### Quick Reference
+
+📚 [DevOps Infrastructure Guide](docs/DEVOPS_INFRASTRUCTURE.md)  
+📊 [Monitoring Setup](docs/MONITORING.md)  
+🔐 [Azure Key Vault Setup](docs/AZURE_KEYVAULT_SETUP.md)  
+🚀 [Quick Start Guide](QUICKSTART.md)
+ with photo documentation
+- **My Progress** — Track your environmental impact with before/after photos and gamification points
+- **🏆 Achievements** — View earned achievements, leaderboards, and track your cleanup level progression  
+- **Posts** — Community discussions and sharing with image uploads
+- **Chatbot Guide** — Get help and guidance
+- **Profile** — Manage account settings and upload custom avatar
+- **Subscription Dashboard** — View and manage subscription plans
+- **Dashboard** — Advanced analytics and data visualization
+- **Admin Panel** — System administration (admin users only)
+
+### Event Management
+- Upload before/after photos for visual documentation
+- View photo galleries from community cleanup efforts
+- Create events with GPS coordinates
+- Set date, time, and location details
+- Check into events with location verification
+- Track cleanup progress and waste collected
+
+## API Endpoints
+
+### Event Management
+- `POST /events` — Create cleanup event with GPS coordinates
+- `GET /events` — Get all active events
+- `GET /events/:id` — Get specific event details
+- `PUT /events/:id` — Update event (creator only)
+- `DELETE /events/:id` — Cancel event (creator only)
+
+### Check-in System
+- `POST /events/:id/checkin` — Check into event with location verification
+- `GET /events/:id/checkins` — View event check-ins
+- `GET /users/:username/checkins` — User's check-in history
+
+
+### Image Upload & Media
+- `POST /api/v1/upload/avatar` — Upload user profile avatar with validation
+- `POST /api/v1/upload/progress/:eventId` — Upload before/after cleanup photos
+- `POST /api/v1/upload/event/:eventId` — Upload general event photos
+- `GET /api/v1/user/:username/avatar` — Get user's current avatar
+- `GET /api/v1/progress/:eventId/photos` — Get cleanup progress photos
+- `GET /api/v1/images/*` — Serve uploaded images (static files)
+
+### Enhanced Image Processing (v2.5)
+- `POST /api/v1/enhanced/upload/progress/:eventId` — Enhanced upload with GPS & AI analysis
+- `POST /api/v1/enhanced/upload/avatar` — GPS-enabled avatar upload with metadata
+- `GET /api/v1/enhanced/progress/:eventId/analysis` — Retrieve AI analysis results and statistics
+- `POST /api/v1/enhanced/analyze-impact` — Compare existing photos for impact analysis
+- `GET /api/v1/enhanced/config` — Get current enhanced features configuration
+
+### Gamification System (v2.6)
+- `GET /api/v1/gamification/dashboard/:username` — Comprehensive dashboard with stats, achievements, and environmental impact
+- `POST /api/v1/gamification/points/award` — Award points for user actions with bonuses and level progression
+- `GET /api/v1/gamification/points/:username/history` — Detailed points history with source tracking
+- `GET /api/v1/gamification/achievements/:username` — User achievements with category filtering
+- `GET /api/v1/gamification/achievements/available` — Master list of all available achievements
+- `GET /api/v1/gamification/leaderboard` — Multi-type leaderboards with pagination and timeframe filtering
+- `GET /api/v1/gamification/streak/:username` — Streak information with bonus calculations
+- `POST /api/v1/gamification/streak/update` — Update user activity streak with achievement checks
+- `GET /api/v1/gamification/badges/:username` — User badge collection with visibility controls
+- `GET /api/v1/gamification/impact/:username` — Environmental impact statistics with timeframe options
+- `GET /api/v1/gamification/challenges` — Active seasonal challenges with participation tracking
+- `POST /api/v1/gamification/challenges/:challengeId/join` — Join seasonal challenges
+- `POST /api/v1/gamification/challenges/:challengeId/progress` — Update challenge progress
+- `GET /api/v1/gamification/level/:username` — Current user level and progression status
+- `POST /api/v1/gamification/achievements/award` — Manual achievement awarding (admin only)
+- `POST /api/v1/gamification/challenges/create` — Create custom seasonal challenges (admin only)
+### Progress Tracking
+- `POST /events/:id/progress` — Log cleanup progress and waste collected
+- `GET /events/:id/progress` — View event progress with totals
+- `GET /users/:username/progress` — User's cleanup impact across events
+
+### Posts & Social
+- `POST /posts` — Create community posts
+- `GET /posts` — Get all posts
+- `PUT /posts/:id` — Edit post (owner only)
+- `DELETE /posts/:id` — Delete post (owner only)
+
+### Enhanced Social Platform (v2.7)
+
+#### Team Management
+- `POST /api/v1/social/teams` — Create teams with custom settings and branding
+- `GET /api/v1/social/teams` — Get all teams with filtering and search options  
+- `GET /api/v1/social/teams/:id` — Get specific team details with member information
+- `PUT /api/v1/social/teams/:id` — Update team settings (admin/owner only)
+- `DELETE /api/v1/social/teams/:id` — Delete teams (owner only)
+- `POST /api/v1/social/teams/:id/join` — Join team with optional approval process
+- `PUT /api/v1/social/teams/:id/members/:userId` — Update member roles and permissions
+- `DELETE /api/v1/social/teams/:id/leave` — Leave team or remove members
+
+#### Social Feed & Posts  
+- `POST /api/v1/social/posts` — Create social posts with privacy controls and media
+- `GET /api/v1/social/feed` — Get personalized social feed with engagement tracking
+- `PUT /api/v1/social/posts/:id` — Edit social posts (owner only)
+- `DELETE /api/v1/social/posts/:id` — Delete social posts (owner/admin)
+- `POST /api/v1/social/posts/:id/like` — Like/unlike social posts
+- `POST /api/v1/social/posts/:id/comment` — Comment on social posts
+- `POST /api/v1/social/posts/:id/share` — Share social posts with attribution
+
+#### Challenge System
+- `POST /api/v1/social/challenges` — Create environmental challenges with rewards and metrics
+- `GET /api/v1/social/challenges` — Get active challenges with filtering and participation stats
+- `POST /api/v1/social/challenges/:id/join` — Join challenges individually or as team
+- `PUT /api/v1/social/challenges/:id/progress` — Update challenge progress with verification
+- `GET /api/v1/social/challenges/:id/leaderboard` — Get challenge rankings and statistics
+
+#### Community Recognition
+- `POST /api/v1/social/kudos` — Give kudos and appreciation to community members
+- `GET /api/v1/social/kudos/:userId` — Get user's received kudos and recognition history
+- `POST /api/v1/social/badges/award` — Award community badges (admin/system only)
+- `GET /api/v1/social/badges/:userId` — Get user's badge collection and achievements
+
+#### Social Networking
+- `POST /api/v1/social/follow/:userId` — Follow/unfollow users for social networking
+- `GET /api/v1/social/followers/:userId` — Get user's followers and following lists
+- `GET /api/v1/social/discover` — Discover new users and teams to follow
+- `GET /api/v1/social/stats/:userId` — Get comprehensive user social statistics
+
+#### Notifications & Activity
+- `GET /api/v1/social/notifications` — Get real-time social notifications with filtering
+- `PUT /api/v1/social/notifications/:id/read` — Mark notifications as read/unread
+- `GET /api/v1/social/activity/:userId` — Get user's social activity timeline
+- `POST /api/v1/social/upload` — Upload social media files (avatars, attachments, images)
+
+### Authentication
+- `POST /api/v1/signup` — Register a user with username, email, phone number, location, and password
+- `POST /api/v1/login` — User login returning a short-lived access token and rotating refresh token
+- `POST /api/v1/auth/refresh` — Rotate a valid refresh token and issue a new token pair
+- `POST /api/v1/auth/logout` — Revoke a refresh token
+- `GET /profile/:username` — Get user profile
+- `PUT /profile/:username` — Update user profile
+
+Private endpoints require `Authorization: Bearer <access-token>`. The client stores
+the session locally, refreshes an expired access token once, and revokes the
+refresh token during logout.
+
+### Admin Panel APIs
+- `GET /admin/analytics` — Comprehensive system analytics (admin only)
+- `GET /admin/activity` — System activity logs with filtering (admin only)
+- `GET /admin/users` — List all users with role information (admin only)
+- `PUT /admin/users/:id/role` — Update user roles (admin only)
+
+### Plan Management
+- `POST /admin/plans` — Create cleanup plans with codes (admin only)
+- `GET /plans` — Get plans (admin sees all, users see active only)
+- `PUT /admin/plans/:id` — Update cleanup plans (admin only)
+- `DELETE /admin/plans/:id` — Delete cleanup plans (admin only)
+
+### Additional Features
+
+## 🎮 Comprehensive Gamification System (v2.6)
+
+### Points & Rewards System
+- **Event Participation**: 50-150 points based on involvement level and event impact
+- **Photo Documentation**: 25-40 points for cleanup photos with GPS and AI analysis bonuses
+- **Event Organization**: 100 points for creating and managing cleanup events
+- **Environmental Impact**: Bonus points calculated from actual waste collected and CO₂ savings
+- **Content Creation**: 15 points for community posts and environmental storytelling
+- **First-Time Bonuses**: Discovery rewards up to 50 points for trying new features
+- **Streak Multipliers**: Daily activity bonuses with increasing rewards (7, 30, 90+ day milestones)
+
+### Achievement System (21 Unique Achievements)
+
+#### **🌱 Participation Category**
+- **First Cleanup** (100pts): Attend your first cleanup event
+- **Regular Cleaner** (200pts): Attend 5 cleanup events  
+- **Cleanup Veteran** (500pts): Attend 25 cleanup events
+- **Cleanup Master** (1000pts): Attend 100 cleanup events
+
+#### **♻️ Environmental Impact Category**  
+- **Small Impact** (150pts): Collect 10kg of waste
+- **Growing Impact** (400pts): Collect 50kg of waste
+- **Major Impact** (750pts): Collect 100kg of waste
+- **Environmental Hero** (2000pts): Collect 500kg of waste
+
+#### **👥 Leadership Category**
+- **Event Organizer** (200pts): Create your first cleanup event
+- **Community Leader** (750pts): Create 10 cleanup events
+- **Change Maker** (1500pts): Create 25 cleanup events
+
+#### **📸 Documentation Category**
+- **Cleanup Photographer** (300pts): Upload 25 cleanup photos
+- **Environmental Storyteller** (600pts): Upload 100 photos with impact documentation
+- **Environmental Archivist** (1200pts): Upload 500 photos across multiple events
+
+#### **🔥 Streak Category**
+- **Weekly Warrior** (250pts): Maintain 7-day activity streak
+- **Monthly Champion** (500pts): Maintain 30-day activity streak  
+- **Quarterly Legend** (1000pts): Maintain 90-day activity streak
+
+#### **⭐ Special Category**
+- **Early Bird** (100pts): Join event within first hour of creation
+- **Team Player** (200pts): Participate with 10+ people in one event
+- **Eco Warrior** (800pts): Save 100kg CO₂ equivalent through cleanup activities
+
+### Level Progression System (10 Levels)
+
+1. **🌱 Eco Beginner** (0-100 points): Just starting your environmental journey
+2. **🍃 Green Helper** (100-300 points): Making your first environmental contributions  
+3. **🌍 Earth Defender** (300-600 points): Actively protecting the environment
+4. **⚡ Climate Champion** (600-1000 points): Fighting climate change through action
+5. **⭐ Sustainability Star** (1000-1500 points): Leading sustainable practices
+6. **🦸 Environmental Hero** (1500-2500 points): Heroic environmental contributions
+7. **🛡️ Green Guardian** (2500-4000 points): Protecting the planet with dedication
+8. **👑 Eco Master** (4000-6000 points): Mastering environmental stewardship
+9. **🌏 Planet Protector** (6000-10000 points): Elite environmental protection
+10. **🚀 Planet Savior** (10000+ points): Ultimate environmental champion
+
+### Multi-Type Leaderboards
+
+#### **📊 Leaderboard Categories**
+- **🏆 Points Leaderboard**: Total gamification points across all activities
+- **📅 Events Leaderboard**: Most cleanup events attended and organized
+- **♻️ Waste Leaderboard**: Most waste collected (kg) with environmental impact
+- **🌍 Environmental Impact**: Highest CO₂, water, and energy savings combined
+- **🔥 Streak Leaderboard**: Longest and current activity streaks
+- **🏅 Achievements Leaderboard**: Most achievements earned across categories
+- **🎯 Level Leaderboard**: Highest user levels with progression tracking
+
+#### **⏰ Time-Based Rankings**
+- **Today**: Daily competition with real-time updates
+- **This Week**: Weekly challenges and community goals
+- **This Month**: Monthly environmental impact campaigns
+- **This Quarter**: Seasonal cleanup initiatives
+- **This Year**: Annual environmental contribution tracking
+- **All-Time**: Lifetime achievement and impact rankings
+
+### Environmental Impact Tracking
+
+#### **🌍 Real Impact Calculations**
+- **CO₂ Saved**: 2.5kg CO₂ reduction per kg waste collected
+- **💧 Water Conservation**: 50 liters preserved per kg waste collected
+- **⚡ Energy Savings**: 3.7 kWh saved per kg waste collected
+- **🏭 Carbon Value Scoring**: Comprehensive environmental impact assessment
+- **📊 Impact Aggregation**: Community-wide environmental benefit tracking
+
+### Streak System & Daily Engagement
+
+#### **🔥 Streak Mechanics**
+- **Daily Activity Tracking**: Automatic detection of cleanup-related actions
+- **Streak Bonuses**: Increasing point multipliers for consecutive days
+- **Milestone Rewards**: Special achievements at 7, 30, and 90+ day streaks
+- **Recovery Options**: Streak freeze capabilities for special circumstances
+- **Community Streaks**: Group challenges for sustained engagement
+
+### 📱 Interactive Gamification Dashboard
+
+#### **📊 Overview Tab**
+- **Level Progress Bar**: Visual XP progression with next level requirements
+- **Real-Time Statistics**: Points, streak, waste collected, achievements earned
+- **Environmental Impact Visualization**: CO₂, water, energy savings with beautiful charts
+- **Recent Achievements**: Latest accomplishments with detailed achievement cards
+- **Weekly Summary**: Progress tracking with trend analysis
+
+#### **🏆 Leaderboard Tab**  
+- **Multi-Category Rankings**: Switch between different leaderboard types
+- **User Position Highlighting**: Your rank prominently displayed with percentile
+- **Top Performers**: Community leaders with achievement highlighting
+- **Filtering Options**: Time-based and category-specific leaderboard views
+- **Real-Time Updates**: Live ranking changes as activities occur
+
+#### **🏅 Achievements Tab**
+- **Achievement Gallery**: Beautiful grid layout with earned achievements
+- **Category Organization**: Achievements grouped by type for easy browsing
+- **Progress Tracking**: Visual indicators for partially completed achievements
+- **Achievement Details**: Detailed modals with unlock requirements and rewards
+- **Completion Statistics**: Achievement completion rate and rarity information
+
+### 🔄 Automated Integration
+
+#### **Event-Driven Point Awarding**
+- **Seamless Background Processing**: Points awarded automatically for all actions
+- **Smart Bonus Detection**: GPS, AI analysis, and first-time action bonuses
+- **Real-Time Streak Updates**: Activity streaks maintained automatically
+- **Achievement Unlocking**: Automatic achievement detection and notification
+- **Environmental Impact Calculation**: Real-time CO₂, water, energy savings computation
+
+#### **🎯 Gamification APIs**
+- **Comprehensive REST Endpoints**: Full API coverage for all gamification features
+- **Real-Time Dashboard Data**: Live statistics and achievement updates
+- **Leaderboard Management**: Cached rankings with performance optimization
+- **Achievement System**: Complete achievement tracking and awarding
+- **Administrative Tools**: Admin endpoints for manual adjustments and management
+
+### Technical Architecture
+- **Enhanced Backend Service**: `backend/src/services/enhancedImageUpload.js` — AI-powered processing with GPS & cloud integration
+- **Basic Backend Service**: `backend/src/services/imageUpload.js` — Standard file handling with multer integration  
+- **Database Migration**: `backend/src/migrations/enhance-image-features.js` — Schema updates for enhanced metadata
+- **Configuration Management**: `backend/src/config/enhanced-features.js` — Comprehensive feature configuration
+- **Frontend Components**:
+  - `EnhancedImageUploader.js` — Advanced component with GPS tracking and AI analysis display
+  - `ImageUploader.js` — Basic reusable component for avatar and photo uploads
+  - `ProgressPhotoUploader.js` — Specialized component for before/after cleanup documentation
+  - Enhanced `Progress.js` — Toggle between basic and enhanced modes with AI insights
+
+### 🌍 GPS Metadata System
+- **Real-time Location Capture**: Automatic GPS coordinates extraction during photo upload
+- **Location Validation**: Verify photos taken within specified distance of events (configurable radius)
+- **Privacy Controls**: Optional GPS anonymization with configurable precision levels
+- **Metadata Embedding**: EXIF GPS data insertion using piexifjs for photo geotagging
+- **Coordinate Processing**: Advanced geolib integration for distance calculations and validation
+
+### 🧠 AI-Powered Impact Analysis
+- **Impact Scoring Algorithm**: Intelligent analysis comparing before/after photos for cleanup effectiveness
+- **Waste Detection**: Computer vision algorithms to identify and quantify waste in images
+- **Image Quality Assessment**: Automated evaluation of brightness, contrast, sharpness, and color vibrancy
+- **Progress Report Generation**: Comprehensive analysis summaries with improvement recommendations
+- **Confidence Scoring**: AI provides confidence levels for all analysis results
+- **Performance Metrics**: Configurable weight system for different impact factors
+
+### ☁️ Cloud Storage Integration
+- **AWS S3 Support**: Full integration with Amazon S3 for scalable cloud storage
+- **Hybrid Storage Mode**: Automatic fallback to local storage if cloud services unavailable
+- **Storage Providers**: Extensible architecture supporting AWS (with Azure/GCP ready)
+- **File Organization**: Intelligent cloud folder structure (avatars, progress, before/after)
+- **Migration Support**: Auto-migrate existing local files to cloud storage
+- **Cost Optimization**: Configurable retention policies and storage classes
+
+### 🔍 Technical Features
+- **Sharp Image Processing**: Professional-grade image optimization, resizing, and format conversion
+- **Comprehensive File Validation**: Enhanced security with format, size, and content validation
+- **Database Schema Enhancement**: New tables for GPS data, AI analysis, and detailed metadata
+- **Performance Optimization**: Concurrent processing, caching, and resource management
+- **Security Controls**: File sanitization, access controls, and privacy protection
+- **Monitoring & Logging**: Detailed analytics and performance tracking
+
+### 📊 Enhanced Database Schema (v2.5)
+- **enhanced_images** table: Detailed metadata including GPS, AI analysis, and processing info
+- **ai_analysis_results** table: Comprehensive AI analysis storage with confidence scores
+- **gps_validations** table: Location validation results and distance calculations
+- **user_avatars** table: Enhanced avatar support with GPS and metadata
+- **Extended cleanup_progress**: GPS coordinates, AI analysis results, and impact data
+
+### 🎨 Frontend Enhancements
+- **Mode Toggle System**: Users can switch between basic and enhanced upload experiences
+- **Real-time GPS Tracking**: Live location display with accuracy indicators
+- **AI Results Visualization**: Impact scores, progress reports, and analysis insights
+- **Enhanced Progress Tracking**: Visual comparison tools with GPS validation indicators
+- **Feature Detection**: Automatic capability detection for GPS and AI features
+
+### ⚙️ Configuration & Deployment
+- **Feature Flags**: Granular control over GPS, AI, and cloud storage features
+- **Environment Configuration**: Comprehensive settings for development, staging, and production
+- **Dependencies Management**: Added exifr, piexifjs, geolib, aws-sdk, sharp fo
+
+### Gamification Tables (v2.6)
+- **user_points** — Point tracking with bonuses, sources, and metadata for all gamification actions
+- **user_achievements** — Achievement system with 21 achievements across 6 categories (participation, impact, leadership, documentation, streak, special)
+- **user_streaks** — Daily activity streak tracking with longest streak records and bonus calculations
+- **user_actions** — First-time action tracking for discovery bonuses and unique reward systems
+- **environmental_impact** — CO₂, water, and energy savings calculations linked to events and progress
+- **leaderboard_cache** — Performance-optimized cached leaderboard data for multiple ranking types
+- **user_badges** — Badge collection system with categories, rarity, and display order management
+- **seasonal_challenges** — Time-limited challenges with participation tracking and custom rewards
+- **challenge_participation** — User participation in seasonal challenges with progress monitoring
+- **user_levels** — Level progression system from "Eco Beginner" (Level 1) to "Planet Savior" (Level 10)
+- **user_goals** — Daily/weekly goal system for sustained engagement and improvement tracking
+- **achievements_master** — Master achievement definitions with icons, categories, and point rewardsr enhanced processing
+- **Performance Tuning**: Configurable processing limits, timeouts, and resource allocation
+- **Security Settings**: GPS privacy controls, file restrictions, and access management
+- `POST /chatbot` — Get guidance from chatbot
+- `GET /health` — Backend health check
+
+## Database Schema
+
+### Core Tables
+- **users** — User accounts with hashed passwords, email, phone number, location, role, profile avatar, and subscription status. Existing SQLite databases add the contact columns automatically.
+- **subscriptions** — Defines subscription tiers and links them to users.
+- **events** — Cleanup events with GPS coordinates
+- **event_checkins** — User check-ins with location verification
+- **cleanup_progress** — Waste collection tracking
+- **posts** — Community posts and discussions
+
+### Admin & Analytics Tables
+- **cleanup_plans** — Admin-managed cleanup plans with unique codes
+- **usage_analytics** — Comprehensive user activity tracking and system metrics
+
+### Administrator Accounts
+
+There is no automatically created default administrator or shared default
+password. New browser registrations receive the ordinary user role. Admin
+access requires an explicitly provisioned account in the installation's
+database; local test accounts are not distributed with the repository.
+
+### Latest Database Enhancements (v2.0)
+- **Role System**: Enhanced user authentication with admin/user role distinction
+- **Plan Management**: New cleanup_plans table with unique code generation
+- **Analytics Tracking**: Comprehensive usage_analytics table for system monitoring
+- **Admin Functions**: Complete administrative backend with secure API endpoints
+
+## Testing
+
+### Run All Tests
+
+```bash
+# Backend unit tests
+cd backend
+npm test
+
+# Backend integration tests
+npm run test:integration
+
+# E2E tests with Playwright
+npx playwright test
+
+# Run with UI
+npx playwright test --ui
+
+# Generate coverage report
+npm run test:coverage
+``` with the enhanced gamification system:
+- **Points & Achievements** — Gamified tracking across 21 achievements in 6 categories
+- **Level Progression** — 10-level system from "Eco Beginner" to "Planet Savior" based on environmental contributions
+- **Waste Collected** — Total weight in kg across all events with real-time environmental impact calculations
+- **CO₂ Savings** — Track carbon footprint reduction (2.5kg CO₂ saved per kg waste collected)
+- **Water Conservation** — Monitor water savings (50L preserved per kg waste collected)  
+- **Energy Impact** — Energy conservation tracking (3.7kWh saved per kg waste collected)
+- **Event Participation** — Number of cleanup events attended with participation streak tracking
+- **Community Impact** — Collective progress by location with leaderboard rankings
+- **Personal Growth** — Your cleanup journey over time with comprehensive gamification dashboard
+- **Streak Bonuses** — Daily activity rewards with 7-day, 30-day, and 90-day milestone achievements
+- ✅ Integration tests for API endpoints
+- ✅ End-to-end tests for user workflows
+- ✅ Database operation tests
+- ✅ Authentication and authorization tests
+
+## App Workflow
+
+### Standard User Flow
+1. **Sign Up/Login** — Create an account with contact and location details, or sign in
+2. **Browse Events** — View cleanup events on map or list
+3. **Create Events** — Organize your own cleanup events
+4. **Check In** — Use GPS to check into events you attend
+5. **Track Progress** — Log waste collected and environmental impact
+6. **View Dashboard** — Analyze data with real-time charts and maps
+7. **Export Reports** — Download your data in PDF, Excel, or CSV
+8. **Share & Connect** — Post about your experiences
+
+### Admin User Flow
+1. **Admin Login** — Access admin panel with elevated permissions
+2. **System Analytics** — Monitor platform usage and performance
+3. **Plan Management** — Create and manage cleanup plans with codes
+4. **User Administration** — Manage user accounts and assign roles
+5. **Activity Monitoring** — Track system usage and user behavior
+6. **Content Moderation** — Oversee community posts and events
+
+## Environmental Impact
+
+Track meaningful metrics:
+- **Waste Collected** — Total weight in kg across all events
+- **Event Participation** — Number of cleanup events attended
+- **Community Impact** — Collective progress by location
+- **Personal Growth** — Your cleanup journey over time
+
+## Dashboard Features
+
+The advanced dashboard provides comprehensive data visualization and analytics:
+
+### Real-time Analytics
+- **Live Charts**: Auto-updating visualizations with Chart.js
+- **Data Streaming**: Real-time updates every 3 seconds
+- **Multiple Chart Types**: Bar charts, line graphs, and custom visualizations
+
+### Interactive Mapping
+- **Oil Field Locations**: Visual markers for cleanup sites
+- **Status Indicators**: Active, Operational, Maintenance states
+- **GPS Coordinates**: Precise location tracking
+- **Custom Markers**: Color-coded location status
+
+### User Experience
+- **Dark/Light Mode**: Theme toggle for accessibility
+- **Toast Notifications**: Non-intrusive real-time feedback
+- **Loading Skeletons**: Smooth placeholder animations
+- **Mobile Responsive**: Adapts to all screen sizes
+
+### Data Management
+- **Search Functionality**: Real-time search across records
+- **Advanced Filters**: Multiple filter options (Active, Date, Priority, Status)
+- **Export Options**: Download data as PDF, Excel, or CSV
+- **PWA Capabilities**: Offline support with service worker caching
+
+For detailed dashboard documentation, see [DASHBOARD_README.md](city-cleanup-challenge/DASHBOARD_README.md)
+
+## Admin Panel Features
+
+The comprehensive admin panel provides powerful management and analytics capabilities for system administrators.
+
+### System Analytics Dashboard
+- **User Statistics**: Total users, admin count, registration trends
+- **Event Metrics**: Total events, active events, participation rates  
+- **Plan Management**: Cleanup plans created, active plans, completion rates
+- **Waste Impact**: Total waste collected, progress tracking, environmental impact
+- **Real-time Activity**: Live feed of recent user actions and system events
+
+### Plan & Code Management
+- **Create Plans**: Design cleanup plans with unique identification codes
+- **Plan Details**: Set target waste amounts, estimated durations, difficulty levels
+- **Area Assignment**: Specify cleanup areas and geographic locations  
+- **Status Control**: Activate, deactivate, or archive cleanup plans
+- **Code Validation**: Automatic unique code generation and validation
+
+### User Administration
+- **Role Management**: Assign admin or user roles to accounts
+- **User Overview**: View user registration dates and last login times
+- **Account Control**: Monitor user activity and account status
+- **Bulk Operations**: Manage multiple users efficiently
+- **Permission Control**: Fine-grained access control throughout the system
+
+### Activity Monitoring & Audit
+- **Action Tracking**: Comprehensive logging of all user actions
+- **System Events**: Monitor logins, plan creation, role changes
+- **Audit Trail**: Complete activity history with timestamps and details
+- **Filtering Options**: Search by user, action type, date ranges
+- **Security Monitoring**: Track IP addresses and user agents for security
+
+### Gamification System (v2.6)
+- **GamificationService**: Comprehensive points, achievements, and level progression engine
+- **LeaderboardService**: Multi-type leaderboards with intelligent caching and real-time ranking
+- **GamificationIntegration**: Event-driven automatic point awarding for all user actions
+- **Authentication Middleware**: Secure API access with role-based permissions and rate limiting
+- **Database Migration Scripts**: Automated setup for 11 gamification tables with default data
+- **Testing Suite**: Comprehensive API validation with automated testing scripts
+- **Environmental Impact Calculator**: Real-time CO₂, water, and energy savings tracking
+- **Achievement System**: 21 unique achievements across 6 categories with progressive difficulty
+
+### Admin Access & Security
+- **Default Admin**: Created automatically (`admin` / `admin123`)
+- **Role-Based Access**: All admin endpoints protected with permission checks
+- **Secure APIs**: Authentication required for all administrative functions
+- **Activity Logging**: All admin actions automatically tracked and recorded
+
+## Tech Stack
+
+### Frontend
+- React Native (Expo) with cross-platform compatibility
+- expo-location (GPS/geolocation services)
+- react-native-maps (Interactive mapping)
+- Chart.js & D3.js (Data visualization and analytics)
+- React Hot Toast (Real-time notifications)
+- jsPDF & XLSX (Data export capabilities)
+- Leaflet (Advanced mapping features)
+- Service Workers (PWA/offline support)
+- Modern responsive UI components
+
+### Backend
+- Node.js with Express framework
+- SQLite database with persistent storage
+- RESTful API design with comprehensive endpoints
+- CORS enabled for cross-origin requests
+- Role-based authentication and authorization
+- Activity tracking and analytics logging
+- Admin panel APIs with security middleware
+
+### Enhanced Image Processing (v2.5)
+- **Sharp**: Professional image processing, optimization, and format conversion
+- **AWS SDK**: Cloud storage integration with Amazon S3
+- **exifr**: Advanced EXIF/GPS metadata extraction from images
+- **piexifjs**: GPS metadata insertion and EXIF manipulation
+- **geolib**: Precise geographic calculations and coordinate processing
+- **multer-s3**: Direct cloud upload integration with AWS S3
+- **AI Analysis Engine**: Custom algorithms for impact scoring and waste detection
+- **Visual Progress Tracking**: Before/after photo comparison and analysis
+
+### DevOps & Infrastructure
+- **Docker**: Containerized services for backend and frontend
+- **Docker Compose**: Local development and production orchestration
+- **Kubernetes**: Production deployment with autoscaling and health checks
+- **GitHub Actions**: Automated CI/CD pipeline with testing and deployment
+- **Azure Container Registry**: Docker image storage
+- **Azure Key Vault**: Secure secrets management
+
+### Monitoring & Observability
+- **Prometheus**: Metrics collection and alerting
+- **Grafana**: Real-time dashboards and visualization
+- **Loki**: Centralized log aggregation
+- **Promtail**: Log shipping and processing
+- **Sentry**: Error tracking and performance monitoring
+- **Alertmanager**: Multi-channel alert routing
+- **Winston**: Structured logging service
+
+### Testing
+- **Jest**: Unit and integration testing
+- **Playwright**: End-to-end browser testing
+- **Supertest**: API endpoint testing
+- **Code Coverage**: Automated coverage reports
+## Monitoring & Observability
+
+Access monitoring dashboards:
+
+- **Grafana**: http://localhost:3000 (admin/admin)
+- **Prometheus**: http://localhost:9090
+- **Alertmanager**: http://localhost:9093
+
+### Available Metrics
+
+- HTTP request rate, latency, and errors
+- Database query performance
+- Business metrics (events, check-ins, users)
+- System metrics (CPU, memory, disk)
+
+### Logs
+
+View aggregated logs in Grafana using Loki datasource:
+```bash
+# View backend logs
+docker-compose logs -f backend
+
+# View all logs with Loki
+# Access Grafana → Explore → Select Loki datasource
+```
+
+### Error Tracking
+
+Configure Sentry for production error tracking in `backend/.env`:
+```env
+SENTRY_DSN=your_sentry_dsn
+SENTRY_ENVIRONMENT=production
+```
+
+📖 See [MONITORING.md](docs/MONITORING.md) for complete monitoring setup and troubleshooting.
+
+## Deployment Readiness Checklist
+
+> **Current status:** Pre-deployment. Complete every high-priority item before deploying to a public environment.
+
+The MVP eligibility, verification, review, privacy, and CELO payout rules are
+defined in [Product Rules](docs/PRODUCT_RULES.md).
+
+### High Priority - Deployment Blockers
+
+- [x] Convert `backend/src/services/socialService.js` from UTF-16LE to UTF-8 so Node.js can parse it.
+- [x] Replace hard-coded `localhost` frontend API URLs with environment-based configuration.
+- [x] Update frontend social endpoints from `/api/social` to `/api/v1/social`.
+- [x] Change Kubernetes backend health probes from `/api/health` to `/health`.
+- [x] Hash newly created passwords with bcrypt.
+- [ ] Migrate any existing plaintext account passwords before retaining production data.
+- [x] Remove the default `admin / admin123` account.
+- [x] Implement JWT access and rotating refresh tokens with verification, expiration, and revocation.
+- [x] Protect private and state-changing API endpoints with authentication.
+- [x] Enforce administrator roles and resource ownership checks.
+- [x] Choose and implement PostgreSQL as the production database architecture.
+- [ ] Run and verify every database migration in staging.
+- [ ] Replace placeholder domains, CORS origins, certificate email addresses, and Kubernetes secrets.
+- [x] Connect Azure Key Vault CSI secrets to the backend workload.
+- [x] Validate every required production environment variable during backend startup.
+- [x] Inject frontend configuration during the static build.
+- [x] Complete clean dependency installs and verify the backend tests and production frontend build.
+- [x] Make lint, integration, and end-to-end test failures fail CI.
+- [x] Correct end-to-end API paths.
+- [ ] Complete a successful staging smoke test.
+
+### Medium Priority - Required Before Public Release
+
+- [x] Upgrade Node.js to version 22 and verify the backend and Expo web build.
+- [x] Pin runtime bases and deploy immutable commit-addressed images instead of `latest`.
+- [x] Gate final release images with authenticated high/critical vulnerability scans.
+- [x] Remove tracked `node_modules` files and commit synchronized lockfiles.
+- [x] Track production templates only and ignore real production environment files.
+- [x] Add explicit frontend build and lint scripts.
+- [x] Add frontend component-test and integration-test scripts.
+- [x] Add authentication, authorization, upload, validation, rate-limit, and migration tests.
+- [x] Establish and enforce backend and frontend coverage thresholds.
+- [x] Upgrade retired GitHub Actions.
+- [x] Authenticate the security-scan job with Azure Container Registry.
+- [x] Define protected-main and required production-approval governance.
+- [x] Add guarded database backup/restore and private evidence recovery operations.
+- [ ] Test rolling updates, graceful shutdown, autoscaling, TLS, CORS, uploads, and rate limiting.
+- [x] Add a bounded read-only load gate; write/upload load remains an environment exercise.
+- [x] Document and automate rollback procedures while retaining immutable known-good images.
+
+### Operational and Product Readiness
+
+- [ ] Verify AKS, ACR, ingress-nginx, cert-manager, Metrics Server, managed identity, CSI secrets, and storage.
+- [ ] Configure Sentry, Prometheus alerts, and real Alertmanager receivers.
+- [ ] Replace default monitoring credentials and restrict monitoring services from public access.
+- [x] Add audit logs for authentication, administrative, moderation, and destructive actions.
+- [x] Hide unfinished social-dashboard sections and simulated analytics from the release surface.
+- [ ] Complete blockchain tests and secure contract deployment keys if blockchain features are included.
+- [ ] Test maps, GPS permissions, uploads, email, notifications, analytics, offline mode, and PWA behavior.
+- [x] Define privacy, GPS/photo retention, deletion, incident-response, and production support policies.
+- [x] Add terms of service, a privacy policy, support route, release notes, and an MIT license.
+
+## Remaining Delivery Phases
+
+The implementation roadmap continues in priority order:
+
+### Phase 14 - Live Staging Validation
+
+- Configure real staging domains, TLS contact details, GitHub environment
+  values, AKS identity, Key Vault, PostgreSQL, and private evidence storage.
+- Migrate retained plaintext passwords and run every database migration against
+  staging.
+- Exercise backup restoration, rolling updates, graceful shutdown, autoscaling,
+  TLS, CORS, uploads, rate limits, write-heavy load, and rollback.
+- Pass the deployed staging smoke test before approving production.
+
+### Phase 15 - Monitoring, Security, and Audit Operations
+
+- Configure Sentry, Prometheus alerts, and real Alertmanager on-call receivers.
+- Replace default monitoring credentials and keep observability services off
+  the public network.
+- Add durable audit events for authentication, administration, moderation, and
+  destructive actions.
+- Enable and verify protected-branch rules and required production reviewers.
+
+### Phase 16 - Product and Device Completion
+
+- Hide unfinished social and simulated dashboard areas from the release
+  surface. See [Phase 16 Product and Device Completion](docs/PHASE_16_PRODUCT_DEVICE.md).
+- Test maps, GPS permissions, image uploads, email, notifications, analytics,
+  offline behavior, and PWA installation across supported devices.
+- Complete approved database-write, image-processing, and upload load tests in
+  the isolated staging environment.
+
+### Phase 17 - Privacy, Legal, and Support Readiness
+
+- Defined GPS and photo retention, user deletion, incident response, and
+  production support procedures. See
+  [Privacy Retention and Deletion](docs/PRIVACY_RETENTION_AND_DELETION.md) and
+  [Incident Response](docs/INCIDENT_RESPONSE.md).
+- Published [Terms](TERMS.md), [Privacy](PRIVACY.md), [Support](SUPPORT.md),
+  [Release Notes](RELEASE_NOTES.md), and the [MIT License](LICENSE).
+- Added privacy, terms, and support access to the unauthenticated application.
+- A project legal entity, governing jurisdiction, minimum age, and monitored
+  private support channel must still be approved and configured before launch.
+
+### Phase 18 - Controlled CELO Launch
+
+- Completed smart-contract tests and added a guarded contract deployment
+  process. See [Phase 18 Controlled CELO Launch](docs/PHASE_18_CONTROLLED_CELO_LAUNCH.md).
+- Added an immutable per-payment ceiling, paused-by-default deployment,
+  duplicate-claim protection, and two-step treasury ownership transfer.
+- Added an explicitly confirmed one-payment pilot with pause, reconciliation,
+  duplicate retry, and final-pause checks.
+- Secure and fund a dedicated Celo Sepolia treasury, then deploy and verify the
+  reward contract.
+- Run duplicate-payout, pause, reconciliation, restart, and alert drills during
+  a limited testnet pilot before considering mainnet.
+
+## Deployment
+
+### Kubernetes Deployment
+
+```bash
+# Create namespace and apply manifests
+kubectl apply -f k8s/namespace.yaml
+kubectl apply -f k8s/
+
+# Configure Azure Key Vault (optional)
+# See docs/AZURE_KEYVAULT_SETUP.md
+
+# Monitor deployment
+kubectl get pods -n city-cleanup
+kubectl logs -f deployment/backend -n city-cleanup
+```
+
+### CI/CD Pipeline
+
+The project uses GitHub Actions for automated deployment:
+
+- **Code Quality**: ESLint checks on every commit
+- **Testing**: Unit, integration, and E2E tests
+- **Security**: Trivy container scanning
+- **Deployment**: Automated deployment to Azure Kubernetes Service
+- **Notifications**: Slack alerts for build status
+
+📚 See [DEVOPS_INFRASTRUCTURE.md](docs/DEVOPS_INFRASTRUCTURE.md) for complete deployment guide.
+
+## Contributing
+
+### Development Workflow
+- Use feature branches and PRs for all changes
+- Commit messages: `type(scope): subject` (e.g., `feat(monitoring): add Prometheus metrics`, `fix(auth): role validation`)
+- Test your changes before submitting (run `npm test` in backend/)
+- Follow established code patterns and conventions
+
+### Running Tests Locally
+```bash
+# Backend tests
+cd backend
+npm test                    # Unit tests
+npm run test:integration    # Integration tests
+npm run test:coverage      # Coverage report
+
+# E2E tests
+npx playwright test
+npx playwright test --ui   # Interactive mode
+```
+
+### Code Quality Standards
+- ESLint for code linting
+- Jest for testing
+- 80%+ test coverage target
+- Security scanning with Trivy
+
+📋 See [CONTRIBUTION_TEST.md](CONTRIBUTION_TEST.md) for detailed contribution guidelines.
+
+## License
+
+This project is for demo and educational purposes. Add appropriate license if publishing commercially.
+
