@@ -93,7 +93,7 @@ function buildVerificationMessage({
   const domain = process.env.WALLET_VERIFICATION_DOMAIN || 'city-cleanup.local';
   const uri = process.env.WALLET_VERIFICATION_URI || 'https://city-cleanup.local';
   return [
-    'City Cleanup wallet verification',
+    'CleanCity AI wallet verification',
     '',
     `Domain: ${domain}`,
     `URI: ${uri}`,
