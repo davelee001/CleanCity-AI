@@ -1,0 +1,52 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: backend-config
+  namespace: city-cleanup
+data:
+  NODE_ENV: "production"
+  PORT: "3001"
+  DATABASE_CLIENT: "postgres"
+  DATABASE_POOL_MAX: "20"
+  DATABASE_SSL: "true"
+  DATABASE_SSL_REJECT_UNAUTHORIZED: "true"
+  EVIDENCE_PERCEPTUAL_DISTANCE_THRESHOLD: "12"
+  EVIDENCE_SCENE_HIGH_RISK_BELOW: "0.30"
+  EVIDENCE_SCENE_MEDIUM_RISK_BELOW: "0.48"
+  EVIDENCE_SYNTHETIC_HIGH_RISK_AT: "0.60"
+  EVIDENCE_SYNTHETIC_MEDIUM_RISK_AT: "0.25"
+  CELO_REWARDS_ENABLED: "false"
+  CELO_REWARD_DRY_RUN: "true"
+  CELO_RPC_URL: "https://forno.celo-sepolia.celo-testnet.org"
+  CELO_CHAIN_ID: "11142220"
+  CELO_REWARD_CONTRACT_ADDRESS: ""
+  CELO_REQUIRED_CONFIRMATIONS: "2"
+  CELO_TREASURY_MIN_BALANCE: "0.10"
+  WALLET_VERIFICATION_DOMAIN: "city-cleanup.example.com"
+  WALLET_VERIFICATION_URI: "https://city-cleanup.example.com"
+  WALLET_CHALLENGE_TTL_MS: "600000"
+  METRICS_ENABLED: "true"
+  SENTRY_ENABLED: "true"
+  SENTRY_ENVIRONMENT: "production"
+  SENTRY_RELEASE: "replace-with-release-sha"
+  SENTRY_TRACES_SAMPLE_RATE: "0.1"
+  SENTRY_PROFILES_SAMPLE_RATE: "0"
+  API_RATE_LIMIT: "1000"
+  AUTH_RATE_LIMIT: "20"
+  RATE_LIMIT_WINDOW_MS: "900000"
+  JSON_BODY_LIMIT_BYTES: "1048576"
+  TRUST_PROXY_HOPS: "1"
+  USE_CLOUD_STORAGE: "true"
+  AWS_S3_BUCKET: "replace-with-private-evidence-bucket"
+  AWS_REGION: "replace-with-aws-region"
+  EVIDENCE_S3_PREFIX: "evidence"
+  CORS_ORIGIN: "https://city-cleanup.example.com"
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: frontend-config
+  namespace: city-cleanup
+data:
+  NODE_ENV: "production"
+  EXPO_PUBLIC_API_URL: "/api/v1"
