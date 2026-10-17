@@ -270,6 +270,19 @@ accuracy benchmark or an approved cleanup. The raw model returned
 `needsHumanReview: false`; the application correctly enforced `true`. Schema
 validation does not detect every incorrect visual claim.
 
+On Windows, the downloaded portable runtime can also be started from the
+repository root:
+
+```powershell
+powershell -ExecutionPolicy Bypass -File scripts/start-local-inference.ps1
+```
+
+This script resolves the runtime and model paths relative to the repository, starts Ollama
+in the background, and verifies that its API responds. It reuses an existing
+service when one is already running. Login does not start Ollama automatically;
+start it before opening live analysis. If analysis failed while Ollama was
+offline, its stored failure is retained until the submission is retried.
+
 To reuse the downloaded portable runtime after stopping it, start a dedicated
 PowerShell terminal with:
 
