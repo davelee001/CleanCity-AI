@@ -148,7 +148,7 @@ export default function Signup({ onSignup, onSwitchToLogin, onViewLegal }) {
         >
           <View style={styles.hero}>
             <View style={styles.badge}>
-              <Text style={styles.badgeText}>CITY CLEANUP</Text>
+              <Text style={styles.badgeText}>CLEANCITY AI</Text>
             </View>
             <Text style={styles.title}>Make your city shine</Text>
             <Text style={styles.subtitle}>

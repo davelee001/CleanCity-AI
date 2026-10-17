@@ -65,7 +65,7 @@ export default function Login({ onLogin, onSwitchToSignup, onViewLegal }) {
                 <Text style={styles.logoMarkIcon}>♻</Text>
               </View>
               <View>
-                <Text style={styles.logoName}>CITY CLEANUP</Text>
+                <Text style={styles.logoName}>CLEANCITY AI</Text>
                 <Text style={styles.logoTagline}>Cleaner cities. Shared rewards.</Text>
               </View>
             </View>
@@ -143,7 +143,7 @@ export default function Login({ onLogin, onSwitchToSignup, onViewLegal }) {
 
             <View style={styles.divider}>
               <View style={styles.dividerLine} />
-              <Text style={styles.dividerText}>NEW TO CITY CLEANUP?</Text>
+              <Text style={styles.dividerText}>NEW TO CLEANCITY AI?</Text>
               <View style={styles.dividerLine} />
             </View>
 

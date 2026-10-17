@@ -146,7 +146,7 @@ export default function App() {
                 <Text style={styles.brandMarkText}>♻</Text>
               </View>
               <View>
-                <Text style={styles.brandName}>CITY CLEANUP</Text>
+                <Text style={styles.brandName}>CLEANCITY AI</Text>
                 <Text style={styles.brandContext}>Impact workspace</Text>
               </View>
             </View>
