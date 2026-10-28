@@ -1,0 +1,1163 @@
+{
+  "recordType": "backend-validation-manifest",
+  "validationDate": "2026-10-28",
+  "nodeVersion": "22.23.4",
+  "caseCount": 144,
+  "suiteCount": 20,
+  "reportSha256": "81b029a3687f27c3b641f202a1147da5575e28677218c50ee80ba78dc4a64bd3",
+  "packageLockSha256": "d824510d02683f2830d43f419177e0c9601bdaa4101b30359927abe6364a9ff8",
+  "cases": [
+    {
+      "caseId": "backend-2026-10-28-001",
+      "file": "001-allows-browser-login-preflight-from-expo-without-all.json",
+      "sourceFile": "backend/tests/api.test.js",
+      "testName": "API Endpoints allows browser login preflight from Expo without allowing arbitrary origins",
+      "suiteAssertionOrdinal": 1,
+      "recordSha256": "3524e60d4737b9659b5132e2d3d90f8099b959af7a26c3e86a08b8db91580780"
+    },
+    {
+      "caseId": "backend-2026-10-28-002",
+      "file": "002-should-return-200-for-health-check.json",
+      "sourceFile": "backend/tests/api.test.js",
+      "testName": "API Endpoints should return 200 for health check",
+      "suiteAssertionOrdinal": 2,
+      "recordSha256": "49af352ea71921c300504de818d10e593231e998c204d25fe30d14b6b1b408e9"
+    },
+    {
+      "caseId": "backend-2026-10-28-003",
+      "file": "003-rejects-oversized-json-bodies-with-a-stable-api-erro.json",
+      "sourceFile": "backend/tests/api.test.js",
+      "testName": "API Endpoints rejects oversized JSON bodies with a stable API error",
+      "suiteAssertionOrdinal": 3,
+      "recordSha256": "4968f4e811045aef449b6e4ebd1434f180530ca659bae16c44caa2310c3f3790"
+    },
+    {
+      "caseId": "backend-2026-10-28-004",
+      "file": "004-should-signup-a-new-user.json",
+      "sourceFile": "backend/tests/api.test.js",
+      "testName": "API Endpoints should signup a new user",
+      "suiteAssertionOrdinal": 4,
+      "recordSha256": "d80cd96ba4e378aacf478abcfb2d429843bf8ffda64a2d97f2324dbdfae91235"
+    },
+    {
+      "caseId": "backend-2026-10-28-005",
+      "file": "005-exposes-application-and-reward-metrics-for-the-inter.json",
+      "sourceFile": "backend/tests/api.test.js",
+      "testName": "API Endpoints exposes application and reward metrics for the internal monitoring stack",
+      "suiteAssertionOrdinal": 5,
+      "recordSha256": "f2bc350d9b04ed164170ca5913eaecb58f52d34b9af81c961b98dcecca163d84"
+    },
+    {
+      "caseId": "backend-2026-10-28-006",
+      "file": "006-should-not-signup-with-existing-username.json",
+      "sourceFile": "backend/tests/api.test.js",
+      "testName": "API Endpoints should not signup with existing username",
+      "suiteAssertionOrdinal": 6,
+      "recordSha256": "fe3a63b22a09c94792b543929117400c6ef7d715b9f3b3da33ea9a075955611f"
+    },
+    {
+      "caseId": "backend-2026-10-28-007",
+      "file": "007-should-login-with-correct-credentials.json",
+      "sourceFile": "backend/tests/api.test.js",
+      "testName": "API Endpoints should login with correct credentials",
+      "suiteAssertionOrdinal": 7,
+      "recordSha256": "dc65e1b701f13c05a5ec8eb98b723c75e9a00580a8268aa9a2f1de2771258f75"
+    },
+    {
+      "caseId": "backend-2026-10-28-008",
+      "file": "008-should-reject-signup-when-contact-details-are-missin.json",
+      "sourceFile": "backend/tests/api.test.js",
+      "testName": "API Endpoints should reject signup when contact details are missing",
+      "suiteAssertionOrdinal": 8,
+      "recordSha256": "7b4cdf3f43edf0af9ce7c82d8cc2525b486f46a02b987914c1744a69391a0913"
+    },
+    {
+      "caseId": "backend-2026-10-28-009",
+      "file": "009-should-not-login-with-wrong-credentials.json",
+      "sourceFile": "backend/tests/api.test.js",
+      "testName": "API Endpoints should not login with wrong credentials",
+      "suiteAssertionOrdinal": 9,
+      "recordSha256": "cf331303a2f9314eed786856070f93b782a3a106f6a4b21040d225eef85e4dc3"
+    },
+    {
+      "caseId": "backend-2026-10-28-010",
+      "file": "010-rejects-private-endpoints-without-an-access-token.json",
+      "sourceFile": "backend/tests/api.test.js",
+      "testName": "JWT authentication and authorization rejects private endpoints without an access token",
+      "suiteAssertionOrdinal": 10,
+      "recordSha256": "68330d493d00d680af5841f2c6b3c47961f6e0b08e091d03dbbde07bfd787344"
+    },
+    {
+      "caseId": "backend-2026-10-28-011",
+      "file": "011-rejects-invalid-access-tokens.json",
+      "sourceFile": "backend/tests/api.test.js",
+      "testName": "JWT authentication and authorization rejects invalid access tokens",
+      "suiteAssertionOrdinal": 11,
+      "recordSha256": "d9ea784a47e217941f54ace286adbe6d4076a5bde5eabf60305764878efdcae5"
+    },
+    {
+      "caseId": "backend-2026-10-28-012",
+      "file": "012-accepts-a-signed-access-token-and-derives-resource-o.json",
+      "sourceFile": "backend/tests/api.test.js",
+      "testName": "JWT authentication and authorization accepts a signed access token and derives resource ownership from it",
+      "suiteAssertionOrdinal": 12,
+      "recordSha256": "98b85fc575f9035ca673659a11dfb2afd3aa04672bef605ac5c3d5c59d1a7ffc"
+    },
+    {
+      "caseId": "backend-2026-10-28-013",
+      "file": "013-prevents-another-user-from-changing-an-owned-resourc.json",
+      "sourceFile": "backend/tests/api.test.js",
+      "testName": "JWT authentication and authorization prevents another user from changing an owned resource",
+      "suiteAssertionOrdinal": 13,
+      "recordSha256": "7ce24b60970780b0115c50418a512cc8b3439ba134329323fd1b9c889c8fac90"
+    },
+    {
+      "caseId": "backend-2026-10-28-014",
+      "file": "014-prevents-a-standard-user-from-accessing-admin-routes.json",
+      "sourceFile": "backend/tests/api.test.js",
+      "testName": "JWT authentication and authorization prevents a standard user from accessing admin routes",
+      "suiteAssertionOrdinal": 14,
+      "recordSha256": "f0064b24a04cb98b6586453cb1d3c17e67673e226c3def96f4a9ef9e07d01b29"
+    },
+    {
+      "caseId": "backend-2026-10-28-015",
+      "file": "015-allows-a-current-administrator-to-access-role-protec.json",
+      "sourceFile": "backend/tests/api.test.js",
+      "testName": "JWT authentication and authorization allows a current administrator to access role-protected routes",
+      "suiteAssertionOrdinal": 15,
+      "recordSha256": "23afef5382708f0e9c62e6e9b19fb497c11280fd0a5611aa230e1d07c7658913"
+    },
+    {
+      "caseId": "backend-2026-10-28-016",
+      "file": "016-records-authentication-and-administrative-activity-i.json",
+      "sourceFile": "backend/tests/api.test.js",
+      "testName": "JWT authentication and authorization records authentication and administrative activity in the system audit log",
+      "suiteAssertionOrdinal": 16,
+      "recordSha256": "5b011a9527b49d6370787cdfe561873b61dacf1cbd9c13d9285c44c7cb30fb20"
+    },
+    {
+      "caseId": "backend-2026-10-28-017",
+      "file": "017-protects-the-reward-policy-and-exposes-it-to-authent.json",
+      "sourceFile": "backend/tests/api.test.js",
+      "testName": "JWT authentication and authorization protects the reward policy and exposes it to authenticated users",
+      "suiteAssertionOrdinal": 17,
+      "recordSha256": "6db230e67180cee3e8001ba42bacfded6045e80b26cf9c690acb01a00e40268c"
+    },
+    {
+      "caseId": "backend-2026-10-28-018",
+      "file": "018-restricts-reward-creation-and-payout-to-administrato.json",
+      "sourceFile": "backend/tests/api.test.js",
+      "testName": "JWT authentication and authorization restricts reward creation and payout to administrators",
+      "suiteAssertionOrdinal": 18,
+      "recordSha256": "115c4fe4d1b5581302b14018a0047986c2abebd4bd83d68eafcc3558416c0a0f"
+    },
+    {
+      "caseId": "backend-2026-10-28-019",
+      "file": "019-provides-administrator-only-reward-pause-controls-an.json",
+      "sourceFile": "backend/tests/api.test.js",
+      "testName": "JWT authentication and authorization provides administrator-only reward pause controls and an audit trail",
+      "suiteAssertionOrdinal": 19,
+      "recordSha256": "c45f6386bf20f17e9d048ebd008e0d80c11610068ccc31db69584074ce98cdb6"
+    },
+    {
+      "caseId": "backend-2026-10-28-020",
+      "file": "020-verifies-wallet-ownership-with-a-one-time-signed-cha.json",
+      "sourceFile": "backend/tests/api.test.js",
+      "testName": "JWT authentication and authorization verifies wallet ownership with a one-time signed challenge",
+      "suiteAssertionOrdinal": 20,
+      "recordSha256": "bc937e4aeb7184ea972fd56fe57397ec00f8b0fa645b737ce371c007ad7eba1d"
+    },
+    {
+      "caseId": "backend-2026-10-28-021",
+      "file": "021-prevents-a-verified-wallet-from-being-shared-across-.json",
+      "sourceFile": "backend/tests/api.test.js",
+      "testName": "JWT authentication and authorization prevents a verified wallet from being shared across accounts",
+      "suiteAssertionOrdinal": 21,
+      "recordSha256": "0be4d3132662bcb0a2a98c2dc965e843159ab367af7ae9ab3ea8c02fad934276"
+    },
+    {
+      "caseId": "backend-2026-10-28-022",
+      "file": "022-returns-member-reward-history-and-safely-removes-an-.json",
+      "sourceFile": "backend/tests/api.test.js",
+      "testName": "JWT authentication and authorization returns member reward history and safely removes an idle wallet",
+      "suiteAssertionOrdinal": 22,
+      "recordSha256": "6bf46abbd4381055dfad082f2c7a488bc9a2245452a11717f63f32c3b85c8cd9"
+    },
+    {
+      "caseId": "backend-2026-10-28-023",
+      "file": "023-rotates-refresh-tokens-and-rejects-reuse-of-the-old-.json",
+      "sourceFile": "backend/tests/api.test.js",
+      "testName": "JWT authentication and authorization rotates refresh tokens and rejects reuse of the old token",
+      "suiteAssertionOrdinal": 23,
+      "recordSha256": "05d6aff982e212ac0058cdd202da1407166cf445a45274cdb4ae2d41835e2eea"
+    },
+    {
+      "caseId": "backend-2026-10-28-024",
+      "file": "024-revokes-a-refresh-token-on-logout.json",
+      "sourceFile": "backend/tests/api.test.js",
+      "testName": "JWT authentication and authorization revokes a refresh token on logout",
+      "suiteAssertionOrdinal": 24,
+      "recordSha256": "08ec0bf3bd144c07ffc603d3b8f358eab992e48104ce0b2a288f19d1a16004d8"
+    },
+    {
+      "caseId": "backend-2026-10-28-025",
+      "file": "025-requires-authentication-and-both-evidence-photos.json",
+      "sourceFile": "backend/tests/api.test.js",
+      "testName": "Phase 3 cleanup evidence workflow requires authentication and both evidence photos",
+      "suiteAssertionOrdinal": 25,
+      "recordSha256": "51a27d7948e53fddb37935753ed7f9431ea499c2c5a5bfd3c991e7703d96fa4a"
+    },
+    {
+      "caseId": "backend-2026-10-28-026",
+      "file": "026-creates-a-private-submission-and-approves-it-immedia.json",
+      "sourceFile": "backend/tests/api.test.js",
+      "testName": "Phase 3 cleanup evidence workflow creates a private submission and approves it immediately",
+      "suiteAssertionOrdinal": 26,
+      "recordSha256": "8864ee0e15580c86d10ad1d9cf65c90dacab8d71f9e79c5f173e6b3b78dd4a99"
+    },
+    {
+      "caseId": "backend-2026-10-28-027",
+      "file": "027-persists-mocked-gemma-findings-through-the-authentic.json",
+      "sourceFile": "backend/tests/api.test.js",
+      "testName": "Phase 3 cleanup evidence workflow persists mocked Gemma findings through the authenticated submission workflow",
+      "suiteAssertionOrdinal": 27,
+      "recordSha256": "8f9347d3e441399be04b5c38e7a2a8748eb539ae38c8d2ede2fda5448f6ee28c"
+    },
+    {
+      "caseId": "backend-2026-10-28-028",
+      "file": "028-does-not-require-gemma-or-human-approval-after-a-val.json",
+      "sourceFile": "backend/tests/api.test.js",
+      "testName": "Phase 3 cleanup evidence workflow does not require Gemma or human approval after a valid upload",
+      "suiteAssertionOrdinal": 28,
+      "recordSha256": "e03f0d31e708cf35c498de16574c4498ba49bf6ae1ab8332ea8ece2376d4e16b"
+    },
+    {
+      "caseId": "backend-2026-10-28-029",
+      "file": "029-retains-evidence-and-approval-when-advisory-live-inf.json",
+      "sourceFile": "backend/tests/api.test.js",
+      "testName": "Phase 3 cleanup evidence workflow retains evidence and approval when advisory live inference times out",
+      "suiteAssertionOrdinal": 29,
+      "recordSha256": "13d19e4e2a9c9582eb93c0668646d0a1e652abd2db516f6534cd125f90d182e2"
+    },
+    {
+      "caseId": "backend-2026-10-28-030",
+      "file": "030-prevents-other-users-from-accessing-private-submissi.json",
+      "sourceFile": "backend/tests/api.test.js",
+      "testName": "Phase 3 cleanup evidence workflow prevents other users from accessing private submission evidence",
+      "suiteAssertionOrdinal": 30,
+      "recordSha256": "be79321d1270d73dc491edf5fb7abb4973c6bc788890c55c209cc8bf929e389d"
+    },
+    {
+      "caseId": "backend-2026-10-28-031",
+      "file": "031-automatically-rejects-an-exact-duplicate-and-permits.json",
+      "sourceFile": "backend/tests/api.test.js",
+      "testName": "Phase 3 cleanup evidence workflow automatically rejects an exact duplicate and permits one appeal",
+      "suiteAssertionOrdinal": 31,
+      "recordSha256": "9c260acf6eef500ffe8dc07b398450dfeb3944d4f9c1cd52fcba6a31f2205edf"
+    },
+    {
+      "caseId": "backend-2026-10-28-032",
+      "file": "032-separates-the-latest-personal-submission-from-stored.json",
+      "sourceFile": "backend/tests/api.test.js",
+      "testName": "Phase 3 cleanup evidence workflow separates the latest personal submission from stored admin records",
+      "suiteAssertionOrdinal": 32,
+      "recordSha256": "4ea4578d02edf5c59637ee4be661a5e3b561377f27d6b1834f13f7b2876c825c"
+    },
+    {
+      "caseId": "backend-2026-10-28-033",
+      "file": "033-restricts-review-decisions-to-admins-and-prevents-se.json",
+      "sourceFile": "backend/tests/api.test.js",
+      "testName": "Phase 3 cleanup evidence workflow restricts review decisions to admins and prevents self-review",
+      "suiteAssertionOrdinal": 33,
+      "recordSha256": "ec53b57f762056984e9a3872fd134d89ce6148efce762f9b4024e65e1acf860d"
+    },
+    {
+      "caseId": "backend-2026-10-28-034",
+      "file": "034-creates-an-event-through-the-versioned-api.json",
+      "sourceFile": "backend/tests/integration/events.integration.test.js",
+      "testName": "Events API integration creates an event through the versioned API",
+      "suiteAssertionOrdinal": 1,
+      "recordSha256": "eac374f48756667852c7c1d1ba9fc260eebe822d4052c5dfc5a6fadd7594f013"
+    },
+    {
+      "caseId": "backend-2026-10-28-035",
+      "file": "035-lists-events-through-the-versioned-api.json",
+      "sourceFile": "backend/tests/integration/events.integration.test.js",
+      "testName": "Events API integration lists events through the versioned API",
+      "suiteAssertionOrdinal": 2,
+      "recordSha256": "2f16abdfa5e1a05c60af5c77a37d85d561961974ad2a3431bc9c8b65726d09e5"
+    },
+    {
+      "caseId": "backend-2026-10-28-036",
+      "file": "036-rejects-an-incomplete-event.json",
+      "sourceFile": "backend/tests/integration/events.integration.test.js",
+      "testName": "Events API integration rejects an incomplete event",
+      "suiteAssertionOrdinal": 3,
+      "recordSha256": "c46a756fa7dc3ead0f90f5146e8b712e86cc2ab53d140a0cf8bca0ec0b19aecc"
+    },
+    {
+      "caseId": "backend-2026-10-28-037",
+      "file": "037-updates-an-event-owned-by-the-requesting-user.json",
+      "sourceFile": "backend/tests/integration/events.integration.test.js",
+      "testName": "Events API integration updates an event owned by the requesting user",
+      "suiteAssertionOrdinal": 4,
+      "recordSha256": "dd7538603d2e4248eb70f2f6132386e89489c90715ca264895be9f9698cbb37d"
+    },
+    {
+      "caseId": "backend-2026-10-28-038",
+      "file": "038-deletes-an-event-owned-by-the-requesting-user.json",
+      "sourceFile": "backend/tests/integration/events.integration.test.js",
+      "testName": "Events API integration deletes an event owned by the requesting user",
+      "suiteAssertionOrdinal": 5,
+      "recordSha256": "1cc22e9d027837ded82c28c4514173b46623070273340c30cc69e23cada87b87"
+    },
+    {
+      "caseId": "backend-2026-10-28-039",
+      "file": "039-should-return-health-status.json",
+      "sourceFile": "backend/tests/integration/health.integration.test.js",
+      "testName": "Health Check Tests GET /health should return health status",
+      "suiteAssertionOrdinal": 1,
+      "recordSha256": "5447a0c46c803e33a0cb00c9e9dff47a9dfe831922f9194f7525dd016df5a2eb"
+    },
+    {
+      "caseId": "backend-2026-10-28-040",
+      "file": "040-should-include-timestamp.json",
+      "sourceFile": "backend/tests/integration/health.integration.test.js",
+      "testName": "Health Check Tests GET /health should include timestamp",
+      "suiteAssertionOrdinal": 2,
+      "recordSha256": "ce95c3ec0a569fc453067fcc8c44c6ecdc6d456d5f12f4f6192c4c52bb65d407"
+    },
+    {
+      "caseId": "backend-2026-10-28-041",
+      "file": "041-should-return-readiness-status.json",
+      "sourceFile": "backend/tests/integration/health.integration.test.js",
+      "testName": "Health Check Tests GET /ready should return readiness status",
+      "suiteAssertionOrdinal": 3,
+      "recordSha256": "fb068d301a28f2bdabb2a4faf1c02ebf863e0d78c0649483cb68319dd37de9e6"
+    },
+    {
+      "caseId": "backend-2026-10-28-042",
+      "file": "042-classifies-api-v1-login-as-post-activity.json",
+      "sourceFile": "backend/tests/unit/auditService.unit.test.js",
+      "testName": "system audit classification and privacy classifies /api/v1/login as POST activity",
+      "suiteAssertionOrdinal": 1,
+      "recordSha256": "ed4582f57f1c46e3c6e8f671930c1cc8046d2002f68199e634697dce0439f9cc"
+    },
+    {
+      "caseId": "backend-2026-10-28-043",
+      "file": "043-classifies-api-v1-admin-users-as-get-activity.json",
+      "sourceFile": "backend/tests/unit/auditService.unit.test.js",
+      "testName": "system audit classification and privacy classifies /api/v1/admin/users as GET activity",
+      "suiteAssertionOrdinal": 2,
+      "recordSha256": "5dc35d287f3890dc0da0518bd93d74b9f99991bc4a1b8b5ccfe8c0afd7429cc6"
+    },
+    {
+      "caseId": "backend-2026-10-28-044",
+      "file": "044-classifies-api-v1-evidence-submissions-12-review-as-.json",
+      "sourceFile": "backend/tests/unit/auditService.unit.test.js",
+      "testName": "system audit classification and privacy classifies /api/v1/evidence/submissions/12/review as PATCH activity",
+      "suiteAssertionOrdinal": 3,
+      "recordSha256": "24881d2d1bb9ce9f20a52d015ff334eb645278d82755f3d79e5ba4c898c3a02b"
+    },
+    {
+      "caseId": "backend-2026-10-28-045",
+      "file": "045-classifies-api-v1-events-12-as-delete-activity.json",
+      "sourceFile": "backend/tests/unit/auditService.unit.test.js",
+      "testName": "system audit classification and privacy classifies /api/v1/events/12 as DELETE activity",
+      "suiteAssertionOrdinal": 4,
+      "recordSha256": "09363fda031c9720e1e8349edefba7b38516df026f3b4b8f18f2e69134e70240"
+    },
+    {
+      "caseId": "backend-2026-10-28-046",
+      "file": "046-classifies-api-v1-admin-users-12-as-delete-activity.json",
+      "sourceFile": "backend/tests/unit/auditService.unit.test.js",
+      "testName": "system audit classification and privacy classifies /api/v1/admin/users/12 as DELETE activity",
+      "suiteAssertionOrdinal": 5,
+      "recordSha256": "6461761cb7f9089f6daf978e59e4475e11116afa93b12ee22b88833a560f0d7e"
+    },
+    {
+      "caseId": "backend-2026-10-28-047",
+      "file": "047-does-not-audit-ordinary-reads-and-removes-query-stri.json",
+      "sourceFile": "backend/tests/unit/auditService.unit.test.js",
+      "testName": "system audit classification and privacy does not audit ordinary reads and removes query strings",
+      "suiteAssertionOrdinal": 6,
+      "recordSha256": "e4a2d87b38e5f785dea17ab654896f6f0593fd59aeb731467949fef96635ce0c"
+    },
+    {
+      "caseId": "backend-2026-10-28-048",
+      "file": "048-uses-a-keyed-one-way-hash-for-network-metadata.json",
+      "sourceFile": "backend/tests/unit/auditService.unit.test.js",
+      "testName": "system audit classification and privacy uses a keyed one-way hash for network metadata",
+      "suiteAssertionOrdinal": 7,
+      "recordSha256": "a6dfd49b6e662f82be0b32ca952477a2621c888804a18c99043af61dcbc13828"
+    },
+    {
+      "caseId": "backend-2026-10-28-049",
+      "file": "049-creates-a-deterministic-local-simulation-without-an-.json",
+      "sourceFile": "backend/tests/unit/celoGateway.unit.test.js",
+      "testName": "Celo Sepolia gateway creates a deterministic local simulation without an RPC call or private key",
+      "suiteAssertionOrdinal": 1,
+      "recordSha256": "0aa8409c12f97e0b2cbc0ac570c2fc27e6822353f0b27fcb661b3e87f47a754f"
+    },
+    {
+      "caseId": "backend-2026-10-28-050",
+      "file": "050-refuses-configuration-for-a-different-chain.json",
+      "sourceFile": "backend/tests/unit/celoGateway.unit.test.js",
+      "testName": "Celo Sepolia gateway refuses configuration for a different chain",
+      "suiteAssertionOrdinal": 2,
+      "recordSha256": "2e55ad59ffad1b5f599d9d177f4a32a2cce251eaab21b8d9d12e4b6f7ca19324"
+    },
+    {
+      "caseId": "backend-2026-10-28-051",
+      "file": "051-passes-only-when-deployment-checks-succeed-and-appli.json",
+      "sourceFile": "backend/tests/unit/celoPreflight.unit.test.js",
+      "testName": "Celo pilot preflight passes only when deployment checks succeed and application payouts are paused",
+      "suiteAssertionOrdinal": 1,
+      "recordSha256": "d2303fa8b2f8027d618755559039d2c0e6fe65eff2af075910e8b7b54a4b338a"
+    },
+    {
+      "caseId": "backend-2026-10-28-052",
+      "file": "052-fails-safely-when-payouts-are-active-during-prefligh.json",
+      "sourceFile": "backend/tests/unit/celoPreflight.unit.test.js",
+      "testName": "Celo pilot preflight fails safely when payouts are active during preflight",
+      "suiteAssertionOrdinal": 2,
+      "recordSha256": "22559720fab774520d12dcf96a4dcec34b03f6de1fb42d6bfee9672ebab49530"
+    },
+    {
+      "caseId": "backend-2026-10-28-053",
+      "file": "053-loads-numbered-migrations-in-a-stable-order-with-che.json",
+      "sourceFile": "backend/tests/unit/databaseMigrations.unit.test.js",
+      "testName": "PostgreSQL migrations loads numbered migrations in a stable order with checksums",
+      "suiteAssertionOrdinal": 1,
+      "recordSha256": "6b5003ec44f95986bda2b33b64fa7f93ae1e98ca16e73f77f91325b943644cec"
+    },
+    {
+      "caseId": "backend-2026-10-28-054",
+      "file": "054-defines-the-core-evidence-and-reward-constraints.json",
+      "sourceFile": "backend/tests/unit/databaseMigrations.unit.test.js",
+      "testName": "PostgreSQL migrations defines the core evidence and reward constraints",
+      "suiteAssertionOrdinal": 2,
+      "recordSha256": "5a6de2e2bf2ec98ee55ee373cbee657a9bea6249e532abcd2c00c0a2d73ce13f"
+    },
+    {
+      "caseId": "backend-2026-10-28-055",
+      "file": "055-should-connect-to-database.json",
+      "sourceFile": "backend/tests/unit/db.unit.test.js",
+      "testName": "Database Unit Tests Connection should connect to database",
+      "suiteAssertionOrdinal": 1,
+      "recordSha256": "d2f07d9426975689656420ecc950c6b41b5bbe1cd66ef64e864936760c958d26"
+    },
+    {
+      "caseId": "backend-2026-10-28-056",
+      "file": "056-should-handle-connection-errors.json",
+      "sourceFile": "backend/tests/unit/db.unit.test.js",
+      "testName": "Database Unit Tests Connection should handle connection errors",
+      "suiteAssertionOrdinal": 2,
+      "recordSha256": "82beb402f47276fa28de57e32239158e85ce52486540954faf0ced053a4bf76a"
+    },
+    {
+      "caseId": "backend-2026-10-28-057",
+      "file": "057-should-execute-select-queries.json",
+      "sourceFile": "backend/tests/unit/db.unit.test.js",
+      "testName": "Database Unit Tests Query Operations should execute SELECT queries",
+      "suiteAssertionOrdinal": 3,
+      "recordSha256": "7d3942d7caac50cf5573b6e52ca248c62766883697c295650d9868a450d95695"
+    },
+    {
+      "caseId": "backend-2026-10-28-058",
+      "file": "058-should-execute-insert-queries.json",
+      "sourceFile": "backend/tests/unit/db.unit.test.js",
+      "testName": "Database Unit Tests Query Operations should execute INSERT queries",
+      "suiteAssertionOrdinal": 4,
+      "recordSha256": "41fa41175b86fa255ba00d0f39178c4048b2215435841c0ab171ac9a720ab615"
+    },
+    {
+      "caseId": "backend-2026-10-28-059",
+      "file": "059-should-execute-update-queries.json",
+      "sourceFile": "backend/tests/unit/db.unit.test.js",
+      "testName": "Database Unit Tests Query Operations should execute UPDATE queries",
+      "suiteAssertionOrdinal": 5,
+      "recordSha256": "5d78ce18b6b4096f6a7118910cd5256c219c0cdf0a246635947dc50070e2402b"
+    },
+    {
+      "caseId": "backend-2026-10-28-060",
+      "file": "060-should-execute-delete-queries.json",
+      "sourceFile": "backend/tests/unit/db.unit.test.js",
+      "testName": "Database Unit Tests Query Operations should execute DELETE queries",
+      "suiteAssertionOrdinal": 6,
+      "recordSha256": "38bed7af5dcc52eefa751344dfa132a365f453deaac2346727e4db1bc205ae33"
+    },
+    {
+      "caseId": "backend-2026-10-28-061",
+      "file": "061-should-commit-transactions.json",
+      "sourceFile": "backend/tests/unit/db.unit.test.js",
+      "testName": "Database Unit Tests Transaction Handling should commit transactions",
+      "suiteAssertionOrdinal": 7,
+      "recordSha256": "5570cb12430980db240c37611caf401604fe6a3702017a93f78aa71405f7cdc0"
+    },
+    {
+      "caseId": "backend-2026-10-28-062",
+      "file": "062-should-rollback-on-error.json",
+      "sourceFile": "backend/tests/unit/db.unit.test.js",
+      "testName": "Database Unit Tests Transaction Handling should rollback on error",
+      "suiteAssertionOrdinal": 8,
+      "recordSha256": "697370d38c0967035eded295b3b957224e523cbae27026ded463d498ec27cad0"
+    },
+    {
+      "caseId": "backend-2026-10-28-063",
+      "file": "063-should-validate-correct-event-data.json",
+      "sourceFile": "backend/tests/unit/events.unit.test.js",
+      "testName": "Event Handlers Unit Tests validateEvent should validate correct event data",
+      "suiteAssertionOrdinal": 1,
+      "recordSha256": "9ef534028c95a87e0ea6df8ccda59b1ea213b22cbb07aa0c538def8bb2dea9d9"
+    },
+    {
+      "caseId": "backend-2026-10-28-064",
+      "file": "064-should-reject-missing-required-fields.json",
+      "sourceFile": "backend/tests/unit/events.unit.test.js",
+      "testName": "Event Handlers Unit Tests validateEvent should reject missing required fields",
+      "suiteAssertionOrdinal": 2,
+      "recordSha256": "2fb31c10b242a260bdbe92e209876a03fcd2533326ddc50cf7ac550304fa6a14"
+    },
+    {
+      "caseId": "backend-2026-10-28-065",
+      "file": "065-should-reject-invalid-date-format.json",
+      "sourceFile": "backend/tests/unit/events.unit.test.js",
+      "testName": "Event Handlers Unit Tests validateEvent should reject invalid date format",
+      "suiteAssertionOrdinal": 3,
+      "recordSha256": "d62f744f7ce0b3f676d11f6b8f25cbb0da26a38b94d0f0448ecbe15a3e744541"
+    },
+    {
+      "caseId": "backend-2026-10-28-066",
+      "file": "066-should-format-event-data-correctly.json",
+      "sourceFile": "backend/tests/unit/events.unit.test.js",
+      "testName": "Event Handlers Unit Tests formatEventResponse should format event data correctly",
+      "suiteAssertionOrdinal": 4,
+      "recordSha256": "e95f3e1cab88dab7b57c85f5a5b721d4669f00ea59ebae421e1658af8caadc2b"
+    },
+    {
+      "caseId": "backend-2026-10-28-067",
+      "file": "067-should-filter-by-status.json",
+      "sourceFile": "backend/tests/unit/events.unit.test.js",
+      "testName": "Event Handlers Unit Tests filterEvents should filter by status",
+      "suiteAssertionOrdinal": 5,
+      "recordSha256": "ff4f142f5bb90b113c10028f8d176cc2365b33dddfc8fdbd1850490d034dc3b3"
+    },
+    {
+      "caseId": "backend-2026-10-28-068",
+      "file": "068-should-filter-by-date-range.json",
+      "sourceFile": "backend/tests/unit/events.unit.test.js",
+      "testName": "Event Handlers Unit Tests filterEvents should filter by date range",
+      "suiteAssertionOrdinal": 6,
+      "recordSha256": "2bf0964cd5c5025e924c106c7de6e83c01593bd672c1e4a5b97e0cf334ab96fc"
+    },
+    {
+      "caseId": "backend-2026-10-28-069",
+      "file": "069-recovers-persisted-pending-work-coalesces-kicks-and-.json",
+      "sourceFile": "backend/tests/unit/evidenceAiWorker.unit.test.js",
+      "testName": "durable private evidence AI worker recovers persisted pending work, coalesces kicks and never lowers heuristic risk",
+      "suiteAssertionOrdinal": 1,
+      "recordSha256": "b02a5e1574c8a027d55d684b45328999b1c2f8475cdb651b2e77fa226a7c2a3e"
+    },
+    {
+      "caseId": "backend-2026-10-28-070",
+      "file": "070-retains-original-risk-and-decisions-when-a-reviewer-.json",
+      "sourceFile": "backend/tests/unit/evidenceAiWorker.unit.test.js",
+      "testName": "durable private evidence AI worker retains original risk and decisions when a reviewer has already approved",
+      "suiteAssertionOrdinal": 2,
+      "recordSha256": "12d01b1b9b73730f2022077a6142ab6f2a93008eaf6c9791529a3afc47e1fcac"
+    },
+    {
+      "caseId": "backend-2026-10-28-071",
+      "file": "071-preserves-private-evidence-for-manual-review-on-stor.json",
+      "sourceFile": "backend/tests/unit/evidenceAiWorker.unit.test.js",
+      "testName": "durable private evidence AI worker preserves private evidence for manual review on storage failure",
+      "suiteAssertionOrdinal": 3,
+      "recordSha256": "3db37cca6da96d7894084b3b4563aebc3ed8b2a66f4fbf7eb5b137a4113de3bf"
+    },
+    {
+      "caseId": "backend-2026-10-28-072",
+      "file": "072-saves-validated-findings-when-a-competing-stream-rec.json",
+      "sourceFile": "backend/tests/unit/evidenceAiWorker.unit.test.js",
+      "testName": "durable private evidence AI worker saves validated findings when a competing stream records cancellation",
+      "suiteAssertionOrdinal": 4,
+      "recordSha256": "f603caf9e28ca835a9eaea45994d219d736384675284e7306604013d73c4395d"
+    },
+    {
+      "caseId": "backend-2026-10-28-073",
+      "file": "073-does-not-overwrite-completed-analysis-with-a-later-c.json",
+      "sourceFile": "backend/tests/unit/evidenceAiWorker.unit.test.js",
+      "testName": "durable private evidence AI worker does not overwrite completed analysis with a later cancellation",
+      "suiteAssertionOrdinal": 5,
+      "recordSha256": "a465edb9be875a4e3e5c771df31f94b2bc25b29b525091588d212d6c222fdf77"
+    },
+    {
+      "caseId": "backend-2026-10-28-074",
+      "file": "074-keeps-pending-work-for-a-later-restart-while-disable.json",
+      "sourceFile": "backend/tests/unit/evidenceAiWorker.unit.test.js",
+      "testName": "durable private evidence AI worker keeps pending work for a later restart while disabled",
+      "suiteAssertionOrdinal": 6,
+      "recordSha256": "ed4c5e0af3d5f97494c0348897dd0284e1fd119f32ba4b7cbaf4838f0f36affc"
+    },
+    {
+      "caseId": "backend-2026-10-28-075",
+      "file": "075-reads-privately-stored-evidence-without-creating-pub.json",
+      "sourceFile": "backend/tests/unit/evidenceStorageRead.unit.test.js",
+      "testName": "private evidence reads for background verification reads privately stored evidence without creating public URLs",
+      "suiteAssertionOrdinal": 1,
+      "recordSha256": "5026e562a2403832874cae2e78b1565110b03f1186f954bb967648b99f07fba4"
+    },
+    {
+      "caseId": "backend-2026-10-28-076",
+      "file": "076-rejects-paths-outside-the-configured-evidence-direct.json",
+      "sourceFile": "backend/tests/unit/evidenceStorageRead.unit.test.js",
+      "testName": "private evidence reads for background verification rejects paths outside the configured evidence directory",
+      "suiteAssertionOrdinal": 2,
+      "recordSha256": "d9839d3012fe06ea80b0985d7b9320275947c76411bd3c4e673d1dba2986a1f5"
+    },
+    {
+      "caseId": "backend-2026-10-28-077",
+      "file": "077-refuses-oversized-files-before-loading-them-into-mem.json",
+      "sourceFile": "backend/tests/unit/evidenceStorageRead.unit.test.js",
+      "testName": "private evidence reads for background verification refuses oversized files before loading them into memory",
+      "suiteAssertionOrdinal": 3,
+      "recordSha256": "6628cff7fec0ced17a1592b8c124b4533070ea695b9274f9466ea090b5db69c4"
+    },
+    {
+      "caseId": "backend-2026-10-28-078",
+      "file": "078-delivers-evidence-inside-a-hidden-storage-directory-.json",
+      "sourceFile": "backend/tests/unit/evidenceStorageRead.unit.test.js",
+      "testName": "private evidence reads for background verification delivers evidence inside a hidden storage directory after root validation",
+      "suiteAssertionOrdinal": 4,
+      "recordSha256": "eeb5479efcb63d5eec0688df009cd3a213e726974761a959a5eb0189e3a038e7"
+    },
+    {
+      "caseId": "backend-2026-10-28-079",
+      "file": "079-keeps-perceptual-fingerprints-stable-across-resize-a.json",
+      "sourceFile": "backend/tests/unit/evidenceVerification.unit.test.js",
+      "testName": "Phase 4 evidence verification keeps perceptual fingerprints stable across resize and recompression",
+      "suiteAssertionOrdinal": 1,
+      "recordSha256": "f59eedc69ca82485b4d0b28074b9d4a1ac777c41ccf1210edc73d84cdf3ed7bd"
+    },
+    {
+      "caseId": "backend-2026-10-28-080",
+      "file": "080-returns-explainable-scene-quality-and-synthetic-imag.json",
+      "sourceFile": "backend/tests/unit/evidenceVerification.unit.test.js",
+      "testName": "Phase 4 evidence verification returns explainable scene, quality, and synthetic-image risk details",
+      "suiteAssertionOrdinal": 2,
+      "recordSha256": "5c02154c9339034edad8b3ee3da47046cc1cdbd8b1f2e171aa2dc8290866e116"
+    },
+    {
+      "caseId": "backend-2026-10-28-081",
+      "file": "081-honors-an-explicit-abort-deadline-while-waiting-for-.json",
+      "sourceFile": "backend/tests/unit/gemmaTransport.unit.test.js",
+      "testName": "honors an explicit abort deadline while waiting for response headers",
+      "suiteAssertionOrdinal": 1,
+      "recordSha256": "fe5abf1596ae94ed15d71105f233ff2be4034670659e2e30e9357f4f573a949f"
+    },
+    {
+      "caseId": "backend-2026-10-28-082",
+      "file": "082-does-no-network-or-image-work-when-disabled.json",
+      "sourceFile": "backend/tests/unit/gemmaVerification.unit.test.js",
+      "testName": "Gemma smart verification does no network or image work when disabled",
+      "suiteAssertionOrdinal": 1,
+      "recordSha256": "5dfe35f08eaf23c7ee112c1ce6b7728c5ebbe0178e1d5513d3deae5a383752a3"
+    },
+    {
+      "caseId": "backend-2026-10-28-083",
+      "file": "083-sends-ordered-images-without-metadata-and-validates-.json",
+      "sourceFile": "backend/tests/unit/gemmaVerification.unit.test.js",
+      "testName": "Gemma smart verification sends ordered images without metadata and validates findings",
+      "suiteAssertionOrdinal": 2,
+      "recordSha256": "e486a5ab3bb731f5e471627cf76a16b9e0aaf31d243cad8e1b7d780fff3dbc2e"
+    },
+    {
+      "caseId": "backend-2026-10-28-084",
+      "file": "084-preloads-fast-mode-weights-without-sending-evidence-.json",
+      "sourceFile": "backend/tests/unit/gemmaVerification.unit.test.js",
+      "testName": "Gemma smart verification preloads fast-mode weights without sending evidence or generating findings",
+      "suiteAssertionOrdinal": 3,
+      "recordSha256": "21c06c460d6b0b4ee15bfbc301f07e3720e3bfac090ebbcf26f61b56d0de61d8"
+    },
+    {
+      "caseId": "backend-2026-10-28-085",
+      "file": "085-does-not-preload-when-fast-mode-is-off-and-tolerates.json",
+      "sourceFile": "backend/tests/unit/gemmaVerification.unit.test.js",
+      "testName": "Gemma smart verification does not preload when fast mode is off and tolerates an offline model service",
+      "suiteAssertionOrdinal": 4,
+      "recordSha256": "b37f35e29591ae6403eb1b0a839d150d572755c4f0da3383566f7941e5b8314c"
+    },
+    {
+      "caseId": "backend-2026-10-28-086",
+      "file": "086-fast-mode-sends-one-ordered-comparison-preview-and-r.json",
+      "sourceFile": "backend/tests/unit/gemmaVerification.unit.test.js",
+      "testName": "Gemma smart verification fast mode sends one ordered comparison preview and retains output validation",
+      "suiteAssertionOrdinal": 5,
+      "recordSha256": "92a93ba460063cf3897f7ae941154d02f7ee0b3422ab5a105f8d6f0cd2cf86ba"
+    },
+    {
+      "caseId": "backend-2026-10-28-087",
+      "file": "087-places-before-above-after-without-carrying-photo-met.json",
+      "sourceFile": "backend/tests/unit/gemmaVerification.unit.test.js",
+      "testName": "Gemma smart verification places before above after without carrying photo metadata into the preview",
+      "suiteAssertionOrdinal": 6,
+      "recordSha256": "1df702a9cd4f81ed88815d003e1edbef34e2fd7644e6579c81ca7874d12f14d0"
+    },
+    {
+      "caseId": "backend-2026-10-28-088",
+      "file": "088-supports-compatible-hosted-chat-completions-with-ser.json",
+      "sourceFile": "backend/tests/unit/gemmaVerification.unit.test.js",
+      "testName": "Gemma smart verification supports compatible hosted chat completions with server-only credentials",
+      "suiteAssertionOrdinal": 7,
+      "recordSha256": "65b085de360a28d6a573e198953d075c70add391049e12b15885b3805de47bc3"
+    },
+    {
+      "caseId": "backend-2026-10-28-089",
+      "file": "089-reads-fragmented-ollama-ndjson-and-emits-progress-wi.json",
+      "sourceFile": "backend/tests/unit/gemmaVerification.unit.test.js",
+      "testName": "Gemma smart verification reads fragmented Ollama NDJSON and emits progress without exposing unvalidated text",
+      "suiteAssertionOrdinal": 8,
+      "recordSha256": "b0945c6115f626bee5f9d6c6688d21abc3492b105fc57366d7338b1ebc28c4fa"
+    },
+    {
+      "caseId": "backend-2026-10-28-090",
+      "file": "090-rejects-a-truncated-model-stream-instead-of-presenti.json",
+      "sourceFile": "backend/tests/unit/gemmaVerification.unit.test.js",
+      "testName": "Gemma smart verification rejects a truncated model stream instead of presenting partial findings",
+      "suiteAssertionOrdinal": 9,
+      "recordSha256": "ddb6521eb5576e80b1ec383f7a82f0aa11fa58a5ece308fc5d79a8cef623a6d5"
+    },
+    {
+      "caseId": "backend-2026-10-28-091",
+      "file": "091-does-not-contact-the-model-for-a-cancelled-foregroun.json",
+      "sourceFile": "backend/tests/unit/gemmaVerification.unit.test.js",
+      "testName": "Gemma smart verification does not contact the model for a cancelled foreground request",
+      "suiteAssertionOrdinal": 10,
+      "recordSha256": "1bcad5658f8c9634621e66b4a3b3f08acfe3f6cbd3700f2121544abc74310d83"
+    },
+    {
+      "caseId": "backend-2026-10-28-092",
+      "file": "092-rejects-malformed-or-unsupported-output.json",
+      "sourceFile": "backend/tests/unit/gemmaVerification.unit.test.js",
+      "testName": "Gemma smart verification rejects malformed or unsupported output",
+      "suiteAssertionOrdinal": 11,
+      "recordSha256": "064069e83daa67551cc42217de622ea80094e27e8a27de32de694b7608e742f1"
+    },
+    {
+      "caseId": "backend-2026-10-28-093",
+      "file": "093-rejects-malformed-or-unsupported-output.json",
+      "sourceFile": "backend/tests/unit/gemmaVerification.unit.test.js",
+      "testName": "Gemma smart verification rejects malformed or unsupported output",
+      "suiteAssertionOrdinal": 12,
+      "recordSha256": "da10cf92e57ebe3f74e4951b8ee22aa371c59cff10ec7b0bec1230dabc1485e9"
+    },
+    {
+      "caseId": "backend-2026-10-28-094",
+      "file": "094-rejects-malformed-or-unsupported-output.json",
+      "sourceFile": "backend/tests/unit/gemmaVerification.unit.test.js",
+      "testName": "Gemma smart verification rejects malformed or unsupported output",
+      "suiteAssertionOrdinal": 13,
+      "recordSha256": "df922e34f76217e1f832d597e7d6c3ecfbba6403496d91cabca8572adc946007"
+    },
+    {
+      "caseId": "backend-2026-10-28-095",
+      "file": "095-rejects-malformed-or-unsupported-output.json",
+      "sourceFile": "backend/tests/unit/gemmaVerification.unit.test.js",
+      "testName": "Gemma smart verification rejects malformed or unsupported output",
+      "suiteAssertionOrdinal": 14,
+      "recordSha256": "f4760cba53b351e61614d39f8a65e9ece2124a3d7faf96f7848c12568058f91a"
+    },
+    {
+      "caseId": "backend-2026-10-28-096",
+      "file": "096-rejects-malformed-or-unsupported-output.json",
+      "sourceFile": "backend/tests/unit/gemmaVerification.unit.test.js",
+      "testName": "Gemma smart verification rejects malformed or unsupported output",
+      "suiteAssertionOrdinal": 15,
+      "recordSha256": "c160bc11b8d547e10242d3010b155d697524d4499faa4ffe5823c7dbf12ad3b7"
+    },
+    {
+      "caseId": "backend-2026-10-28-097",
+      "file": "097-rejects-malformed-or-unsupported-output.json",
+      "sourceFile": "backend/tests/unit/gemmaVerification.unit.test.js",
+      "testName": "Gemma smart verification rejects malformed or unsupported output",
+      "suiteAssertionOrdinal": 16,
+      "recordSha256": "e7a4185bf0cca5948ff6711cce9c84b5f730674b37afcb768dd4ccc3589678f6"
+    },
+    {
+      "caseId": "backend-2026-10-28-098",
+      "file": "098-never-lets-a-model-waive-human-review.json",
+      "sourceFile": "backend/tests/unit/gemmaVerification.unit.test.js",
+      "testName": "Gemma smart verification never lets a model waive human review",
+      "suiteAssertionOrdinal": 17,
+      "recordSha256": "8c0fc4a24495f5b3b172a9697bb0455948cd3bcae50edbf6fc98e5ab5695b491"
+    },
+    {
+      "caseId": "backend-2026-10-28-099",
+      "file": "099-rejects-repeated-and-near-repeated-findings.json",
+      "sourceFile": "backend/tests/unit/gemmaVerification.unit.test.js",
+      "testName": "Gemma smart verification rejects repeated and near-repeated findings",
+      "suiteAssertionOrdinal": 18,
+      "recordSha256": "833d55084e5328c161614f28dd9333efe92d4fc650c1ed46cfe66cc54c73eb47"
+    },
+    {
+      "caseId": "backend-2026-10-28-100",
+      "file": "100-flags-obvious-contradictions-and-unsupported-numeric.json",
+      "sourceFile": "backend/tests/unit/gemmaVerification.unit.test.js",
+      "testName": "Gemma smart verification flags obvious contradictions and unsupported numeric claims",
+      "suiteAssertionOrdinal": 19,
+      "recordSha256": "9ededd48a09225a72f9e39442de665582216e094ba208f75a52ade93198ae8e9"
+    },
+    {
+      "caseId": "backend-2026-10-28-101",
+      "file": "101-requires-uncertainty-for-illustrations-and-evidence-.json",
+      "sourceFile": "backend/tests/unit/gemmaVerification.unit.test.js",
+      "testName": "Gemma smart verification requires uncertainty for illustrations and evidence for organic waste",
+      "suiteAssertionOrdinal": 20,
+      "recordSha256": "25549ee4499056c067f2cafb1b64e73f3530d17b8bc266aa264e33cfb2095857"
+    },
+    {
+      "caseId": "backend-2026-10-28-102",
+      "file": "102-rejects-repeated-sentences-and-placeholder-findings-.json",
+      "sourceFile": "backend/tests/unit/gemmaVerification.unit.test.js",
+      "testName": "Gemma smart verification rejects repeated sentences and placeholder findings within a single entry",
+      "suiteAssertionOrdinal": 21,
+      "recordSha256": "4bfd2a0e7216338bc45ce4f3b340e882f3dc830630f67cd435d7df5fdf84a86d"
+    },
+    {
+      "caseId": "backend-2026-10-28-103",
+      "file": "103-routes-quality-failures-and-token-limit-output-to-re.json",
+      "sourceFile": "backend/tests/unit/gemmaVerification.unit.test.js",
+      "testName": "Gemma smart verification routes quality failures and token-limit output to review",
+      "suiteAssertionOrdinal": 22,
+      "recordSha256": "2e0af183c51150c8096944c5e9ada12bfe10603a8362990a902ad159fbfa57f0"
+    },
+    {
+      "caseId": "backend-2026-10-28-104",
+      "file": "104-rejects-unsafe-gemma-max-output-tokens-configuration.json",
+      "sourceFile": "backend/tests/unit/gemmaVerification.unit.test.js",
+      "testName": "Gemma smart verification rejects unsafe GEMMA_MAX_OUTPUT_TOKENS configuration",
+      "suiteAssertionOrdinal": 23,
+      "recordSha256": "b34b9ca805e721da779e8ca0dfe1790e9caa8eb641c9a09e064ed3a32f28a0a7"
+    },
+    {
+      "caseId": "backend-2026-10-28-105",
+      "file": "105-rejects-unsafe-gemma-image-max-size-configuration.json",
+      "sourceFile": "backend/tests/unit/gemmaVerification.unit.test.js",
+      "testName": "Gemma smart verification rejects unsafe GEMMA_IMAGE_MAX_SIZE configuration",
+      "suiteAssertionOrdinal": 24,
+      "recordSha256": "e1257dec0cf6c25a489367ef901d43d1aeffb58151716067bac9acf9a9fe9443"
+    },
+    {
+      "caseId": "backend-2026-10-28-106",
+      "file": "106-rejects-unsafe-gemma-num-threads-configuration.json",
+      "sourceFile": "backend/tests/unit/gemmaVerification.unit.test.js",
+      "testName": "Gemma smart verification rejects unsafe GEMMA_NUM_THREADS configuration",
+      "suiteAssertionOrdinal": 25,
+      "recordSha256": "4cf4832a55f7d0923b01cb629867a089f0361cd411adeb412709da5dd15dc145"
+    },
+    {
+      "caseId": "backend-2026-10-28-107",
+      "file": "107-rejects-unsafe-gemma-context-length-configuration.json",
+      "sourceFile": "backend/tests/unit/gemmaVerification.unit.test.js",
+      "testName": "Gemma smart verification rejects unsafe GEMMA_CONTEXT_LENGTH configuration",
+      "suiteAssertionOrdinal": 26,
+      "recordSha256": "df307042126b6b8f50993c2e95c25ad25e6d5d7753bc32303b4fed69428ec7b2"
+    },
+    {
+      "caseId": "backend-2026-10-28-108",
+      "file": "108-fails-safely-on-invalid-json-provider-errors-and-ove.json",
+      "sourceFile": "backend/tests/unit/gemmaVerification.unit.test.js",
+      "testName": "Gemma smart verification fails safely on invalid JSON, provider errors and oversized responses",
+      "suiteAssertionOrdinal": 27,
+      "recordSha256": "491d6e6d84576bb870d1894b80820a8ac6da4195c9b84fcb887d715c3689e71a"
+    },
+    {
+      "caseId": "backend-2026-10-28-109",
+      "file": "109-aborts-timed-out-requests-and-preserves-manual-revie.json",
+      "sourceFile": "backend/tests/unit/gemmaVerification.unit.test.js",
+      "testName": "Gemma smart verification aborts timed out requests and preserves manual review",
+      "suiteAssertionOrdinal": 28,
+      "recordSha256": "855d0143ad6043a4088353ed32634743ad439cc323e68a7d06ab9bc112f3beb3"
+    },
+    {
+      "caseId": "backend-2026-10-28-110",
+      "file": "110-rejects-insecure-remote-configuration-without-a-netw.json",
+      "sourceFile": "backend/tests/unit/gemmaVerification.unit.test.js",
+      "testName": "Gemma smart verification rejects insecure remote configuration without a network call",
+      "suiteAssertionOrdinal": 29,
+      "recordSha256": "86502dc82f793065e394b3dd55d805fefbf59f1b0ebfc94eeeaee456a7aec7ab"
+    },
+    {
+      "caseId": "backend-2026-10-28-111",
+      "file": "111-rejects-deadlines-above-the-bounded-cpu-inference-ma.json",
+      "sourceFile": "backend/tests/unit/gemmaVerification.unit.test.js",
+      "testName": "Gemma smart verification rejects deadlines above the bounded CPU inference maximum",
+      "suiteAssertionOrdinal": 30,
+      "recordSha256": "9ca9a7ef06662e63216b2056b4f9437e12ec3f2751523d40df87e658b82bf99e"
+    },
+    {
+      "caseId": "backend-2026-10-28-112",
+      "file": "112-adds-uncertainty-to-existing-signals-without-overrid.json",
+      "sourceFile": "backend/tests/unit/gemmaVerification.unit.test.js",
+      "testName": "Gemma smart verification adds uncertainty to existing signals without overriding duplicate rejection",
+      "suiteAssertionOrdinal": 31,
+      "recordSha256": "adca92900fa4b087ebaef81a8b033dc2f50b0a913bc8bc50e532db668207021f"
+    },
+    {
+      "caseId": "backend-2026-10-28-113",
+      "file": "113-recognizes-supported-bcrypt-hashes.json",
+      "sourceFile": "backend/tests/unit/passwordMigration.unit.test.js",
+      "testName": "plaintext password migration recognizes supported bcrypt hashes",
+      "suiteAssertionOrdinal": 1,
+      "recordSha256": "8dd6942fb9065eab7f87d3f781dd1d8ffe650779abd48a1dd881591a9d0b11a2"
+    },
+    {
+      "caseId": "backend-2026-10-28-114",
+      "file": "114-flags-non-bcrypt-retained-value-password123.json",
+      "sourceFile": "backend/tests/unit/passwordMigration.unit.test.js",
+      "testName": "plaintext password migration flags non-bcrypt retained value: password123",
+      "suiteAssertionOrdinal": 2,
+      "recordSha256": "efd650f73967635b4842ef799c2fb4e4f8458c50d7782507fc2e672068de18bd"
+    },
+    {
+      "caseId": "backend-2026-10-28-115",
+      "file": "115-flags-non-bcrypt-retained-value.json",
+      "sourceFile": "backend/tests/unit/passwordMigration.unit.test.js",
+      "testName": "plaintext password migration flags non-bcrypt retained value: ",
+      "suiteAssertionOrdinal": 3,
+      "recordSha256": "dd0767c4a445aac17c8b255cf136a8b4baa4a052e56ab214b427a0cbdf101822"
+    },
+    {
+      "caseId": "backend-2026-10-28-116",
+      "file": "116-flags-non-bcrypt-retained-value-2b-04-short.json",
+      "sourceFile": "backend/tests/unit/passwordMigration.unit.test.js",
+      "testName": "plaintext password migration flags non-bcrypt retained value: $2b$04$short",
+      "suiteAssertionOrdinal": 4,
+      "recordSha256": "df959eb3e8d3f718ae34754c1f4b579119b3a6ea754da118a8c3b5809d650e90"
+    },
+    {
+      "caseId": "backend-2026-10-28-117",
+      "file": "117-flags-non-bcrypt-retained-value-pbkdf2-not-supported.json",
+      "sourceFile": "backend/tests/unit/passwordMigration.unit.test.js",
+      "testName": "plaintext password migration flags non-bcrypt retained value: pbkdf2:not-supported",
+      "suiteAssertionOrdinal": 5,
+      "recordSha256": "5977aaa1d7db3520941c4d46476eed7858a1f470ca37c9283ea539d5e96e3c80"
+    },
+    {
+      "caseId": "backend-2026-10-28-118",
+      "file": "118-defines-the-pilot-reward-amounts-and-payout-limits.json",
+      "sourceFile": "backend/tests/unit/rewardPolicy.unit.test.js",
+      "testName": "CELO reward policy defines the pilot reward amounts and payout limits",
+      "suiteAssertionOrdinal": 1,
+      "recordSha256": "fabdd338b78a4842746515cf6c8a7cd509477a177fbd7224556cdd2705cd4e2d"
+    },
+    {
+      "caseId": "backend-2026-10-28-119",
+      "file": "119-combines-category-and-impact-multipliers-determinist.json",
+      "sourceFile": "backend/tests/unit/rewardPolicy.unit.test.js",
+      "testName": "CELO reward policy combines category and impact multipliers deterministically",
+      "suiteAssertionOrdinal": 2,
+      "recordSha256": "1183d3779b510e1ed6a3aee03ef57f61e8aae1911b6d03a4dd5a727e96bbc42f"
+    },
+    {
+      "caseId": "backend-2026-10-28-120",
+      "file": "120-caps-a-calculated-reward-at-the-per-submission-limit.json",
+      "sourceFile": "backend/tests/unit/rewardPolicy.unit.test.js",
+      "testName": "CELO reward policy caps a calculated reward at the per-submission limit",
+      "suiteAssertionOrdinal": 3,
+      "recordSha256": "92bb4384c7dc32fa155ec0ebe7dcaf83e4d8800009ea538448bc606979046239"
+    },
+    {
+      "caseId": "backend-2026-10-28-121",
+      "file": "121-uses-item-count-or-weight-to-classify-impact.json",
+      "sourceFile": "backend/tests/unit/rewardPolicy.unit.test.js",
+      "testName": "CELO reward policy uses item count or weight to classify impact",
+      "suiteAssertionOrdinal": 4,
+      "recordSha256": "c6cf2aedb16c49c17f40629349706e881032fc2c0be93e647d1dc7211186b15b"
+    },
+    {
+      "caseId": "backend-2026-10-28-122",
+      "file": "122-creates-one-claim-when-the-same-submission-is-claime.json",
+      "sourceFile": "backend/tests/unit/rewardService.unit.test.js",
+      "testName": "idempotent CELO reward payments creates one claim when the same submission is claimed repeatedly",
+      "suiteAssertionOrdinal": 1,
+      "recordSha256": "07a433c28743d9aa7e9709d9d5c07ddd47ebdbcf00e5f20983eaff1199996539"
+    },
+    {
+      "caseId": "backend-2026-10-28-123",
+      "file": "123-broadcasts-and-confirms-a-payout-only-once.json",
+      "sourceFile": "backend/tests/unit/rewardService.unit.test.js",
+      "testName": "idempotent CELO reward payments broadcasts and confirms a payout only once",
+      "suiteAssertionOrdinal": 2,
+      "recordSha256": "6a9e724b2deac1c6ce7cbe13f0223b4bca918d40b90751fd37f32039447f088b"
+    },
+    {
+      "caseId": "backend-2026-10-28-124",
+      "file": "124-blocks-a-payout-while-the-operational-reward-switch-.json",
+      "sourceFile": "backend/tests/unit/rewardService.unit.test.js",
+      "testName": "idempotent CELO reward payments blocks a payout while the operational reward switch is paused",
+      "suiteAssertionOrdinal": 3,
+      "recordSha256": "90ad9a19a332fc11cb33ffa2d39ad88e1a05b85576273ae56996b9f0521bbd54"
+    },
+    {
+      "caseId": "backend-2026-10-28-125",
+      "file": "125-allows-only-one-broadcast-under-concurrent-payout-re.json",
+      "sourceFile": "backend/tests/unit/rewardService.unit.test.js",
+      "testName": "idempotent CELO reward payments allows only one broadcast under concurrent payout requests",
+      "suiteAssertionOrdinal": 4,
+      "recordSha256": "0a7cb93f2bf6354cc9a0854e4b3adaca7fb1e235b85a570557a2be671fb003b8"
+    },
+    {
+      "caseId": "backend-2026-10-28-126",
+      "file": "126-blocks-a-payout-already-recorded-by-the-on-chain-con.json",
+      "sourceFile": "backend/tests/unit/rewardService.unit.test.js",
+      "testName": "idempotent CELO reward payments blocks a payout already recorded by the on-chain contract",
+      "suiteAssertionOrdinal": 5,
+      "recordSha256": "47042036d681bb5a33c1c0fbf8f184d825d7d79f469ead94c979ec22e270cf51"
+    },
+    {
+      "caseId": "backend-2026-10-28-127",
+      "file": "127-reconciles-a-previously-broadcast-payment-after-conf.json",
+      "sourceFile": "backend/tests/unit/rewardService.unit.test.js",
+      "testName": "idempotent CELO reward payments reconciles a previously broadcast payment after confirmation waiting fails",
+      "suiteAssertionOrdinal": 6,
+      "recordSha256": "7ca6e8e36949d814e01831ccac5665183b804b8f1aa4a754b18cc2a084cb8670"
+    },
+    {
+      "caseId": "backend-2026-10-28-128",
+      "file": "128-blocks-payment-until-the-user-has-a-verified-wallet.json",
+      "sourceFile": "backend/tests/unit/rewardService.unit.test.js",
+      "testName": "idempotent CELO reward payments blocks payment until the user has a verified wallet",
+      "suiteAssertionOrdinal": 7,
+      "recordSha256": "7d14c0d2e75fbfdfd1cb22c8242309b8d8d35f7c6e5d89b8e7e0151faa227d10"
+    },
+    {
+      "caseId": "backend-2026-10-28-129",
+      "file": "129-reactivates-a-wallet-blocked-claim-after-ownership-v.json",
+      "sourceFile": "backend/tests/unit/rewardService.unit.test.js",
+      "testName": "idempotent CELO reward payments reactivates a wallet-blocked claim after ownership verification",
+      "suiteAssertionOrdinal": 8,
+      "recordSha256": "3e79a4603af2bacc8e5f0170c7b4a7756f4c0125faeea6e569e1b39586863faf"
+    },
+    {
+      "caseId": "backend-2026-10-28-130",
+      "file": "130-returns-security-headers-without-exposing-express.json",
+      "sourceFile": "backend/tests/unit/security.unit.test.js",
+      "testName": "HTTP security middleware returns security headers without exposing Express",
+      "suiteAssertionOrdinal": 1,
+      "recordSha256": "873aa29c5cb39c93ca60e17ecae11d1d08d0b3c02b2104eb64ec0db85b6379de"
+    },
+    {
+      "caseId": "backend-2026-10-28-131",
+      "file": "131-returns-a-stable-json-error-after-the-configured-req.json",
+      "sourceFile": "backend/tests/unit/security.unit.test.js",
+      "testName": "HTTP security middleware returns a stable JSON error after the configured request limit",
+      "suiteAssertionOrdinal": 2,
+      "recordSha256": "5b413bb349faa8a185437c1ecde817ea98a7a0ef52c480b5f2e9781ed376ed17"
+    },
+    {
+      "caseId": "backend-2026-10-28-132",
+      "file": "132-recognizes-a-jpeg-fixture-by-extension-and-signature.json",
+      "sourceFile": "backend/tests/unit/stagingImages.unit.test.js",
+      "testName": "staging image fixture validation recognizes a JPEG fixture by extension and signature",
+      "suiteAssertionOrdinal": 1,
+      "recordSha256": "f3ae4d57bec38d57cdda8f69dd08663f2506807b7eecc658e88b5c01ac502134"
+    },
+    {
+      "caseId": "backend-2026-10-28-133",
+      "file": "133-rejects-content-that-does-not-match-its-extension.json",
+      "sourceFile": "backend/tests/unit/stagingImages.unit.test.js",
+      "testName": "staging image fixture validation rejects content that does not match its extension",
+      "suiteAssertionOrdinal": 2,
+      "recordSha256": "ca1007ad91db796218fde6998f525026c161a195661d55169267f59f80165a57"
+    },
+    {
+      "caseId": "backend-2026-10-28-134",
+      "file": "134-checks-the-secondary-webp-signature.json",
+      "sourceFile": "backend/tests/unit/stagingImages.unit.test.js",
+      "testName": "staging image fixture validation checks the secondary WebP signature",
+      "suiteAssertionOrdinal": 3,
+      "recordSha256": "eed2ac5bf8dc411524059a0c3a892d3642773bd309a1a3975023f4bcc5b0ed18"
+    },
+    {
+      "caseId": "backend-2026-10-28-135",
+      "file": "135-keeps-local-simulation-valid-and-reports-broadcastin.json",
+      "sourceFile": "backend/tests/unit/startupValidation.unit.test.js",
+      "testName": "runtime environment validation keeps local simulation valid and reports broadcasting as disabled",
+      "suiteAssertionOrdinal": 1,
+      "recordSha256": "1c91cefc19dad48efaebcf670e01ec2b3932766318616621829bf78570249c98"
+    },
+    {
+      "caseId": "backend-2026-10-28-136",
+      "file": "136-rejects-incomplete-live-reward-configuration.json",
+      "sourceFile": "backend/tests/unit/startupValidation.unit.test.js",
+      "testName": "runtime environment validation rejects incomplete live reward configuration",
+      "suiteAssertionOrdinal": 2,
+      "recordSha256": "8fbbac6a3c41ed837e249ed0a9d629129173c26f46f025c4853f5807e65a8518"
+    },
+    {
+      "caseId": "backend-2026-10-28-137",
+      "file": "137-accepts-a-complete-celo-sepolia-pilot-configuration.json",
+      "sourceFile": "backend/tests/unit/startupValidation.unit.test.js",
+      "testName": "runtime environment validation accepts a complete Celo Sepolia pilot configuration",
+      "suiteAssertionOrdinal": 3,
+      "recordSha256": "cf9907e0bb8ce086f94504c13dbc521dd9cbd2166cb47099085b0f6d4c022def"
+    },
+    {
+      "caseId": "backend-2026-10-28-138",
+      "file": "138-requires-secure-sentry-and-audit-secrets-in-producti.json",
+      "sourceFile": "backend/tests/unit/startupValidation.unit.test.js",
+      "testName": "runtime environment validation requires secure Sentry and audit secrets in production",
+      "suiteAssertionOrdinal": 4,
+      "recordSha256": "6ded6b03a262416a677ac5c1925311f88314461067edf29da67b78a04e5f644c"
+    },
+    {
+      "caseId": "backend-2026-10-28-139",
+      "file": "139-requires-protected-metrics-in-production.json",
+      "sourceFile": "backend/tests/unit/startupValidation.unit.test.js",
+      "testName": "runtime environment validation requires protected metrics in production",
+      "suiteAssertionOrdinal": 5,
+      "recordSha256": "36e4da76e2e610b1eb40dc2299bfcec3e42cb31404d5302001946481096a51ab"
+    },
+    {
+      "caseId": "backend-2026-10-28-140",
+      "file": "140-rejects-unsafe-http-protection-limits.json",
+      "sourceFile": "backend/tests/unit/startupValidation.unit.test.js",
+      "testName": "runtime environment validation rejects unsafe HTTP protection limits",
+      "suiteAssertionOrdinal": 6,
+      "recordSha256": "324a71dea0ad9410e0e492884dff01b08cd333bed16e414666bf716d3a1d9255"
+    },
+    {
+      "caseId": "backend-2026-10-28-141",
+      "file": "141-rejects-invalid-sentry-sampling-rates.json",
+      "sourceFile": "backend/tests/unit/startupValidation.unit.test.js",
+      "testName": "runtime environment validation rejects invalid Sentry sampling rates",
+      "suiteAssertionOrdinal": 7,
+      "recordSha256": "ad346ca775505518a6b8da8b597ffdbe9a889113cc7b66ba42984648ed5ffd84"
+    },
+    {
+      "caseId": "backend-2026-10-28-142",
+      "file": "142-rejects-incomplete-optional-s3-storage-configuration.json",
+      "sourceFile": "backend/tests/unit/startupValidation.unit.test.js",
+      "testName": "runtime environment validation rejects incomplete optional S3 storage configuration",
+      "suiteAssertionOrdinal": 8,
+      "recordSha256": "c0447453fee09b03b43d56a01c9406768aee80b134f725d630d2f4ada86cdb0a"
+    },
+    {
+      "caseId": "backend-2026-10-28-143",
+      "file": "143-accepts-a-postgresql-connection-url.json",
+      "sourceFile": "backend/tests/unit/startupValidation.unit.test.js",
+      "testName": "runtime environment validation accepts a PostgreSQL connection URL",
+      "suiteAssertionOrdinal": 9,
+      "recordSha256": "bbd04b90baa2656f2da80f20ecd7ccfeb40d043dc3b88493146586727086afbe"
+    },
+    {
+      "caseId": "backend-2026-10-28-144",
+      "file": "144-rejects-an-invalid-postgresql-connection-url.json",
+      "sourceFile": "backend/tests/unit/startupValidation.unit.test.js",
+      "testName": "runtime environment validation rejects an invalid PostgreSQL connection URL",
+      "suiteAssertionOrdinal": 10,
+      "recordSha256": "727260a9c73d3ea553ece87203ec036b78a8f7f758d1045211d6134bca06331a"
+    }
+  ]
+}
