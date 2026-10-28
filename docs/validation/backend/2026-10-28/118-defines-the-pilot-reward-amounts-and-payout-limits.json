@@ -1,0 +1,33 @@
+{
+  "recordType": "existing-backend-test-validation",
+  "caseId": "backend-2026-10-28-118",
+  "description": "Historical result from the clean local validation run; this record does not add a new test or claim a new execution.",
+  "sourceFile": "backend/tests/unit/rewardPolicy.unit.test.js",
+  "sourceSha256": "bf48cf7954c47de6ca00a69ea20b290f8c54f84f0d2d334de64f29da28800f51",
+  "suiteAssertionOrdinal": 1,
+  "testName": "CELO reward policy defines the pilot reward amounts and payout limits",
+  "testTitle": "defines the pilot reward amounts and payout limits",
+  "ancestorTitles": [
+    "CELO reward policy"
+  ],
+  "occurrenceOfMatchingName": 1,
+  "totalCasesWithMatchingName": 1,
+  "status": "passed",
+  "durationMs": 2,
+  "passingAssertions": 1,
+  "runtime": {
+    "node": "22.23.4",
+    "platform": "win32",
+    "dependencyInstall": "clean npm ci"
+  },
+  "run": {
+    "validationDate": "2026-10-28",
+    "suitesPassed": 20,
+    "testsPassed": 144,
+    "testsFailed": 0,
+    "command": "node node_modules/jest/bin/jest.js --runInBand --coverage --json",
+    "reportSha256": "81b029a3687f27c3b641f202a1147da5575e28677218c50ee80ba78dc4a64bd3",
+    "packageLockSha256": "d824510d02683f2830d43f419177e0c9601bdaa4101b30359927abe6364a9ff8"
+  },
+  "startedAtUtc": "2026-10-28T09:39:45.403000+00:00"
+}
