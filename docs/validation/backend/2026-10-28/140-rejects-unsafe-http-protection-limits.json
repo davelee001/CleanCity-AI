@@ -1,0 +1,33 @@
+{
+  "recordType": "existing-backend-test-validation",
+  "caseId": "backend-2026-10-28-140",
+  "description": "Historical result from the clean local validation run; this record does not add a new test or claim a new execution.",
+  "sourceFile": "backend/tests/unit/startupValidation.unit.test.js",
+  "sourceSha256": "e8cdec12b4dfc043fd209b437e8f51e4736bff14053982f005002ae39d7e07b6",
+  "suiteAssertionOrdinal": 6,
+  "testName": "runtime environment validation rejects unsafe HTTP protection limits",
+  "testTitle": "rejects unsafe HTTP protection limits",
+  "ancestorTitles": [
+    "runtime environment validation"
+  ],
+  "occurrenceOfMatchingName": 1,
+  "totalCasesWithMatchingName": 1,
+  "status": "passed",
+  "durationMs": 1,
+  "passingAssertions": 2,
+  "runtime": {
+    "node": "22.23.4",
+    "platform": "win32",
+    "dependencyInstall": "clean npm ci"
+  },
+  "run": {
+    "validationDate": "2026-10-28",
+    "suitesPassed": 20,
+    "testsPassed": 144,
+    "testsFailed": 0,
+    "command": "node node_modules/jest/bin/jest.js --runInBand --coverage --json",
+    "reportSha256": "81b029a3687f27c3b641f202a1147da5575e28677218c50ee80ba78dc4a64bd3",
+    "packageLockSha256": "d824510d02683f2830d43f419177e0c9601bdaa4101b30359927abe6364a9ff8"
+  },
+  "startedAtUtc": "2026-10-28T09:39:46.156000+00:00"
+}
