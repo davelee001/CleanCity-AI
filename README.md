@@ -9,6 +9,36 @@ workflow validation are in the [Gemma benchmark report](docs/GEMMA_BENCHMARK.md)
 
 A comprehensive location-based cleanup event platform with React Native (Expo) frontend and Node.js Express backend. Join cleanup events, track your environmental impact, and help make your city cleaner!
 
+## Backend validation update (October 28, 2026)
+
+The backend timeout test now verifies that advisory AI failures preserve upload
+approval, existing risk signals, and access to the saved evidence.
+
+Verified from a clean dependency installation on **Node 22.23.4**:
+
+- **20 backend suites and 144 tests passed**, including coverage thresholds.
+- Backend lint and native SQLite, Sharp, and MSAL compatibility checks passed.
+- Production dependency updates reduced the registry-reported audit findings
+  from **10 affected packages to 0 vulnerabilities** at every severity.
+- Five low-severity development-only findings remain outside the production audit.
+
+Use Node 22 to reproduce from `backend/`:
+
+```powershell
+npm ci
+npm run test:coverage -- --runInBand
+npm run lint
+npm run audit:prod
+```
+
+See [Backend validation](docs/BACKEND_VALIDATION.md) for the Azure Identity pin,
+scoped UUID override, patched versions, and verification details.
+
+These results cover local backend tests and production dependency auditing.
+Real staging/production manifests, release-commit CI with PostgreSQL and image
+scans, staging smoke/load, backup/restore, rollback, and alert-delivery checks
+remain to be completed. This is not a production release-readiness sign-off.
+
 ## Cleanup evidence and Gemma analysis (October 17, 2026)
 
 CleanCity AI uses local Gemma 3 Vision through Ollama, with an optional
