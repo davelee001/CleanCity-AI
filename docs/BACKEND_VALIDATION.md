@@ -32,3 +32,16 @@ MSAL's used `uuid.v4()` API remains available in this CommonJS-compatible
 release; real MSAL GUID generation was checked. No forced MSAL major upgrade
 or blanket `npm audit fix --force` was used.
 
+## Verification results
+
+A fresh isolated install of the updated lockfile was tested with Node 22.23.4,
+the supported Node major. The system Node 24 installation was not changed.
+
+- Clean `npm ci`: passed, with native addon builds installed for Node 22.
+- Complete backend suite with coverage: **20 suites, 144 tests passed**.
+- Configured coverage thresholds: passed.
+- Backend lint: passed.
+- `npm run audit:prod`: **0 vulnerabilities**, exit code 0.
+- `npm audit --omit=dev --json`: **0 vulnerabilities at every severity**.
+- Native SQLite in-memory query, Sharp loading, and MSAL GUID generation: passed.
+
