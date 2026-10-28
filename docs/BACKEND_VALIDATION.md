@@ -45,3 +45,22 @@ the supported Node major. The system Node 24 installation was not changed.
 - `npm audit --omit=dev --json`: **0 vulnerabilities at every severity**.
 - Native SQLite in-memory query, Sharp loading, and MSAL GUID generation: passed.
 
+Five low-severity development-only audit findings remain in Jest's dependency
+tree. They are excluded from the production audit. No Jest major downgrade was
+applied to suppress them.
+
+Reproduce with Node 22 active, from `backend/`:
+
+```powershell
+node --version
+npm ci
+npm run test:coverage -- --runInBand
+npm run lint
+npm run audit:prod
+npm audit --omit=dev --json
+```
+
+This validates the local SQLite-backed suite. PostgreSQL CI, deployment
+configuration, container scans, staging smoke/load checks, backup/restore,
+rollback, and alert delivery have not been executed as part of this work.
+No release-readiness claim is made for those remaining checklist items.
