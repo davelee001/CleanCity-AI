@@ -641,7 +641,7 @@ describe('Phase 3 cleanup evidence workflow', () => {
     expect(review.statusCode).toBe(409);
   });
 
-  it('keeps timed-out live inference available for human review', async () => {
+  it('retains evidence and approval when advisory live inference times out', async () => {
     const originalFetch = global.fetch;
     const originalFlag = process.env.GEMMA_VERIFICATION_ENABLED;
     const originalTimeout = process.env.GEMMA_TIMEOUT_MS;
@@ -662,7 +662,8 @@ describe('Phase 3 cleanup evidence workflow', () => {
       const completed = await waitForAnalysis(id);
       expect(completed.status).toBe('approved');
       expect(completed.verification.smartVerification).toMatchObject({ status: 'unavailable', reason: 'timeout' });
-      expect(completed.verification.reviewReasons).toContain('gemma_unavailable');
+      expect(completed.verification.reviewReasons).toEqual(response.body.submission.verification.reviewReasons);
+      expect(completed.verification.overallRisk).toBe(response.body.submission.verification.overallRisk);
       await authenticated(request(app).get(`/api/v1/evidence/submissions/${id}/images/before`), ownerToken).expect(200);
     } finally {
       global.fetch = originalFetch;
