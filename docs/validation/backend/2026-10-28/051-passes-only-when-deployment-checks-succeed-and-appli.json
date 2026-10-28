@@ -1,0 +1,33 @@
+{
+  "recordType": "existing-backend-test-validation",
+  "caseId": "backend-2026-10-28-051",
+  "description": "Historical result from the clean local validation run; this record does not add a new test or claim a new execution.",
+  "sourceFile": "backend/tests/unit/celoPreflight.unit.test.js",
+  "sourceSha256": "0c6a4cd52c7914fd505093d51743dc85fd74192a6d698aafb0dfe8c301f7aaeb",
+  "suiteAssertionOrdinal": 1,
+  "testName": "Celo pilot preflight passes only when deployment checks succeed and application payouts are paused",
+  "testTitle": "passes only when deployment checks succeed and application payouts are paused",
+  "ancestorTitles": [
+    "Celo pilot preflight"
+  ],
+  "occurrenceOfMatchingName": 1,
+  "totalCasesWithMatchingName": 1,
+  "status": "passed",
+  "durationMs": 3,
+  "passingAssertions": 2,
+  "runtime": {
+    "node": "22.23.4",
+    "platform": "win32",
+    "dependencyInstall": "clean npm ci"
+  },
+  "run": {
+    "validationDate": "2026-10-28",
+    "suitesPassed": 20,
+    "testsPassed": 144,
+    "testsFailed": 0,
+    "command": "node node_modules/jest/bin/jest.js --runInBand --coverage --json",
+    "reportSha256": "81b029a3687f27c3b641f202a1147da5575e28677218c50ee80ba78dc4a64bd3",
+    "packageLockSha256": "d824510d02683f2830d43f419177e0c9601bdaa4101b30359927abe6364a9ff8"
+  },
+  "startedAtUtc": "2026-10-28T09:39:44.150000+00:00"
+}
