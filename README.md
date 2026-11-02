@@ -877,7 +877,9 @@ npx expo start
 📊 [Monitoring Setup](docs/MONITORING.md)  
 🔐 [Azure Key Vault Setup](docs/AZURE_KEYVAULT_SETUP.md)  
 🚀 [Quick Start Guide](QUICKSTART.md)
- with photo documentation
+
+### App Screens
+- **Submit Evidence** — Document a completed cleanup with photo documentation
 - **My Progress** — Track your environmental impact with before/after photos and gamification points
 - **🏆 Achievements** — View earned achievements, leaderboards, and track your cleanup level progression  
 - **Posts** — Community discussions and sharing with image uploads

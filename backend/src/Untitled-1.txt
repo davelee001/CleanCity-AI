@@ -1,2 +1,0 @@
-cd E:\Projects\CleanCity-AI\cleancity-ai
-

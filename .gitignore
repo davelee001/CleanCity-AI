@@ -13,6 +13,8 @@ coverage/
 
 # Database
 *.db
+*.db-wal
+*.db-shm
 *.sqlite
 /backend/data/
 
