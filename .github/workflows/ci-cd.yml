@@ -121,11 +121,41 @@ jobs:
           npm run db:verify
           npm test -- --runInBand
 
+  release-config:
+    name: Detect release credentials
+    runs-on: ubuntu-latest
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+    timeout-minutes: 5
+    outputs:
+      registry: ${{ steps.check.outputs.registry }}
+      azure: ${{ steps.check.outputs.azure }}
+    steps:
+      - name: Check for registry and Azure secrets
+        id: check
+        shell: bash
+        env:
+          ACR_USERNAME: ${{ secrets.ACR_USERNAME }}
+          ACR_PASSWORD: ${{ secrets.ACR_PASSWORD }}
+          AZURE_CREDENTIALS: ${{ secrets.AZURE_CREDENTIALS }}
+        run: |
+          if [ -n "$ACR_USERNAME" ] && [ -n "$ACR_PASSWORD" ]; then
+            echo "registry=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "registry=false" >> "$GITHUB_OUTPUT"
+            echo "::notice::ACR_USERNAME/ACR_PASSWORD are not set; skipping image build, scan, and deployment."
+          fi
+          if [ -n "$AZURE_CREDENTIALS" ]; then
+            echo "azure=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "azure=false" >> "$GITHUB_OUTPUT"
+            echo "::notice::AZURE_CREDENTIALS is not set; skipping staging and production deployment."
+          fi
+
   images:
     name: Build immutable images
     runs-on: ubuntu-latest
-    needs: [quality, postgres]
-    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+    needs: [quality, postgres, release-config]
+    if: needs.release-config.outputs.registry == 'true'
     timeout-minutes: 35
     outputs:
       backend: ${{ steps.release.outputs.backend }}
@@ -214,7 +244,8 @@ jobs:
   staging:
     name: Staging deployment and smoke test
     runs-on: ubuntu-latest
-    needs: [images, security]
+    needs: [release-config, images, security]
+    if: needs.release-config.outputs.azure == 'true'
     timeout-minutes: 20
     environment:
       name: staging
