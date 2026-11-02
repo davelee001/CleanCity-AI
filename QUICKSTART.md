@@ -177,7 +177,7 @@ git push origin main
 
 Or manually trigger:
 1. Go to Actions tab
-2. Select "CI/CD Pipeline"
+2. Select "CI, Security, and Release"
 3. Click "Run workflow"
 
 ## Azure Key Vault Setup
@@ -254,8 +254,8 @@ kubectl port-forward svc/backend 3001:3001 -n city-cleanup
 
 ## Next Steps
 
-1. Review [DEVOPS_INFRASTRUCTURE.md](./DEVOPS_INFRASTRUCTURE.md) for detailed docs
-2. Set up [Azure Key Vault](./AZURE_KEYVAULT_SETUP.md)
+1. Review [DEVOPS_INFRASTRUCTURE.md](./docs/DEVOPS_INFRASTRUCTURE.md) for detailed docs
+2. Set up [Azure Key Vault](./docs/AZURE_KEYVAULT_SETUP.md)
 3. Configure monitoring and logging
 4. Set up custom domain and SSL
 5. Configure backup and disaster recovery

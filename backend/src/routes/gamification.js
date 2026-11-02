@@ -129,6 +129,27 @@ router.get('/points/:username/history', authenticateUser, async (req, res) => {
 });
 
 /**
+ * Get available achievements (master list)
+ * Registered before /achievements/:username so "available" is not read as a username.
+ */
+router.get('/achievements/available', async (req, res) => {
+    try {
+        const { category } = req.query;
+
+        const availableAchievements = await gamificationService.getAvailableAchievements(category);
+
+        res.json({
+            success: true,
+            achievements: availableAchievements
+        });
+
+    } catch (error) {
+        console.error('Available achievements API error:', error);
+        res.status(500).json({ error: 'Failed to fetch available achievements' });
+    }
+});
+
+/**
  * Get user achievements
  */
 router.get('/achievements/:username', authenticateUser, async (req, res) => {
@@ -151,26 +172,6 @@ router.get('/achievements/:username', authenticateUser, async (req, res) => {
     } catch (error) {
         console.error('Achievements API error:', error);
         res.status(500).json({ error: 'Failed to fetch achievements' });
-    }
-});
-
-/**
- * Get available achievements (master list)
- */
-router.get('/achievements/available', async (req, res) => {
-    try {
-        const { category } = req.query;
-        
-        const availableAchievements = await gamificationService.getAvailableAchievements(category);
-
-        res.json({
-            success: true,
-            achievements: availableAchievements
-        });
-
-    } catch (error) {
-        console.error('Available achievements API error:', error);
-        res.status(500).json({ error: 'Failed to fetch available achievements' });
     }
 });
 

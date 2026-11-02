@@ -1323,6 +1323,16 @@ function createApp() {
 		app.use('/api/v1/social', socialRouter);
 	}
 
+	// Unknown routes return the same JSON error shape as the rest of the API.
+	app.use((req, res) => {
+		res.status(404).json({
+			success: false,
+			code: 'NOT_FOUND',
+			message: 'Not found',
+			path: req.path,
+		});
+	});
+
 	app.use((error, req, res, next) => {
 		if (error?.type === 'entity.too.large') {
 			return res.status(413).json({

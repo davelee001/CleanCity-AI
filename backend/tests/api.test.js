@@ -42,6 +42,32 @@ describe('API Endpoints', () => {
     expect(res.headers['x-powered-by']).toBeUndefined();
   });
 
+  it('returns a JSON 404 for unknown routes', async () => {
+    const res = await request(app).get('/no-such-route');
+    expect(res.statusCode).toBe(404);
+    expect(res.headers['content-type']).toContain('application/json');
+    expect(res.body).toEqual({
+      success: false,
+      code: 'NOT_FOUND',
+      message: 'Not found',
+      path: '/no-such-route',
+    });
+  });
+
+  it('returns a JSON 404 for unknown authenticated API routes', async () => {
+    const username = `notfound-${suffix}`;
+    await request(app).post('/api/v1/signup').send(signupData(username));
+    const login = await request(app)
+      .post('/api/v1/login')
+      .send({ username, password: 'test-password' });
+    const res = await request(app)
+      .get('/api/v1/no-such-route?token=secret')
+      .set('Authorization', `Bearer ${login.body.tokens.accessToken}`);
+    expect(res.statusCode).toBe(404);
+    expect(res.body.code).toBe('NOT_FOUND');
+    expect(res.body.path).toBe('/api/v1/no-such-route');
+  });
+
   it('rejects oversized JSON bodies with a stable API error', async () => {
     const response = await request(app)
       .post('/api/v1/signup')
