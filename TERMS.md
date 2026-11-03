@@ -24,6 +24,7 @@ follow local safety and waste-disposal rules.
 You must be at least 18 years old to create an account. During signup, you must
 provide your date of birth for a self-reported age-eligibility check. CleanCity
 AI does not independently verify age through identity documents, and the date
+of birth is not retained in your account record.
 You are responsible for your account and linked wallet. Never provide a seed
 phrase or private key to the service. Evidence may be automatically checked and
 manually reviewed. The service may reject evidence, reverse an unpaid decision,
