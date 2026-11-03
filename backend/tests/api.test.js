@@ -83,6 +83,7 @@ describe('API Endpoints', () => {
     expect(nonStringBirthDate.statusCode).toBe(400);
 
     const underageBirthDate = `${new Date().getUTCFullYear() - 10}-01-01`;
+    const underage = await request(app)
   });
 
   it('exposes application and reward metrics for the internal monitoring stack', async () => {
