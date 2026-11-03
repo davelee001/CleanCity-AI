@@ -30,7 +30,6 @@ export default function Legal({ onClose }) {
         </View>
       ))}
       <Text style={styles.notice}>
-        Complete policies are published with the project. Launch-jurisdiction
         legal review and a monitored private support contact remain required.
       </Text>
     </ScrollView>
