@@ -1,6 +1,5 @@
 # Support and Production Operations
 
-tracker for non-sensitive product and technical reports. Never post passwords,
 tokens, private keys, precise GPS coordinates, private evidence photos, or
 identity documents in an issue.
 
