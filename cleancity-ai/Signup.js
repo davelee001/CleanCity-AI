@@ -99,6 +99,7 @@ export default function Signup({ onSignup, onSwitchToLogin, onViewLegal }) {
           email: form.email.trim(),
           phone: form.phone.trim(),
           location: form.location.trim(),
+          dateOfBirth: form.dateOfBirth.trim(),
           password: form.password,
         }),
       });
