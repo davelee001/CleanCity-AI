@@ -1,6 +1,5 @@
 # Support and Production Operations
 
-tokens, private keys, precise GPS coordinates, private evidence photos, or
 identity documents in an issue.
 
 Security incidents and privacy or deletion requests require the private support
