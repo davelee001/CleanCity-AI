@@ -71,4 +71,5 @@ describe('Signup', () => {
     completeForm(screen);
     fireEvent.changeText(screen.getByLabelText('Date of birth (YYYY-MM-DD)'), 'not-a-date');
 
+    fireEvent.press(screen.getByLabelText('Create account'));
 });
