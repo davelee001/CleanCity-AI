@@ -6,6 +6,7 @@ const sections = [
   ['Retention and deletion', 'Temporary uploads are removed quickly. Rejected evidence is normally removed after the appeal period, and approved evidence is retained only for the documented verification and payment period. You may request access, correction, export, or deletion. Some security, fraud-prevention, financial, audit, and public blockchain records must be retained.'],
   ['Safe and eligible use', 'You must be at least 18 years old to create an account. Submit only original evidence of lawful, non-hazardous solid-waste cleanup. Do not submit AI-generated, manipulated, duplicate, stolen, or previously rewarded images. Avoid faces, private addresses, vehicle plates, and other people’s personal information.'],
   ['CELO rewards', 'Rewards are conditional promotional payments and are not guaranteed. Testnet CELO has no promised monetary value. Never share a seed phrase or private key with CleanCity AI. Confirmed public blockchain records cannot be erased.'],
+  ['Support', 'A monitored private support contact is not currently configured. Public launch is blocked until security, privacy, deletion, and account-compromise reports can be handled through a staffed private channel. Never place passwords, tokens, private keys, precise GPS, identity documents, or private evidence in a public issue.'],
 ];
 
 export default function Legal({ onClose }) {
