@@ -21,6 +21,7 @@ follow local safety and waste-disposal rules.
 
 ## Accounts and moderation
 
+You must be at least 18 years old to create an account. During signup, you must
 You are responsible for your account and linked wallet. Never provide a seed
 phrase or private key to the service. Evidence may be automatically checked and
 manually reviewed. The service may reject evidence, reverse an unpaid decision,
