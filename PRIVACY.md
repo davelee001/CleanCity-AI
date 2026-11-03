@@ -41,6 +41,7 @@ The approved retention schedule is defined in
 [`docs/PRIVACY_RETENTION_AND_DELETION.md`](docs/PRIVACY_RETENTION_AND_DELETION.md).
 Users may request access, correction, export, or account deletion through the
 support channel described in [`SUPPORT.md`](SUPPORT.md). A monitored private
+support contact is not currently configured; public launch is blocked until
 
 Deletion removes or anonymizes account profile data and private evidence when
 retention is no longer required. Minimal fraud-prevention, security, audit,
