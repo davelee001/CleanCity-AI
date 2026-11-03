@@ -1599,6 +1599,7 @@ The implementation roadmap continues in priority order:
   [Release Notes](RELEASE_NOTES.md), and the [MIT License](LICENSE).
 - Added privacy, terms, and support access to the unauthenticated application.
 - The temporary self-reported 18+ signup gate is implemented, but its
+  jurisdiction-specific legal approval, responsible legal entity, governing
 
 ### Phase 18 - Controlled CELO Launch
 
