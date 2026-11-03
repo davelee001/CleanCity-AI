@@ -85,6 +85,7 @@ describe('API Endpoints', () => {
     const underageBirthDate = `${new Date().getUTCFullYear() - 10}-01-01`;
     const underage = await request(app)
       .post('/api/v1/signup')
+      .send(signupData(`underage-${suffix}`, { dateOfBirth: underageBirthDate }));
   });
 
   it('exposes application and reward metrics for the internal monitoring stack', async () => {
