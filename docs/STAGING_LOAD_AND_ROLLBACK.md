@@ -26,6 +26,7 @@ On a merge to `main`, the workflow runs automatically. To rerun the complete
 release gate for the current release commit, manually dispatch `CI, Security,
 and Release` from the `main` branch in GitHub Actions. Confirm the run's commit
 SHA is the intended release before proceeding. A manual run builds and scans
+the immutable images, deploys to staging, and then waits at the protected
 
 1. runs lint, coverage, frontend build, SQLite tests, and PostgreSQL tests;
 2. builds one immutable backend image and one immutable frontend image;
