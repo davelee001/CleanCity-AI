@@ -65,6 +65,7 @@ describe('API Endpoints', () => {
     expect(res.body.user).not.toHaveProperty('dateOfBirth');
   });
 
+  it('rejects signup without a valid date of birth or for users under 18', async () => {
   });
 
   it('exposes application and reward metrics for the internal monitoring stack', async () => {
