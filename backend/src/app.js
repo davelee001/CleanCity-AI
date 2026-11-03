@@ -205,6 +205,7 @@ function createApp() {
 		if (dateOfBirth > minimumBirthDate) {
 			return res.status(400).json({
 				success: false,
+				message: 'You must be at least 18 years old to create an account'
 			});
 		}
 		if (!/^[a-zA-Z0-9._-]{3,30}$/.test(username)) {
