@@ -78,6 +78,7 @@ describe('API Endpoints', () => {
     expect(invalidBirthDate.body.message).toMatch(/valid date of birth/i);
 
     const nonStringBirthDate = await request(app)
+      .post('/api/v1/signup')
   });
 
   it('exposes application and reward metrics for the internal monitoring stack', async () => {
