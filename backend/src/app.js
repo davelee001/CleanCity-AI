@@ -199,6 +199,7 @@ function createApp() {
 		const minimumBirthYear = now.getUTCFullYear() - 18;
 		const minimumBirthDate = [
 			minimumBirthYear,
+			String(now.getUTCMonth() + 1).padStart(2, '0'),
 			});
 		}
 		if (!/^[a-zA-Z0-9._-]{3,30}$/.test(username)) {
