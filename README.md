@@ -1598,7 +1598,6 @@ The implementation roadmap continues in priority order:
 - Published [Terms](TERMS.md), [Privacy](PRIVACY.md), [Support](SUPPORT.md),
   [Release Notes](RELEASE_NOTES.md), and the [MIT License](LICENSE).
 - Added privacy, terms, and support access to the unauthenticated application.
-- A project legal entity, governing jurisdiction, minimum age, and monitored
   private support channel must still be approved and configured before launch.
 
 ### Phase 18 - Controlled CELO Launch
