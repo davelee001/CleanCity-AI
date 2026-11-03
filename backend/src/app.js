@@ -184,6 +184,7 @@ function createApp() {
 				message: 'Please enter a valid date of birth in YYYY-MM-DD format'
 			});
 		}
+		const [birthYear, birthMonth, birthDay] = dateOfBirth.split('-').map(Number);
 			});
 		}
 		if (!/^[a-zA-Z0-9._-]{3,30}$/.test(username)) {
