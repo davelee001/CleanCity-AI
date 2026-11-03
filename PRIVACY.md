@@ -40,7 +40,6 @@ requires it. Blockchain transactions cannot be erased.
 The approved retention schedule is defined in
 [`docs/PRIVACY_RETENTION_AND_DELETION.md`](docs/PRIVACY_RETENTION_AND_DELETION.md).
 Users may request access, correction, export, or account deletion through the
-support channel in [`SUPPORT.md`](SUPPORT.md). Identity must be verified before
 account information is disclosed or deleted.
 
 Deletion removes or anonymizes account profile data and private evidence when
