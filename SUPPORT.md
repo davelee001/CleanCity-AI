@@ -2,6 +2,7 @@
 
 No monitored private support mailbox, owner, backup owner, or service hours
 have been established. Until they are configured, use the repository's GitHub
+issue tracker only for non-sensitive product and technical reports. Never post
 
 Security incidents and privacy or deletion requests require the private support
 channel configured for the deployed environment. Public deployment is blocked
