@@ -70,6 +70,7 @@ describe('API Endpoints', () => {
       .post('/api/v1/signup')
       .send(signupData(`missing-dob-${suffix}`, { dateOfBirth: undefined }));
     expect(missingBirthDate.statusCode).toBe(400);
+
   });
 
   it('exposes application and reward metrics for the internal monitoring stack', async () => {
