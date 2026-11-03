@@ -202,6 +202,7 @@ function createApp() {
 			String(now.getUTCMonth() + 1).padStart(2, '0'),
 			String(now.getUTCDate()).padStart(2, '0'),
 		].join('-');
+		if (dateOfBirth > minimumBirthDate) {
 			});
 		}
 		if (!/^[a-zA-Z0-9._-]{3,30}$/.test(username)) {
