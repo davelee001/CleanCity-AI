@@ -22,7 +22,6 @@ export default function Legal({ onClose }) {
       </TouchableOpacity>
       <Text style={styles.eyebrow}>CLEANCITY AI POLICIES</Text>
       <Text style={styles.title}>Privacy, terms, and support</Text>
-      <Text style={styles.updated}>Effective July 26, 2026</Text>
       {sections.map(([title, body]) => (
         <View key={title} style={styles.card}>
           <Text style={styles.cardTitle}>{title}</Text>
