@@ -1,6 +1,5 @@
 # CleanCity AI Terms of Service
 
-Effective date: July 26, 2026
 
 By using CleanCity AI, you agree to provide accurate account
 information, submit only cleanup work you are authorized to document, and
