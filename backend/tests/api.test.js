@@ -87,6 +87,7 @@ describe('API Endpoints', () => {
       .post('/api/v1/signup')
       .send(signupData(`underage-${suffix}`, { dateOfBirth: underageBirthDate }));
     expect(underage.statusCode).toBe(400);
+    expect(underage.body.message).toMatch(/18 years old/i);
   });
 
   it('exposes application and reward metrics for the internal monitoring stack', async () => {
