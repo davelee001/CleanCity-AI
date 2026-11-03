@@ -215,6 +215,7 @@ export default function Signup({ onSignup, onSwitchToLogin, onViewLegal }) {
               field: 'dateOfBirth',
               label: 'Date of birth (YYYY-MM-DD)',
               placeholder: '2000-01-31',
+              maxLength: 10,
             {renderField({
               field: 'phone',
               label: 'Phone number',
