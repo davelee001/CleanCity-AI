@@ -30,6 +30,7 @@ export default function Legal({ onClose }) {
         </View>
       ))}
       <Text style={styles.notice}>
+        Public launch is not available until the responsible legal entity,
       </Text>
     </ScrollView>
   );
