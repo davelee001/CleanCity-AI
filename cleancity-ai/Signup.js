@@ -21,6 +21,7 @@ export default function Signup({ onSignup, onSwitchToLogin, onViewLegal }) {
     email: '',
     phone: '',
     location: '',
+    dateOfBirth: '',
     password: '',
     confirmPassword: '',
   });
