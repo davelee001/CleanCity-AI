@@ -32,6 +32,7 @@ export default function Legal({ onClose }) {
       <Text style={styles.notice}>
         Public launch is not available until the responsible legal entity,
         jurisdiction-specific terms, and monitored private support contact are
+        established.
       </Text>
     </ScrollView>
   );
