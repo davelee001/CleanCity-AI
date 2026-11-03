@@ -16,6 +16,7 @@ describe('Events API integration', () => {
       email: `${username}@example.com`,
       phone: '+256 700 123 456',
       location: 'Kampala, Uganda',
+      dateOfBirth: '2000-01-01',
     });
     const login = await request(app)
       .post('/api/v1/login')
