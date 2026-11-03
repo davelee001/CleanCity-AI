@@ -18,6 +18,7 @@ const signupData = (username, overrides = {}) => ({
   email: `${username}@example.com`,
   phone: '+256 700 123 456',
   location: 'Kampala, Uganda',
+  dateOfBirth: '2000-01-01',
   ...overrides,
 });
 
