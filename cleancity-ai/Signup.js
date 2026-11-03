@@ -52,6 +52,7 @@ export default function Signup({ onSignup, onSwitchToLogin, onViewLegal }) {
     ) {
       return 'Please complete every field.';
     }
+    if (!/^\d{4}-\d{2}-\d{2}$/.test(dateOfBirth)) {
     if (!/^[a-zA-Z0-9._-]{3,30}$/.test(username)) {
       return 'Username must be 3-30 characters with no spaces.';
     }
