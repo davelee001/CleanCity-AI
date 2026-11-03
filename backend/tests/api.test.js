@@ -82,6 +82,7 @@ describe('API Endpoints', () => {
       .send(signupData(`non-string-dob-${suffix}`, { dateOfBirth: ['2000-01-01'] }));
     expect(nonStringBirthDate.statusCode).toBe(400);
 
+    const underageBirthDate = `${new Date().getUTCFullYear() - 10}-01-01`;
   });
 
   it('exposes application and reward metrics for the internal monitoring stack', async () => {
