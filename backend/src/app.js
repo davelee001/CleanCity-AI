@@ -170,6 +170,7 @@ function createApp() {
 		const email = req.body.email?.trim().toLowerCase();
 		const phone = req.body.phone?.trim();
 		const location = req.body.location?.trim();
+		const dateOfBirth = req.body.dateOfBirth;
 
 		if (!username || !password || !email || !phone || !location) {
 			return res.status(400).json({
