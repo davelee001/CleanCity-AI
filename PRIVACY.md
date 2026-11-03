@@ -17,6 +17,7 @@ service, respond to support requests, and meet legal obligations.
 During signup, self-reported date of birth is processed only to check that an
 applicant is at least 18. CleanCity AI does not independently verify age through
 identity documents, and the date of birth is not stored in the account record.
+
 Location is requested only when a location-dependent action is used. Denying
 location may prevent GPS verification or event check-in but must not prevent a
 user from reading this notice or managing their account.
