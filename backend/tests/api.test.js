@@ -66,6 +66,7 @@ describe('API Endpoints', () => {
   });
 
   it('rejects signup without a valid date of birth or for users under 18', async () => {
+    const missingBirthDate = await request(app)
   });
 
   it('exposes application and reward metrics for the internal monitoring stack', async () => {
