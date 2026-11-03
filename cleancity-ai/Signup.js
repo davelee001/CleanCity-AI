@@ -54,6 +54,7 @@ export default function Signup({ onSignup, onSwitchToLogin, onViewLegal }) {
     }
     if (!/^\d{4}-\d{2}-\d{2}$/.test(dateOfBirth)) {
       return 'Enter your date of birth as YYYY-MM-DD.';
+    }
     if (!/^[a-zA-Z0-9._-]{3,30}$/.test(username)) {
       return 'Username must be 3-30 characters with no spaces.';
     }
