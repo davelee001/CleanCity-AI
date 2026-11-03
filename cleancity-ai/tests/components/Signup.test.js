@@ -65,4 +65,5 @@ describe('Signup', () => {
     expect(screen.getByText('Please enter a valid email address.')).toBeTruthy();
     expect(global.fetch).not.toHaveBeenCalled();
   });
+
 });
