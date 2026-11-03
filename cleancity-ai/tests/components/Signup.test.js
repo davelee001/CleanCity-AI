@@ -68,4 +68,5 @@ describe('Signup', () => {
 
   it('requires a date of birth in YYYY-MM-DD format', () => {
     const screen = render(<Signup onSignup={jest.fn()} onSwitchToLogin={jest.fn()} />);
+    completeForm(screen);
 });
