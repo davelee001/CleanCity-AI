@@ -66,4 +66,5 @@ describe('Signup', () => {
     expect(global.fetch).not.toHaveBeenCalled();
   });
 
+  it('requires a date of birth in YYYY-MM-DD format', () => {
 });
