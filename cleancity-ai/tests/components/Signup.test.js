@@ -75,4 +75,5 @@ describe('Signup', () => {
 
     expect(screen.getByText('Enter your date of birth as YYYY-MM-DD.')).toBeTruthy();
     expect(global.fetch).not.toHaveBeenCalled();
+  });
 });
