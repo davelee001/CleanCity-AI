@@ -76,6 +76,7 @@ describe('API Endpoints', () => {
       .send(signupData(`invalid-dob-${suffix}`, { dateOfBirth: '2000-02-30' }));
     expect(invalidBirthDate.statusCode).toBe(400);
     expect(invalidBirthDate.body.message).toMatch(/valid date of birth/i);
+
   });
 
   it('exposes application and reward metrics for the internal monitoring stack', async () => {
