@@ -28,6 +28,7 @@ and Release` from the `main` branch in GitHub Actions. Confirm the run's commit
 SHA is the intended release before proceeding. A manual run builds and scans
 the immutable images, deploys to staging, and then waits at the protected
 production environment for its independent reviewer; it does not bypass that
+approval.
 
 1. runs lint, coverage, frontend build, SQLite tests, and PostgreSQL tests;
 2. builds one immutable backend image and one immutable frontend image;
