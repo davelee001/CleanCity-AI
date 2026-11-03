@@ -1,6 +1,5 @@
 # Support and Production Operations
 
-identity documents in an issue.
 
 Security incidents and privacy or deletion requests require the private support
 channel configured for the deployed environment. Public deployment is blocked
