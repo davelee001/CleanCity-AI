@@ -185,6 +185,7 @@ function createApp() {
 			});
 		}
 		const [birthYear, birthMonth, birthDay] = dateOfBirth.split('-').map(Number);
+		const parsedBirthDate = new Date(Date.UTC(birthYear, birthMonth - 1, birthDay));
 			});
 		}
 		if (!/^[a-zA-Z0-9._-]{3,30}$/.test(username)) {
