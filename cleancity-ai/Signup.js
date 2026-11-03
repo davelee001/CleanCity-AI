@@ -212,6 +212,7 @@ export default function Signup({ onSignup, onSwitchToLogin, onViewLegal }) {
               hint: 'This helps us show relevant cleanup events near you.',
             })}
             {renderField({
+            {renderField({
               field: 'phone',
               label: 'Phone number',
               placeholder: '+256 700 000 000',
