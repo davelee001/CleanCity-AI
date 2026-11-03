@@ -71,6 +71,7 @@ describe('API Endpoints', () => {
       .send(signupData(`missing-dob-${suffix}`, { dateOfBirth: undefined }));
     expect(missingBirthDate.statusCode).toBe(400);
 
+    const invalidBirthDate = await request(app)
   });
 
   it('exposes application and reward metrics for the internal monitoring stack', async () => {
