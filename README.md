@@ -9,6 +9,26 @@ workflow validation are in the [Gemma benchmark report](docs/GEMMA_BENCHMARK.md)
 
 A comprehensive location-based cleanup event platform with React Native (Expo) frontend and Node.js Express backend. Join cleanup events, track your environmental impact, and help make your city cleaner!
 
+## Signup and release workflow update (November 3, 2026)
+
+New accounts require a date of birth in `YYYY-MM-DD` format. The API validates
+the date and rejects applicants younger than 18. This is a self-reported age
+check; identity documents are not used to independently verify age, and the
+date of birth is not retained in the account record. The signup screen and
+[published policies](TERMS.md) describe this requirement.
+
+The release workflow supports manual runs from `main` as well as pushes.
+Manual runs follow the same release gate and production approval requirements;
+see [Staging load and rollback](docs/STAGING_LOAD_AND_ROLLBACK.md). Frontend
+rolling updates use `maxUnavailable: 0` to keep existing replicas available
+while replacement replicas become ready.
+
+Public launch remains blocked pending the responsible legal entity,
+jurisdiction-specific legal approval, and a monitored private support operation.
+See [Privacy](PRIVACY.md) and [Support](SUPPORT.md) for the current requirements.
+The earlier backend validation results below have not been rerun for these
+changes.
+
 ## Backend validation update (October 28, 2026)
 
 The backend timeout test now verifies that advisory AI failures preserve upload
@@ -229,8 +249,8 @@ See [CleanCity AI Reward Product Rules](docs/PRODUCT_RULES.md) for the complete 
 - Added a web-safe event map and corrected the Expo web entry point so the landing page renders.
 - Added synchronized lockfiles, frontend build and lint scripts, and stricter CI checks.
 - Removed tracked dependency artifacts and removed committed Kubernetes secret placeholders.
-- Expanded signup to collect username, email, phone number, location, and password confirmation.
-- Ordered signup details for clearer onboarding: username, email, county/location, phone number, password, and password confirmation.
+- Expanded signup to collect username, email, phone number, location, date of birth, and password confirmation.
+- Ordered signup details for clearer onboarding: username, email, county/location, date of birth, phone number, password, and password confirmation.
 - Added client and server validation, unique email protection, and automatic profile-column migration for existing SQLite databases.
 - Redesigned the sign-in, signup, and authenticated home experiences with responsive layouts and accessible feedback.
 - Standardized the frontend on a cohesive dark-blue palette with readable blue-gray text and preserved semantic status colors.
@@ -1000,7 +1020,7 @@ npx expo start
 - `POST /api/v1/social/upload` — Upload social media files (avatars, attachments, images)
 
 ### Authentication
-- `POST /api/v1/signup` — Register a user with username, email, phone number, location, and password
+- `POST /api/v1/signup` — Register a user with username, email, phone number, location, date of birth (`dateOfBirth`, `YYYY-MM-DD`, minimum age 18), and password
 - `POST /api/v1/login` — User login returning a short-lived access token and rotating refresh token
 - `POST /api/v1/auth/refresh` — Rotate a valid refresh token and issue a new token pair
 - `POST /api/v1/auth/logout` — Revoke a refresh token
