@@ -1601,6 +1601,7 @@ The implementation roadmap continues in priority order:
 - The temporary self-reported 18+ signup gate is implemented, but its
   jurisdiction-specific legal approval, responsible legal entity, governing
   jurisdiction, public legal contact, and monitored private support operation
+  remain unconfigured and block launch.
 
 ### Phase 18 - Controlled CELO Launch
 
