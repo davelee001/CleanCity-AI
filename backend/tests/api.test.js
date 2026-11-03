@@ -64,6 +64,7 @@ describe('API Endpoints', () => {
     expect(res.body.user.location).toBe('Kampala, Uganda');
     expect(res.body.user).not.toHaveProperty('dateOfBirth');
   });
+
   });
 
   it('exposes application and reward metrics for the internal monitoring stack', async () => {
