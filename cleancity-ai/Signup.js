@@ -39,6 +39,7 @@ export default function Signup({ onSignup, onSwitchToLogin, onViewLegal }) {
     const email = form.email.trim();
     const phone = form.phone.trim();
     const location = form.location.trim();
+    const dateOfBirth = form.dateOfBirth.trim();
 
     if (!username || !email || !phone || !location || !form.password || !form.confirmPassword) {
       return 'Please complete every field.';
