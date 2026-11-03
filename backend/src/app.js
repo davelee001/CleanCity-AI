@@ -191,6 +191,7 @@ function createApp() {
 			|| parsedBirthDate.toISOString().slice(0, 10) !== dateOfBirth
 		) {
 			return res.status(400).json({
+				success: false,
 			});
 		}
 		if (!/^[a-zA-Z0-9._-]{3,30}$/.test(username)) {
