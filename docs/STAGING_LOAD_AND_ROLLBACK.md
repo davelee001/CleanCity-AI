@@ -30,6 +30,7 @@ the immutable images, deploys to staging, and then waits at the protected
 production environment for its independent reviewer; it does not bypass that
 approval.
 
+
 1. runs lint, coverage, frontend build, SQLite tests, and PostgreSQL tests;
 2. builds one immutable backend image and one immutable frontend image;
 3. emits SBOM and provenance attestations;
