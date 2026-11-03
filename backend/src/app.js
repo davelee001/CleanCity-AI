@@ -172,6 +172,7 @@ function createApp() {
 		const location = req.body.location?.trim();
 		const dateOfBirth = req.body.dateOfBirth;
 
+		if (!username || !password || !email || !phone || !location || !dateOfBirth) {
 			return res.status(400).json({
 				success: false,
 				message: 'Username, email, phone number, location, and password are required'
