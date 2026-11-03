@@ -1695,4 +1695,3 @@ npx playwright test --ui   # Interactive mode
 ## License
 
 This project is for demo and educational purposes. Add appropriate license if publishing commercially.
-
