@@ -68,6 +68,7 @@ describe('API Endpoints', () => {
   it('rejects signup without a valid date of birth or for users under 18', async () => {
     const missingBirthDate = await request(app)
       .post('/api/v1/signup')
+      .send(signupData(`missing-dob-${suffix}`, { dateOfBirth: undefined }));
   });
 
   it('exposes application and reward metrics for the internal monitoring stack', async () => {
