@@ -11,6 +11,7 @@
   navigation.
 - Added a validated installable web application and safe read-only offline
   shell.
+- Restricted new accounts to applicants aged 18 or older; date of birth is
 - Added privacy, terms, support, retention/deletion, and incident-response
   documentation.
 - Hardened the native CELO treasury with paused-by-default deployment, an
