@@ -72,6 +72,7 @@ describe('API Endpoints', () => {
     expect(missingBirthDate.statusCode).toBe(400);
 
     const invalidBirthDate = await request(app)
+      .post('/api/v1/signup')
   });
 
   it('exposes application and reward metrics for the internal monitoring stack', async () => {
