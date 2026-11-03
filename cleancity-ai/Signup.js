@@ -216,6 +216,7 @@ export default function Signup({ onSignup, onSwitchToLogin, onViewLegal }) {
               label: 'Date of birth (YYYY-MM-DD)',
               placeholder: '2000-01-31',
               maxLength: 10,
+              hint: 'You must be 18 or older. This self-reported age check is not independently verified, and your date of birth is not stored.',
             {renderField({
               field: 'phone',
               label: 'Phone number',
