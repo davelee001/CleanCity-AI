@@ -62,6 +62,7 @@ describe('API Endpoints', () => {
     expect(res.body.user.email).toBe(`testuser-${suffix}@example.com`);
     expect(res.body.user.phone).toBe('+256 700 123 456');
     expect(res.body.user.location).toBe('Kampala, Uganda');
+    expect(res.body.user).not.toHaveProperty('dateOfBirth');
   });
 
   it('exposes application and reward metrics for the internal monitoring stack', async () => {
