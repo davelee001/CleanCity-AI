@@ -13,6 +13,7 @@ describe('legal and support center', () => {
     expect(screen.getByText(/at least 18 years old/)).toBeTruthy();
     expect(screen.getByText('CELO rewards')).toBeTruthy();
     expect(screen.getByText('Support')).toBeTruthy();
+    expect(screen.getByText(/not currently configured/)).toBeTruthy();
   });
 
   it('returns to authentication', () => {
