@@ -125,7 +125,6 @@ jobs:
     name: Build immutable images
     runs-on: ubuntu-latest
     needs: [quality, postgres]
-    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
     timeout-minutes: 35
     outputs:
       backend: ${{ steps.release.outputs.backend }}
