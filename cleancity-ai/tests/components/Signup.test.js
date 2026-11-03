@@ -70,4 +70,5 @@ describe('Signup', () => {
     const screen = render(<Signup onSignup={jest.fn()} onSwitchToLogin={jest.fn()} />);
     completeForm(screen);
     fireEvent.changeText(screen.getByLabelText('Date of birth (YYYY-MM-DD)'), 'not-a-date');
+
 });
