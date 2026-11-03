@@ -14,6 +14,7 @@ verify that evidence is authentic and unique, prevent duplicate rewards and
 fraud, support moderation and appeals, make approved Celo payments, secure the
 service, respond to support requests, and meet legal obligations.
 
+During signup, self-reported date of birth is processed only to check that an
 Location is requested only when a location-dependent action is used. Denying
 location may prevent GPS verification or event check-in but must not prevent a
 user from reading this notice or managing their account.
