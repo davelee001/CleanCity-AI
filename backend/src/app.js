@@ -192,6 +192,7 @@ function createApp() {
 		) {
 			return res.status(400).json({
 				success: false,
+				message: 'Please enter a valid date of birth in YYYY-MM-DD format'
 			});
 		}
 		if (!/^[a-zA-Z0-9._-]{3,30}$/.test(username)) {
