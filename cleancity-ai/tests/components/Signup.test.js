@@ -46,6 +46,7 @@ describe('Signup', () => {
       location: 'Central County',
       phone: '+211 922 000 000',
       email: 'member@cleanup.test',
+      dateOfBirth: '2000-01-01',
     }));
     expect(screen.getByText('Account created! Taking you to login...')).toBeTruthy();
     await waitFor(
