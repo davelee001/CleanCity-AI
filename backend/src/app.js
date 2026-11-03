@@ -196,6 +196,7 @@ function createApp() {
 			});
 		}
 		const now = new Date();
+		const minimumBirthYear = now.getUTCFullYear() - 18;
 			});
 		}
 		if (!/^[a-zA-Z0-9._-]{3,30}$/.test(username)) {
