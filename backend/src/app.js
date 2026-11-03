@@ -203,6 +203,7 @@ function createApp() {
 			String(now.getUTCDate()).padStart(2, '0'),
 		].join('-');
 		if (dateOfBirth > minimumBirthDate) {
+			return res.status(400).json({
 			});
 		}
 		if (!/^[a-zA-Z0-9._-]{3,30}$/.test(username)) {
