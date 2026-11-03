@@ -1,6 +1,5 @@
 # CleanCity AI Privacy Notice
 
-Effective date: July 26, 2026
 
 CleanCity AI processes account details, cleanup photos, approximate
 or precise location, device-provided capture metadata, verification results,
