@@ -7,6 +7,7 @@ function completeForm(screen) {
   fireEvent.changeText(screen.getByLabelText('Email address'), 'member@cleanup.test');
   fireEvent.changeText(screen.getByLabelText('County / location'), 'Central County');
   fireEvent.changeText(screen.getByLabelText('Phone number'), '+211 922 000 000');
+  fireEvent.changeText(screen.getByLabelText('Date of birth (YYYY-MM-DD)'), '2000-01-01');
   fireEvent.changeText(screen.getByLabelText('Password'), 'long-password');
   fireEvent.changeText(screen.getByLabelText('Confirm password'), 'long-password');
 }
