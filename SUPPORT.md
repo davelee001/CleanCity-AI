@@ -1,5 +1,6 @@
 # Support and Production Operations
 
+No monitored private support mailbox, owner, backup owner, or service hours
 
 Security incidents and privacy or deletion requests require the private support
 channel configured for the deployed environment. Public deployment is blocked
