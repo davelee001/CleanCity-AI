@@ -23,6 +23,7 @@ who is not the author of the release.
 ## Automated release gate
 
 On a merge to `main`, the workflow runs automatically. To rerun the complete
+release gate for the current release commit, manually dispatch `CI, Security,
 
 1. runs lint, coverage, frontend build, SQLite tests, and PostgreSQL tests;
 2. builds one immutable backend image and one immutable frontend image;
