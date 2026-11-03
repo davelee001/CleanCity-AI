@@ -77,6 +77,7 @@ describe('API Endpoints', () => {
     expect(invalidBirthDate.statusCode).toBe(400);
     expect(invalidBirthDate.body.message).toMatch(/valid date of birth/i);
 
+    const nonStringBirthDate = await request(app)
   });
 
   it('exposes application and reward metrics for the internal monitoring stack', async () => {
