@@ -10,6 +10,7 @@ describe('legal and support center', () => {
     expect(screen.getByText('Privacy')).toBeTruthy();
     expect(screen.getByText('Retention and deletion')).toBeTruthy();
     expect(screen.getByText('Safe and eligible use')).toBeTruthy();
+    expect(screen.getByText(/at least 18 years old/)).toBeTruthy();
     expect(screen.getByText('CELO rewards')).toBeTruthy();
     expect(screen.getByText('Support')).toBeTruthy();
   });
