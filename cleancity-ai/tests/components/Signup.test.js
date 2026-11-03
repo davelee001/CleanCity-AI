@@ -74,4 +74,5 @@ describe('Signup', () => {
     fireEvent.press(screen.getByLabelText('Create account'));
 
     expect(screen.getByText('Enter your date of birth as YYYY-MM-DD.')).toBeTruthy();
+    expect(global.fetch).not.toHaveBeenCalled();
 });
